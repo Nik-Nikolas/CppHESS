@@ -39,7 +39,7 @@ struct PieceCoordinates{
 
   //!< - 65 to convert char to int coordinates.
   PieceCoordinates( int32_t y = 0, int32_t x = 0 ):  y_( y ),
-                                                             x_( x - 65 ) {}
+                                                     x_( x - 65 ) {}
 };
 
 
