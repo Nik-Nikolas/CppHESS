@@ -40,6 +40,37 @@ private:
                                       const Player* player,
                                       Piece*& piece,
                                       const int32_t i,
-                                      const int32_t j );
+                                      const int32_t j,
+                                      int32_t& i2,
+                                      int32_t& j2,
+                                      bool& isKingUnderAttack );
+
+  bool killLeftPawn ( Board* board,
+                      const Player* player,
+                      Piece*& piece,
+                      const int32_t i,
+                      const int32_t j,
+                      int32_t& i2,
+                      int32_t& j2,
+                      bool& isKingUnderAttack );
+
+  bool killRightPawn ( Board* board,
+                       const Player* player,
+                       Piece*& piece,
+                       const int32_t i,
+                       const int32_t j,
+                       int32_t& i2,
+                       int32_t& j2,
+                       bool& isKingUnderAttack );
+
+  bool movePawnForward ( Board* board,
+                         const Player* player,
+                         Piece*& piece,
+                         const int32_t i,
+                         const int32_t j,
+                         int32_t& i2,
+                         int32_t& j2,
+                         const int32_t longMoveStep,
+                         bool& isKingUnderAttack );
 };
 #endif

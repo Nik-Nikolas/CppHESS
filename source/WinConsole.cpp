@@ -8,6 +8,8 @@
 
 void WinConsole::setFont( const int32_t font ){
 
+  return;
+
   static HMODULE hmod = GetModuleHandleA( "KERNEL32.DLL" );
   typedef BOOL ( WINAPI* SETCONSOLEFONT )( HANDLE, DWORD );
   static SETCONSOLEFONT SetConsoleFont =
@@ -55,6 +57,7 @@ void WinConsole::controlKeyboard( Board& board,
 
       for( auto i = 0; i < BoardGlobals::getSize(); ++i )
         board.changeBoard()[i].resize( BoardGlobals::getSize() );
+
     }
     else if( 120 == keyCode ){ // 'x'
       BoardGlobals::setSize( BoardGlobals::getSize() + STEP );
@@ -96,7 +99,7 @@ void WinConsole::controlKeyboard( Board& board,
     if ( 0 > BoardGlobals::getDelay() )
       BoardGlobals::setDelay( 0 );
 
-    setFont( BoardGlobals::getSize() > 40 ? 2 : 9 );
+    setFont( BoardGlobals::getSize() > 40 ? 2 : 30 );
   }
 
   while( _kbhit() )

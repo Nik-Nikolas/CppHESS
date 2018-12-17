@@ -5,6 +5,40 @@
 #include "Piece.h"
 #include "C++HESS.h"
 
+void printPiece( const PieceType& PT,  const PieceColor PC ){
+
+  HANDLE cons = GetStdHandle(STD_OUTPUT_HANDLE);
+  const int BUFF_SIZE = 17;
+  wchar_t p[BUFF_SIZE];
+  memset(p,'\0',BUFF_SIZE);
+  DWORD n;
+
+  if( PieceColor::WHITE == PC )
+    switch( PT ){
+      case PieceType::PAWN   : wcscpy (p, L"\u2659"); break;
+      case PieceType::KNIGHT : wcscpy (p, L"\u2658"); break;
+      case PieceType::BISHOP : wcscpy (p, L"\u2657"); break;
+      case PieceType::ROOK   : wcscpy (p, L"\u2656"); break;
+      case PieceType::QUEEN  : wcscpy (p, L"\u2655"); break;
+      case PieceType::KING   : wcscpy (p, L"\u2654"); break;
+      default                : wcscpy (p, L"?"); break;
+    }
+  else
+    switch( PT ){
+      case PieceType::PAWN   : wcscpy (p, L"\u265F"); break;
+      case PieceType::KNIGHT : wcscpy (p, L"\u265E"); break;
+      case PieceType::BISHOP : wcscpy (p, L"\u265D"); break;
+      case PieceType::ROOK   : wcscpy (p, L"\u265C"); break;
+      case PieceType::QUEEN  : wcscpy (p, L"\u265B"); break;
+      case PieceType::KING   : wcscpy (p, L"\u265A"); break;
+      default                : wcscpy (p, L"?"); break;
+    }
+
+  WriteConsoleW(cons, p, wcslen(p), &n, NULL );
+}
+
+
+
 //! \brief Show board function.
 //!
 //! \param
@@ -24,7 +58,7 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
         currentBackColor = ConsoleColor::DARKGRAY;
       }
       else{
-        SetColor( ConsoleColor::BLACK, ConsoleColor::LIGHTGRAY );
+        SetColor( ConsoleColor::BLACK, ConsoleColor::GREEN );
         currentBackColor = ConsoleColor::WHITE;
       }
 
@@ -38,11 +72,17 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
           SetColor( currentPieceColor, ConsoleColor::DARKGRAY );
         }
         else{
-          SetColor( currentPieceColor, ConsoleColor::LIGHTGRAY );
+          SetColor( currentPieceColor, ConsoleColor::GREEN );
         }
 
-        std::cout << piece << " ";
+        // Uncomment this line if you don't use UTF-8 mono wide font in console.
+        // std::cout << piece;
 
+        // Uncomment this for UTF-16 CHARS
+        // You need to install any UTF-8 mono wide font for console.
+        printPiece( piece->getPieceType() );
+
+        std::cout << " ";
       }
       else{
         std::cout << "  ";
@@ -52,14 +92,14 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
     isWhiteSquare = true == isWhiteSquare ? false : true;
 
     SetColor( ConsoleColor::WHITE, ConsoleColor::BLACK );
-    std::cout << "  " << std::setw(2) << std::setfill('0') << BoardGlobals::getSize() - line;
+    std::cout << "" << std::setw(2) << std::setfill(' ') << BoardGlobals::getSize() - line;
     ++line;
     std::cout << "\n";
   });
 
   SetColor( ConsoleColor::WHITE, ConsoleColor::BLACK );
 
-  std::cout << "\n";
+  //std::cout << "\n";
   for( auto k = 0; k < BoardGlobals::getSize(); ++k ){
     if( k < ::LATIN_ALPHABET_SIZE )
         std::cout << static_cast<char>( 'A' + k ) << " ";
@@ -77,7 +117,7 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
 //! \return void
 void delay(){
 
-  std::cout << ". Delay = " << BoardGlobals::getDelay() << " ms.";
+  std::cout << ". (" << BoardGlobals::getDelay() << " ms.)";
 
   Sleep( BoardGlobals::getDelay() );
 }
@@ -155,7 +195,6 @@ std::ostream& operator << ( std::ostream& s, const Piece* pt ){
   }
 
   s << ch;
-
   return s;
 }
 

@@ -69,7 +69,7 @@ bool Player::makeRandomTestMove(){
 
   int32_t i = 0;
   int32_t j = 0;
-  const int32_t MAX_TURNS = BoardGlobals::getSize() * BoardGlobals::getSize() / 2;
+  const int32_t MAX_TURNS = BoardGlobals::getSize() * BoardGlobals::getSize();
   int32_t k = 0;
 
   while( true ){
@@ -104,15 +104,9 @@ bool Player::makeRandomTestMove(){
       std::cout << "\nPlayer " << name_ << " had no random moves for a "
       "reasonable time. Turn: " <<
       static_cast<int32_t>( game_->currentTurn() ) + 1 << "\n";
-
       return true; // No random moves for a reasonable time;
     }
   }
-
-  std::cout << "\n" << name_ << " have no pieces or no moves. "
-             "Press ANY KEY to let opponent to move instead.";
-
-  _getch() ;
 
   return false; // Player has no moves or pieces here.
 }
@@ -132,11 +126,15 @@ void Player::showData() const {
   int32_t x = BoardGlobals::getSize() - board_->getLastMovedPiece().lastMovedPieceCoordinates_.x_;
 
   std::cout <<
-  "\nPlayer " <<
+  "\n" <<
   name_ <<
   " (" <<
   color_ <<
-  ") have moved with " << board_->getLastMovedPiece().lastMovedPieceType_ << " ";
+  ") moved ";
+
+  printPiece( board_->getLastMovedPiece().lastMovedPieceType_,
+              PieceColor::WHITE );
+
   if( x < ::LATIN_ALPHABET_SIZE )
     std::cout << static_cast<char>( 'A' + x - 1 );
   else

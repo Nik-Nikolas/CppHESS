@@ -7,7 +7,7 @@
 
 void Game::startNewGame( Board& board, WinConsole& console ){
 
-  console.setFont( BoardGlobals::getSize() > 40 ? 2 : 9 );
+  console.setFont( BoardGlobals::getSize() > 40 ? 2 : 30 );
 
   // OK as long as the Game object isn't const.
   Game* pgame = const_cast<Game*>(this);
@@ -18,18 +18,17 @@ void Game::startNewGame( Board& board, WinConsole& console ){
   Player* black = player2.getColor() == PieceColor::BLACK ? &player2 : &player1;
 
   console.showBoard( board );
-  std::cout <<  "'-' '+' to change speed,\n"
-                "'n' to start new game,\n"
-                "'z' 'x' to change board size dynamically.\n"
-                "Choose scenario 1 - 8 to start:                 Pieces codes:\n"
-                "1 Classic game                                  1 Pawn\n"
-                "2 Knight VS Rook                                3 Knight\n"
-                "3 Queens Battle                                 4 Bishop\n"
-                "4 Pawns Battle                                  5 Rook\n"
-                "5 Bishop VS Pawn                                9 Queen\n"
-                "6 Bishop VS Knight                              \x05 King\n"
+  std::cout <<  "1 Classic game\n"
+                "2 Knight VS Rook\n"
+                "3 Queens Battle\n"
+                "4 Pawns Battle\n"
+                "5 Bishop VS Pawn\n"
+                "6 Bishop VS Knight\n"
                 "7 Bishop VS Rook\n"
-                "8 Random Battle";
+                "8 Random Battle\n"
+                "'-' '+' to change speed,\n"
+                "'n'     to start new game,\n"
+                "'z' 'x' to change board size";
 
   char ch = _getch();
 
@@ -39,8 +38,8 @@ void Game::startNewGame( Board& board, WinConsole& console ){
 
     if( !white->makeRandomTestMove() ){
       std::cout << "\n" << white->getName()
-      << " have no pieces or no moves. "
-         "Press ANY KEY to let opponent to move instead.";
+      << " have no pieces or no moves."
+         " Press ANY KEY to let opponent move instead.";
       _getch() ;
     }
 
@@ -51,7 +50,7 @@ void Game::startNewGame( Board& board, WinConsole& console ){
     if( !black->makeRandomTestMove() ){
       std::cout << "\n" << black->getName()
       << " have no pieces or no moves. "
-         "Press ANY KEY to let opponent to move instead.";
+         "Press ANY KEY to let opponent move instead.";
       _getch() ;
     }
 

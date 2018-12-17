@@ -22,7 +22,6 @@
 // TODO:
 // KING: teach king to hide from check or to surrender certain player if mate occurs.
 // KING: check if lineBetween (king, rook) != lineUnderAttack while casting
-// Pawn functions code refactoring.
 // More AI for better play.
 
 #ifndef CPPHESS
@@ -33,6 +32,7 @@
 #include <typeinfo>  // Types distinction check.
 
 #include <vector>
+#include <stack>     // Pieces stack
 #include <algorithm>
 
 #include <ctime>     // rand(), srand() functionality.
@@ -41,6 +41,8 @@
 
 #include <conio.h>   // Console / IO / _kbhit() AS dev.test functions.
 #include <windows.h>
+
+#include <random>
 
 class Piece;
 class Player;
@@ -106,10 +108,12 @@ std::ostream& operator << ( std::ostream& s, const Piece* pt );
 //! \brief Overload << to print pieces names in console char mode style.
 std::ostream& operator << ( std::ostream& s, const PieceType& pt );
 
-
+//! \brief Show UTF-8 chess piece image.
+void printPiece( const PieceType& PT, const PieceColor PC = PieceColor::BLACK );
 
 //! \brief Show current pieces on board set.
 void show( const std::vector<std::vector<Piece*> >& board );
+
 void delay();
 void clear();
 
