@@ -34,9 +34,27 @@ public:
   static void setDelay( const int32_t delay ){
      delay_ = delay;
   }
+
+  static const int32_t& getFramesStep(){
+    return framesStep_;
+  }
+
+  static void setFramesStep( const int32_t framesStep ){
+     framesStep_ = framesStep;
+  }
+
+  static const bool& getGlyphMode(){
+    return isGlyphMode_;
+  }
+
+  static void setGlyphMode( const bool isGlyphMode ){
+     isGlyphMode_ = isGlyphMode;
+  }
 private:
   static int32_t size_;
   static int32_t longMoveStep_;
   static int32_t delay_;
+  static int32_t framesStep_;
+  static bool    isGlyphMode_;
 };
 #endif

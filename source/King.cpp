@@ -32,7 +32,7 @@ bool King::move( Board* board,
     return true;
   else if( killDiagonalBackwardLeftSquare( board, player,  piece, i, j, i2, j2, isKingUnderAttack  ) )
     return true;
-  else if( rand() % 2 && movePerpendicularSquare( board, player,  piece, i, j, i2, j2, isKingUnderAttack ) )
+  else if( movePerpendicularSquare( board, player,  piece, i, j, i2, j2, isKingUnderAttack ) )
     return true;
   else if( moveDiagonalSquare( board, player,  piece, i, j, i2, j2, isKingUnderAttack ) )
     return true;

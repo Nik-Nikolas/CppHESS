@@ -9,9 +9,11 @@
 #include "C++HESS.h"
 
 // Encapsulated in class (as a private static) variables
-int32_t BoardGlobals::size_;
-int32_t BoardGlobals::longMoveStep_;
-int32_t BoardGlobals::delay_;
+int32_t BoardGlobals::size_        = 0;
+int32_t BoardGlobals::longMoveStep_= 0;
+int32_t BoardGlobals::delay_       = 0;
+int32_t BoardGlobals::framesStep_  = START_FRAME;
+bool    BoardGlobals::isGlyphMode_ = true;
 
 int main(){
 

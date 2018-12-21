@@ -20,7 +20,13 @@ void Pawn::pawnBecomesNewPiece( Board* board,
   delete metamorphosis;
 
   // Create any light or heavy piece instead.
-  switch( rand() % 4 ){
+
+  static std::random_device rd; // Seed. Should be either static or external.
+  std::mt19937 gen( rd() );
+  std::uniform_int_distribution<> dis( 0, 3 );
+  const int32_t VAR = static_cast<int32_t>( dis( gen ) );
+
+  switch( VAR ){
     default:
     case 0 :
       metamorphosis = new Queen( PieceCoordinates ( i, 'A' + j ), color );
@@ -107,7 +113,11 @@ bool Pawn::killOpponentPawnAfterLongMove( Board* board,
 
                 // Replace pawn diagonally to the certain square (forward and right/left).
                 enemySquare = piece;
-                piece->markAsMoved();
+                enemySquare->markAsMoved();
+                enemySquare->setPieceCoordinates( PieceCoordinates ( forward_y,
+                                            'A' + x ) );
+                i2 = forward_y;
+                j2 = x;
                 piece = nullptr;
 
                 // Save last move data: piece type and coordinates.
@@ -166,10 +176,16 @@ bool Pawn::killLeftPawn ( Board* board,
 
     delete leftEnemySquare;
     leftEnemySquare = piece;
-    piece->markAsMoved();
+    leftEnemySquare->markAsMoved();
+    leftEnemySquare->setPieceCoordinates( PieceCoordinates ( leftEnemySquare_y,
+                                'A' + leftEnemySquare_x ) );
+    i2 = leftEnemySquare_y;
+    j2 = leftEnemySquare_x;
     // We cant use 'this' here because of its constness (rvalue).
     // Piece is a reference to pointer.
     piece = nullptr;
+
+
     // Save last move data: piece type and coordinates.
     board->cacheLastMovedPiece( leftEnemySquare->getPieceType(),
                                 PieceCoordinates ( leftEnemySquare_y,
@@ -232,7 +248,11 @@ bool Pawn::killRightPawn ( Board* board,
 
     delete rightEnemySquare;
     rightEnemySquare = piece;
-    piece->markAsMoved();
+    rightEnemySquare->markAsMoved();
+    rightEnemySquare->setPieceCoordinates( PieceCoordinates ( rightEnemySquare_y,
+                                'A' + rightEnemySquare_x ) );
+    i2 = rightEnemySquare_y;
+    j2 = rightEnemySquare_x;
     // We cant use 'this' here because of its constness (rvalue).
     // Piece is a reference to pointer.
     piece = nullptr;
@@ -325,8 +345,16 @@ bool Pawn::movePawnForward ( Board* board,
     piece->setAsMadeLongMove( isLongMove );
 
     forwardSquare2 = piece;
-    piece->markAsMoved();
+    assert( forwardSquare2 == piece );
+
+    forwardSquare2->markAsMoved();
+    forwardSquare2->setPieceCoordinates( PieceCoordinates ( forwardSquare_y,
+                               'A' + j ) );
+    i2 = forwardSquare_y;
+    j2 = j;
+
     piece = nullptr;
+    assert( forwardSquare2 != piece );
 
     // Save last move data: piece type and coordinates.
     board->cacheLastMovedPiece( forwardSquare2->getPieceType(),
@@ -355,6 +383,11 @@ bool Pawn::move( Board* board,
                  int32_t& j2,
                  bool& isKingUnderAttack ){
 
+  static std::random_device rd; // Seed. Should be either static or external.
+  std::mt19937 gen( rd() );
+  std::uniform_int_distribution<> dis( 1, BoardGlobals::getLongMoveStep() );
+  const int32_t MOVE = static_cast<int32_t>( dis( gen ) );
+
   if( killLeftPawn ( board, player, piece, i, j, i2, j2, isKingUnderAttack ) )
     return true;
   else if( killRightPawn ( board, player, piece, i, j, i2, j2, isKingUnderAttack ) )
@@ -362,7 +395,7 @@ bool Pawn::move( Board* board,
   else if( killOpponentPawnAfterLongMove( board, player, piece, i, j, i2, j2, isKingUnderAttack ) )
     return true;
   else if( movePawnForward( board, player, piece, i, j, i2, j2,
-                            rand() % BoardGlobals::getLongMoveStep() + 1,
+                            MOVE,
                             isKingUnderAttack ) )
     return true;
   else

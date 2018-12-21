@@ -415,7 +415,11 @@ public:
   }
 
   //!< Non-V.F. - all pieces use such functionality 'as is'.
-  void setPieceCoordinates( const PieceCoordinates& p );
+  void setPieceCoordinates( const PieceCoordinates& p ){
+
+    pcoords_ = p;
+  }
+
   void setPieceType ( const PieceType& pt );
   void setPieceColor( const PieceColor& pc );
 

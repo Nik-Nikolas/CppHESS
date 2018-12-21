@@ -5,36 +5,28 @@
 #include "Piece.h"
 #include "C++HESS.h"
 
+
+
+
 void printPiece( const PieceType& PT,  const PieceColor PC ){
 
-  HANDLE cons = GetStdHandle(STD_OUTPUT_HANDLE);
+  HANDLE cons = GetStdHandle( STD_OUTPUT_HANDLE );
   const int BUFF_SIZE = 17;
   wchar_t p[BUFF_SIZE];
   memset(p,'\0',BUFF_SIZE);
   DWORD n;
 
-  if( PieceColor::WHITE == PC )
-    switch( PT ){
-      case PieceType::PAWN   : wcscpy (p, L"\u2659"); break;
-      case PieceType::KNIGHT : wcscpy (p, L"\u2658"); break;
-      case PieceType::BISHOP : wcscpy (p, L"\u2657"); break;
-      case PieceType::ROOK   : wcscpy (p, L"\u2656"); break;
-      case PieceType::QUEEN  : wcscpy (p, L"\u2655"); break;
-      case PieceType::KING   : wcscpy (p, L"\u2654"); break;
-      default                : wcscpy (p, L"?"); break;
-    }
-  else
-    switch( PT ){
-      case PieceType::PAWN   : wcscpy (p, L"\u265F"); break;
-      case PieceType::KNIGHT : wcscpy (p, L"\u265E"); break;
-      case PieceType::BISHOP : wcscpy (p, L"\u265D"); break;
-      case PieceType::ROOK   : wcscpy (p, L"\u265C"); break;
-      case PieceType::QUEEN  : wcscpy (p, L"\u265B"); break;
-      case PieceType::KING   : wcscpy (p, L"\u265A"); break;
-      default                : wcscpy (p, L"?"); break;
-    }
+  switch( PT ){
+    case PieceType::PAWN   : PieceColor::WHITE == PC ? wcscpy (p, L"\u2659") : wcscpy (p, L"\u265F") ; break;
+    case PieceType::KNIGHT : PieceColor::WHITE == PC ? wcscpy (p, L"\u2658") : wcscpy (p, L"\u265E"); break;
+    case PieceType::BISHOP : PieceColor::WHITE == PC ? wcscpy (p, L"\u2657") : wcscpy (p, L"\u265D"); break;
+    case PieceType::ROOK   : PieceColor::WHITE == PC ? wcscpy (p, L"\u2656") : wcscpy (p, L"\u265C"); break;
+    case PieceType::QUEEN  : PieceColor::WHITE == PC ? wcscpy (p, L"\u2655") : wcscpy (p, L"\u265B"); break;
+    case PieceType::KING   : PieceColor::WHITE == PC ? wcscpy (p, L"\u2654") : wcscpy (p, L"\u265A"); break;
+    default                : wcscpy (p, L"?"); break;
+  }
 
-  WriteConsoleW(cons, p, wcslen(p), &n, NULL );
+  WriteConsoleW( cons, p, wcslen( p ), &n, NULL );
 }
 
 
@@ -75,14 +67,13 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
           SetColor( currentPieceColor, ConsoleColor::GREEN );
         }
 
-        // Uncomment this line if you don't use UTF-8 mono wide font in console.
-        // std::cout << piece;
-
-        // Uncomment this for UTF-16 CHARS
-        // You need to install any UTF-8 mono wide font for console.
-        printPiece( piece->getPieceType() );
+        if ( BoardGlobals::getGlyphMode() == true )
+          printPiece( piece->getPieceType() ); // UTF-8 Glyph.
+        else
+          std::cout << piece; // Plain ASCII Text.
 
         std::cout << " ";
+
       }
       else{
         std::cout << "  ";
@@ -100,7 +91,8 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
   SetColor( ConsoleColor::WHITE, ConsoleColor::BLACK );
 
   //std::cout << "\n";
-  for( auto k = 0; k < BoardGlobals::getSize(); ++k ){
+  const int32_t  BS = BoardGlobals::getSize();
+  for( auto k = 0; k < BS; ++k ){
     if( k < ::LATIN_ALPHABET_SIZE )
         std::cout << static_cast<char>( 'A' + k ) << " ";
     else
@@ -116,8 +108,6 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
 //! \param cycles Cycles amt
 //! \return void
 void delay(){
-
-  std::cout << ". (" << BoardGlobals::getDelay() << " ms.)";
 
   Sleep( BoardGlobals::getDelay() );
 }

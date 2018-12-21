@@ -8,8 +8,6 @@
 
 void WinConsole::setFont( const int32_t font ){
 
-  return;
-
   static HMODULE hmod = GetModuleHandleA( "KERNEL32.DLL" );
   typedef BOOL ( WINAPI* SETCONSOLEFONT )( HANDLE, DWORD );
   static SETCONSOLEFONT SetConsoleFont =
@@ -17,7 +15,7 @@ void WinConsole::setFont( const int32_t font ){
 
   // console font (2, 6, 9-seems good) scale
   SetConsoleFont( GetStdHandle( STD_OUTPUT_HANDLE ), font );
-  system( "mode con cols=450 lines=400" ); //console dimensions
+  system( "mode con cols=600 lines=400" ); //console dimensions
 }
 
 
@@ -49,7 +47,7 @@ void WinConsole::controlKeyboard( Board& board,
 
     if( 122 == keyCode && BoardGlobals::getSize() > STEP ){ // 'z'
 
-      BoardGlobals::setSize( BoardGlobals::getSize() - STEP );
+      BoardGlobals::setSize( BoardGlobals::getSize() / 2 );
       BoardGlobals::setLongMoveStep( BoardGlobals::getSize() / 2 );
       board.resetLastMovedPiece();
 
@@ -60,7 +58,7 @@ void WinConsole::controlKeyboard( Board& board,
 
     }
     else if( 120 == keyCode ){ // 'x'
-      BoardGlobals::setSize( BoardGlobals::getSize() + STEP );
+      BoardGlobals::setSize( BoardGlobals::getSize() * 2 );
       BoardGlobals::setLongMoveStep( BoardGlobals::getSize() / 2 );
       board.resetLastMovedPiece();
 
@@ -69,9 +67,9 @@ void WinConsole::controlKeyboard( Board& board,
       for( auto i = 0; i < BoardGlobals::getSize(); ++i )
         board.changeBoard()[i].resize( BoardGlobals::getSize() );
 
-      for( auto i = BoardGlobals::getSize() - STEP; i < BoardGlobals::getSize(); ++i )
-        for( auto j = BoardGlobals::getSize() - STEP; j < BoardGlobals::getSize(); ++j )
-          board.changeBoard()[i][j] = nullptr;
+      //for( auto i = BoardGlobals::getSize() - STEP; i < BoardGlobals::getSize(); ++i )
+      //  for( auto j = BoardGlobals::getSize() - STEP; j < BoardGlobals::getSize(); ++j )
+      //    board.changeBoard()[i][j] = nullptr;
     }
     else if( 110 == keyCode ){ // 'n'
       board.clearBoard();
@@ -89,20 +87,29 @@ void WinConsole::controlKeyboard( Board& board,
     }
     else if( 99 == keyCode ) // 'c'
       BoardGlobals::setDelay( BoardGlobals::getDelay() / 2 );
-    else if( 27 == keyCode )
-      exit( 0 );
     else if( 32 == keyCode ){ // ' '
       std::cout << " PAUSE MODE - PRINT ANY KEY TO PROCEED:";
       _getch();
     }
+    else if( 97 == keyCode ) // 'a'
+      BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() / 2 );
+    else if( 115 == keyCode ) // 's'
+      BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() * 2 );
+    else if( 116 == keyCode )
+      BoardGlobals::setGlyphMode( !BoardGlobals::getGlyphMode() );
+    else if( 27 == keyCode )
+      exit( 0 );
 
     if ( 0 > BoardGlobals::getDelay() )
       BoardGlobals::setDelay( 0 );
 
-    setFont( BoardGlobals::getSize() > 40 ? 2 : 30 );
+    if ( 0 >= BoardGlobals::getFramesStep() )
+      BoardGlobals::setFramesStep( 1 );
+
+    //setFont( BoardGlobals::getSize() > 40 ? 2 : 9 );
   }
 
-  while( _kbhit() )
+  while( _kbhit() ) // Clear cin buff.
     _getch();
 }
 

@@ -7,13 +7,13 @@
 
 void Game::startNewGame( Board& board, WinConsole& console ){
 
-  console.setFont( BoardGlobals::getSize() > 40 ? 2 : 30 );
+  //console.setFont( BoardGlobals::getSize() > 40 ? 2 : 9 );
 
   // OK as long as the Game object isn't const.
-  Game* pgame = const_cast<Game*>(this);
+  Game* game = const_cast<Game*>(this);
 
-  Player player1( "Jeeves",  &board, pgame, headsOrTailsColor() );
-  Player player2( "Wooster", &board, pgame, player1 );
+  Player player1( "Jeeves",  &board, game, headsOrTailsColor() );
+  Player player2( "Wooster", &board, game, player1 );
   Player* white = player1.getColor() == PieceColor::WHITE ? &player1 : &player2;
   Player* black = player2.getColor() == PieceColor::BLACK ? &player2 : &player1;
 
@@ -26,37 +26,68 @@ void Game::startNewGame( Board& board, WinConsole& console ){
                 "6 Bishop VS Knight\n"
                 "7 Bishop VS Rook\n"
                 "8 Random Battle\n"
-                "'-' '+' to change speed,\n"
-                "'n'     to start new game,\n"
-                "'z' 'x' to change board size";
+                "'c' 'v' to change speed;   'a' 's' to change frame\n"
+                "'n'     to start new game; 'z' 'x' to change board size\n"
+                "'t'     to switch graphic mode to glyph / text";
 
   char ch = _getch();
-
   player1.arrangePieces( ch - 48 );
 
+  int32_t i, j, i2, j2;
+  i = j = i2 = j2 = -1;
+  bool frameIsShown = false;
   while( isRunning() ){
 
-    if( !white->makeRandomTestMove() ){
+    frameIsShown =
+    !static_cast<bool>( game->currentTurn() % BoardGlobals::getFramesStep() );
+
+    if( !white->makeRandomTestMove( i, j, i2, j2 ) ){
+
+      console.showBoard( board );
+
       std::cout << "\n" << white->getName()
       << " have no pieces or no moves."
-         " Press ANY KEY to let opponent move instead.";
-      _getch() ;
+         " Press ANY KEY to START NEW GAME.";
+      _getch();
+
+      board.clearBoard();
+      board.resetLastMovedPiece();
+      board.resizeBoard();
+
+      game->reset();
+      game->startNewGame( board, console );
+    }
+    else if( frameIsShown ){ // Visualize board and data each 1 of m frames
+
+      console.showBoard( board );
+      console.showPlayerData( board, *white );
     }
 
-    console.showBoard( board );
-    console.showPlayerData( board, *white );
-    console.controlKeyboard( board, player1, *pgame, console );
+    console.controlKeyboard( board, player1, *game, console );
 
-    if( !black->makeRandomTestMove() ){
+    if( !black->makeRandomTestMove( i, j, i2, j2 ) ){
+
+      console.showBoard( board );
+
       std::cout << "\n" << black->getName()
-      << " have no pieces or no moves. "
-         "Press ANY KEY to let opponent move instead.";
-      _getch() ;
+      << " have no pieces or no moves."
+         " Press ANY KEY to START NEW GAME.";
+      _getch();
+
+      board.clearBoard();
+      board.resetLastMovedPiece();
+      board.resizeBoard();
+
+      game->reset();
+      game->startNewGame( board, console );
+    }
+    else if( frameIsShown ){ // Visualize board and data each 1 of m frames
+
+      console.showBoard( board );
+      console.showPlayerData( board, *black );
     }
 
-    console.showBoard( board );
-    console.showPlayerData( board, *black );
-    console.controlKeyboard( board, player1, *pgame, console );
+    console.controlKeyboard( board, player1, *game, console );
 
     nextTurn();
   }

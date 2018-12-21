@@ -38,22 +38,30 @@ public:
 
     LastMovedPiece();
 
-     for( auto i = 0; i < board_.size(); ++i )
-      for( auto j = 0; j <  board_[i].size(); ++j ){
+
+    const int32_t SIZE = board_.size();
+     for( auto i = 0; i < SIZE; ++i ){
+
+      const int32_t SIZE2 = board_[i].size();
+
+      for( auto j = 0; j <  SIZE2; ++j ){
         delete board_[i][j];
         board_[i][j] = nullptr;
       }
+     }
   }
 
   void resizeBoard(){
 
-    board_.resize( BoardGlobals::getSize() );
-    for( auto i = 0; i < BoardGlobals::getSize(); ++i )
-      board_[i].resize( BoardGlobals::getSize() );
+    const int32_t SIZE = BoardGlobals::getSize();
 
-    //board_.shrink_to_fit();
-    //for( auto i = 0; i < BoardGlobals::getSize(); ++i )
-    //  board_[i].shrink_to_fit();
+    board_.resize( SIZE );
+    for( auto i = 0; i < SIZE; ++i )
+      board_[i].resize( SIZE );
+
+    board_.shrink_to_fit();
+    for( auto i = 0; i < SIZE; ++i )
+      board_[i].shrink_to_fit();
   }
 
   void setPiece ( const Piece* p, const int32_t x, const int32_t y ){

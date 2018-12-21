@@ -21,8 +21,8 @@ public:
           Game* game,
           const Player& player );
 
-  bool makeMove();
-  bool makeRandomTestMove(); //!< EXPERIMENTAL
+  bool makeMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
+  bool makeRandomTestMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 ); //!< EXPERIMENTAL
 
   void move( const PieceCoordinates& start,
              const PieceCoordinates& finish );

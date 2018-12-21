@@ -15,13 +15,15 @@ void Piece::replacePiece( Board* board,
   // Old piece pointer now points to new piece.
   delete oldPiece;
   oldPiece = newPiece;
-  newPiece->markAsMoved();
+  oldPiece->markAsMoved();
+  oldPiece->setPieceCoordinates( PieceCoordinates ( i,
+                                'A' + j ) );
 
   // Save last move data: piece type, color, turn and coordinates.
-  board->cacheLastMovedPiece( newPiece->getPieceType(),
+  board->cacheLastMovedPiece( oldPiece->getPieceType(),
                               PieceCoordinates ( i,
                               'A' + j ),
-                              newPiece->getPieceColor(),
+                              oldPiece->getPieceColor(),
                               player->getGame()->currentTurn() );
 
   newPiece = nullptr;
@@ -81,7 +83,9 @@ bool Piece::movePiece( Board* board,
   else {
     // Move piece.
     boardSquare = piece;
-    piece->markAsMoved();
+    boardSquare->markAsMoved();
+    boardSquare->setPieceCoordinates( PieceCoordinates ( i,
+                                'A' + j ) );
     piece = nullptr;
 
     // Save last move data: piece type, color, turn and coordinates.
@@ -684,7 +688,8 @@ bool Piece::killForwardSquare( Board* board,
   int32_t forwardSquare_x = j;
   int32_t forwardSquare_y = i;
 
-  if( piece->getPieceColor() == PieceColor::WHITE && i < BoardGlobals::getSize() - 1){ // WHITES.
+  if( piece->getPieceColor() == PieceColor::WHITE &&
+      i < BoardGlobals::getSize() - 1){ // WHITES.
 
     ++forwardSquare_y;
 
@@ -720,7 +725,8 @@ bool Piece::moveBackwardSquare( Board* board,
   int32_t backwardSquare_x = j;
   int32_t backwardSquare_y = i;
 
-  if( piece->getPieceColor() == PieceColor::BLACK && i < BoardGlobals::getSize() - 1){ // BLACKS.
+  if( piece->getPieceColor() == PieceColor::BLACK &&
+      i < BoardGlobals::getSize() - 1){ // BLACKS.
 
     ++backwardSquare_y;
 
@@ -731,7 +737,8 @@ bool Piece::moveBackwardSquare( Board* board,
 
   }
 
-  if ( piece->movePiece( board, player, piece, backwardSquare_y, backwardSquare_x ) ){
+  if ( piece->movePiece( board, player, piece, backwardSquare_y,
+                         backwardSquare_x ) ){
 
     // Coords of new piece square.
     i2 = backwardSquare_y;
@@ -755,7 +762,8 @@ bool Piece::killBackwardSquare( Board* board,
   int32_t backwardSquare_x = j;
   int32_t backwardSquare_y = i;
 
-  if( piece->getPieceColor() == PieceColor::BLACK && i < BoardGlobals::getSize() - 1){ // BLACKS.
+  if( piece->getPieceColor() == PieceColor::BLACK &&
+      i < BoardGlobals::getSize() - 1){ // BLACKS.
 
     ++backwardSquare_y;
 
@@ -942,11 +950,14 @@ bool Piece::movePerpendicularSquare( Board* board,
                                      int32_t& j2,
                                      bool& isKingUnderAttack ){
 
-  const int32_t PERPENDICULAR_DIRECTIONS_MAX_AMT = 4;
-  const int32_t MOVE = rand() % PERPENDICULAR_DIRECTIONS_MAX_AMT;
+  static std::random_device rd; // Seed. Should be either static or external.
+  std::mt19937 gen( rd() );
+  std::uniform_int_distribution<> dis( 0, 3 ); // give "true" 1/2 of the time
+  const int32_t MOVE = static_cast<int32_t>( dis( gen ) );
+
   const int32_t LENGTH = 1;
 
-  if ( 0 == MOVE )
+  if ( 0 == MOVE ){
     if( moveForwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveRightLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
@@ -955,8 +966,8 @@ bool Piece::movePerpendicularSquare( Board* board,
       return true;
     else if( moveLeftLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
       return true;
-
-  if ( 1 == MOVE )
+  }
+  else if ( 1 == MOVE ){
     if( moveRightLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
       return true;
     else if( moveBackwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
@@ -965,8 +976,8 @@ bool Piece::movePerpendicularSquare( Board* board,
       return true;
     else if( moveForwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
       return true;
-
-  if ( 2 == MOVE )
+  }
+  else if ( 2 == MOVE ){
     if( moveBackwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
       return true;
     else if( moveLeftLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
@@ -975,8 +986,8 @@ bool Piece::movePerpendicularSquare( Board* board,
       return true;
     else if( moveRightLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
       return true;
-
-  if ( 3 == MOVE )
+  }
+  else if ( 3 == MOVE ){
     if( moveLeftLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
       return true;
     else if( moveForwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
@@ -985,6 +996,7 @@ bool Piece::movePerpendicularSquare( Board* board,
       return true;
     else if( moveBackwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack , LENGTH ) )
       return true;
+  }
 
   return false; // No more moves available. Pass next move to OPPONENT piece.
 }
@@ -1000,11 +1012,15 @@ bool Piece::movePerpendicularLine( Board* board,
                                int32_t& j2,
                                bool& isKingUnderAttack ){
 
-  const int32_t PERPENDICULAR_DIRECTIONS_MAX_AMT = 4;
-  const int32_t MOVE = rand() % PERPENDICULAR_DIRECTIONS_MAX_AMT;
-  const int32_t LENGTH = rand() % std::min( BoardGlobals::getSize(), BoardGlobals::getSize() ) + 1;
+  static std::random_device rd; // Seed. Should be either static or external.
+  std::mt19937 gen( rd() );
+  std::uniform_int_distribution<> dis( 1, BoardGlobals::getSize() );
+  const int32_t LENGTH = static_cast<int32_t>( dis( gen ) );
 
-  if ( 0 == MOVE )
+  std::uniform_int_distribution<> dis2( 0, 3 );
+  const int32_t MOVE = static_cast<int32_t>( dis2( gen ) );
+
+  if ( 0 == MOVE ){
     if( moveForwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveRightLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1013,8 +1029,8 @@ bool Piece::movePerpendicularLine( Board* board,
       return true;
     else if( moveLeftLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
-
-  if ( 1 == MOVE )
+  }
+  else if ( 1 == MOVE ){
     if( moveRightLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveBackwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1023,8 +1039,8 @@ bool Piece::movePerpendicularLine( Board* board,
       return true;
     else if( moveForwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
-
-  if ( 2 == MOVE )
+  }
+  else if ( 2 == MOVE ){
     if( moveBackwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveLeftLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1033,8 +1049,8 @@ bool Piece::movePerpendicularLine( Board* board,
       return true;
     else if( moveRightLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
-
-  if ( 3 == MOVE )
+  }
+  else if ( 3 == MOVE ){
     if( moveLeftLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveForwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1043,6 +1059,7 @@ bool Piece::movePerpendicularLine( Board* board,
       return true;
     else if( moveBackwardLine2( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
+  }
 
   return false; // No more moves available. Pass next move to OPPONENT piece.
 }
@@ -1057,12 +1074,14 @@ bool Piece::moveDiagonalSquare( Board* board,
                                 int32_t& i2,
                                 int32_t& j2,
                                 bool& isKingUnderAttack ){
+  static std::random_device rd; // Seed. Should be either static or external.
+  std::mt19937 gen( rd() );
+  std::uniform_int_distribution<> dis( 0, 3 ); // give "true" 1/2 of the time
+  const int32_t MOVE = static_cast<int32_t>( dis( gen ) );
 
-  const int32_t DIAGONAL_DIRECTIONS_MAX_AMT = 4;
-  const int32_t MOVE = rand() % DIAGONAL_DIRECTIONS_MAX_AMT;
   const int32_t LENGTH = 1;
 
-  if ( 0 == MOVE )
+  if ( 0 == MOVE ){
     if( moveDiagonalForwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveDiagonalForwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1071,8 +1090,8 @@ bool Piece::moveDiagonalSquare( Board* board,
       return true;
     else if( moveDiagonalBackwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
-
-  if ( 1 == MOVE )
+  }
+  else if ( 1 == MOVE ){
     if( moveDiagonalForwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveDiagonalBackwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1081,8 +1100,8 @@ bool Piece::moveDiagonalSquare( Board* board,
       return true;
     else if( moveDiagonalForwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
-
-  if ( 2 == MOVE )
+  }
+  else if ( 2 == MOVE ){
     if( moveDiagonalBackwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveDiagonalBackwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1091,8 +1110,8 @@ bool Piece::moveDiagonalSquare( Board* board,
       return true;
     else if( moveDiagonalForwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
-
-  if ( 3 == MOVE )
+  }
+  else if ( 3 == MOVE ){
     if( moveDiagonalBackwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveDiagonalForwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1101,6 +1120,7 @@ bool Piece::moveDiagonalSquare( Board* board,
       return true;
     else if( moveDiagonalBackwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
+  }
 
   return false; // No more moves available. Pass next move to OPPONENT piece.
 }
@@ -1116,11 +1136,15 @@ bool Piece::moveDiagonalLine( Board* board,
                               int32_t& j2,
                               bool& isKingUnderAttack ){
 
-  const int32_t DIAGONAL_DIRECTIONS_MAX_AMT = 4;
-  const int32_t MOVE = rand() % DIAGONAL_DIRECTIONS_MAX_AMT;
-  const int32_t LENGTH = rand() % std::min( BoardGlobals::getSize(), BoardGlobals::getSize() ) + 1;
+  static std::random_device rd; // Seed. Should be either static or external.
+  std::mt19937 gen( rd() );
+  std::uniform_int_distribution<> dis( 1, BoardGlobals::getSize() );
+  const int32_t LENGTH = static_cast<int32_t>( dis( gen ) );
 
-  if ( 0 == MOVE )
+  std::uniform_int_distribution<> dis2( 0, 3 );
+  const int32_t MOVE = static_cast<int32_t>( dis2( gen ) );
+
+  if ( 0 == MOVE ){
     if( moveDiagonalForwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveDiagonalForwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1129,8 +1153,8 @@ bool Piece::moveDiagonalLine( Board* board,
       return true;
     else if( moveDiagonalBackwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
-
-  if ( 1 == MOVE )
+  }
+  else if ( 1 == MOVE ){
     if( moveDiagonalForwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveDiagonalBackwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1139,8 +1163,8 @@ bool Piece::moveDiagonalLine( Board* board,
       return true;
     else if( moveDiagonalForwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
-
-  if ( 2 == MOVE )
+  }
+  else if ( 2 == MOVE ){
     if( moveDiagonalBackwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveDiagonalBackwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1149,8 +1173,8 @@ bool Piece::moveDiagonalLine( Board* board,
       return true;
     else if( moveDiagonalForwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
-
-  if ( 3 == MOVE )
+  }
+  else if ( 3 == MOVE ){
     if( moveDiagonalBackwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
     else if( moveDiagonalForwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
@@ -1159,6 +1183,7 @@ bool Piece::moveDiagonalLine( Board* board,
       return true;
     else if( moveDiagonalBackwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack, LENGTH ) )
       return true;
+  }
 
   return false; // No more moves available. Pass next move to OPPONENT piece.
 }
@@ -1596,7 +1621,7 @@ bool Piece::moveDiagonalBackwardRightSquare( Board* board,
     return true; // Pass next move to opponent.
   }
   else
-      return false; // If no coordinates were changed or square is busy - treat next piece.
+    return false; // If no coordinates were changed or square is busy - treat next piece.
 }
 
 
@@ -1684,7 +1709,7 @@ bool Piece::moveDiagonalForwardRightSquare( Board* board,
     return true; // Pass next move to opponent.
   }
   else
-      return false; // If no coordinates were changed or square is busy - treat next piece.
+    return false; // If no coordinates were changed or square is busy - treat next piece.
 }
 
 
@@ -1862,7 +1887,7 @@ bool Piece::moveDiagonalForwardLeftLine( Board* board,
   }// BLACKS.
   else if( piece->getPieceColor() == PieceColor::BLACK &&
            i > 0 &&
-           j > 0){
+           j > 0 ){
 
     while( forwardEnemySquare_y > 0 &&
            forwardEnemySquare_x > 0 &&

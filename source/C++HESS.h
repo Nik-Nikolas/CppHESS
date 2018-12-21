@@ -35,6 +35,8 @@
 #include <stack>     // Pieces stack
 #include <algorithm>
 
+#include <random>
+
 #include <ctime>     // rand(), srand() functionality.
 #include <cmath>     // min()
 #include <cassert>
@@ -42,17 +44,22 @@
 #include <conio.h>   // Console / IO / _kbhit() AS dev.test functions.
 #include <windows.h>
 
-#include <random>
-
 class Piece;
 class Player;
 class Board;
 class Game;
 
-static const int32_t START_DELAY    = 100;
-static const int32_t TURNS_MAX      = 1'000'000;  // Typically it takes 50 turns
-                                                  // for classic chess game.
-static const int32_t START_BOARD_SIDE    = 8;
+// Start conditions.
+static const int32_t START_FRAME      = 1;   // Distance between shown turns.
+                                             // E.g. 100 means that first shown
+                                             // turn is 1, next shown one is 101.
+
+static const int32_t START_DELAY      = 100; // Delay between frames.
+static const int32_t START_BOARD_SIDE = 8;
+
+// Common constants.
+static const int32_t TURNS_MAX = 1'000'000'000; // Typically it takes 50 turns
+                                                // for classic chess game.
 static const int32_t LATIN_ALPHABET_SIZE = 26;
 
 enum class PieceColor : int32_t{ NOT_DEFINED = -1,

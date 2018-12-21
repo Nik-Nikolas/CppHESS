@@ -30,8 +30,10 @@ bool Knight::move( Board* board,
   else if( killBackward1Left2( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
     return true;
 
-  const int32_t KNIGHT_MOVES_MAX_AMT = 8;
-  const int32_t MOVE = rand() % KNIGHT_MOVES_MAX_AMT;
+  static std::random_device rd; // Seed. Should be either static or external.
+  std::mt19937 gen( rd() );
+  std::uniform_int_distribution<> dis( 0, 7 ); // give "true" 1/2 of the time
+  const int32_t MOVE = static_cast<int32_t>( dis( gen ) );
 
   if ( 0 == MOVE ){
     if( moveForward2Right1( board, player, piece, i, j, i2, j2, isKingUnderAttack ) )
@@ -292,7 +294,7 @@ bool Knight::moveBackward2Left1( Board* board,
     return true; // Pass next move to opponent.
   }
   else
-      return false; // If no coordinates were changed or Square is busy - treat next piece.
+    return false; // If no coordinates were changed or Square is busy - treat next piece.
 }
 
 

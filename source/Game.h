@@ -36,7 +36,7 @@ public:
       throw GameIsOver();
   }
 
-  bool isRunning(){
+  const bool isRunning() const {
     return isValid_;
   }
 
@@ -51,8 +51,13 @@ public:
   //!< Heads or tails game - who plays white.
   const PieceColor headsOrTailsColor(){
 
-    srand( time( nullptr ) );
-    return rand() % 2 ? PieceColor::WHITE : PieceColor::BLACK;
+    std::random_device rd;
+    std::mt19937 gen( rd() );
+    // give "true" 1/2 of the time
+    // give "false" 1/2 of the time
+    std::bernoulli_distribution d( 0.5 );
+
+    return d(gen) ? PieceColor::WHITE : PieceColor::BLACK;
   }
 
 private:

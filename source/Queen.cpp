@@ -29,10 +29,10 @@ bool Queen::move( Board* board,
     return true;
   else if( killDiagonalBackwardLeftLine( board, player,  piece, i, j, i2, j2, isKingUnderAttack  ) )
     return true;
-  else if( rand() % 2 && movePerpendicularLine( board, player, piece, i, j, i2, j2, isKingUnderAttack ) )
+  else if( movePerpendicularLine( board, player, piece, i, j, i2, j2, isKingUnderAttack ) )
     return true;
   else if( moveDiagonalLine( board, player,  piece, i, j, i2, j2, isKingUnderAttack ) )
     return true;
   else
     return false; // No more moves available. Pass next move to OPPONENT piece.
-};
+}

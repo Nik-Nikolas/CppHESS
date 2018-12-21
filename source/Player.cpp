@@ -24,24 +24,23 @@ Player::Player( const std::string& name,
                                          game_ ( game ),
                                          color_( player.getColor() ==
                                          PieceColor::WHITE ? PieceColor::BLACK :
-                                                            PieceColor::WHITE ){
+                                                             PieceColor::WHITE ){
   setMyTurnPriority ();
 }
 
 
 
-bool Player::makeMove(){
+bool Player::makeMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 ){
 
-  for(   auto i = 0; i < BoardGlobals::getSize(); ++i ){
-    for( auto j = 0; j < BoardGlobals::getSize();  ++j ){
+  const int32_t BSIZE = BoardGlobals::getSize();
+  bool isKingUnderAttack = false;
+
+  for(    i = 0; i < BSIZE;  ++i ){
+    for(  j = 0; j < BSIZE;  ++j ){
       Piece*&  currentSquarePiece = board_->changeBoard()[i][j]; // Ref to pointer
       // If piece exists and player color corresponds to piece color.
       if( currentSquarePiece &&
           currentSquarePiece->getPieceColor() == this->getColor() ){
-
-        bool isKingUnderAttack = false;
-        int32_t i2 = -1;
-        int32_t j2 = -1;
 
         bool isMoved = currentSquarePiece->move( board_,
                                                  this,
@@ -51,12 +50,11 @@ bool Player::makeMove(){
                                                  i2,
                                                  j2,
                                                  isKingUnderAttack );
-        if( isMoved ) {
+        if( isMoved )
           return true; // Player moved successfully.
-        }
+        else
+          continue; // Pass move to next piece.
       }
-      // Cycle continues if current square has no correspondent color piece
-      // or current piece has no moves.
     }
   }
 
@@ -65,49 +63,107 @@ bool Player::makeMove(){
 
 
 
-bool Player::makeRandomTestMove(){
+bool Player::makeRandomTestMove( int32_t& i, int32_t& j,
+                                 int32_t& i2, int32_t& j2 ){
 
-  int32_t i = 0;
-  int32_t j = 0;
-  const int32_t MAX_TURNS = BoardGlobals::getSize() * BoardGlobals::getSize();
-  int32_t k = 0;
+  static std::random_device rd; // Seed. Should be either static or external.
+  std::mt19937 gen( rd() );
 
-  while( true ){
+  bool isKingUnderAttack = false;
+  const int32_t BSIZE = BoardGlobals::getSize();
 
-    i = rand() % BoardGlobals::getSize();
-    j = rand() % BoardGlobals::getSize();
+  std::vector<std::pair<int32_t, int32_t> > vp;
+  vp.reserve( BSIZE * BSIZE / 4 );
 
-    Piece*&  currentSquarePiece = board_->changeBoard()[i][j]; // Ref to pointer
+  PieceColor currentPlayerColor = this->getColor();
+
+  for(   auto i0 = 0; i0 < BSIZE; ++i0 )
+    for( auto j0 = 0; j0 < BSIZE; ++j0 ){
+
+      Piece*& currentSquarePiece = board_->changeBoard()[i0][j0];
+
+      if( currentSquarePiece &&
+          currentSquarePiece->getPieceColor() == currentPlayerColor ){
+
+        vp.push_back( std::pair<int32_t, int32_t>( i0, j0 ) );
+      }
+    }
+
+  std::shuffle( vp.begin(), vp.end(), gen ); // Shuffle coordinates.
+
+  const int32_t VSIZE = vp.size();
+  for( auto k = 0; k < VSIZE; ++k ){
+
+    i = vp[k].first;
+    j = vp[k].second;
+
+    Piece*& thisPiece = board_->changeBoard()[i][j];
+
+    assert( thisPiece != nullptr );
+
+    if ( thisPiece->move( board_,
+                          this,
+                          thisPiece,
+                          i,
+                          j,
+                          i2,
+                          j2,
+                          isKingUnderAttack ) ){
+      assert( i != i2 || j != j2 ); // Piece moved - coords have been changed.
+
+      return true; // Player moved successfully.
+    }
+    else
+      continue;
+  }
+
+/* Prev. code
+
+  std::vector<int32_t> iv; // i coordinates.
+  std::vector<int32_t> jv; // j coordinates.
+
+  iv.reserve( BSIZE );
+  jv.reserve( BSIZE );
+
+  for( auto k = 0; k < BSIZE; ++k ){
+    iv.push_back( k );
+    jv.push_back( k );
+  }
+
+  std::shuffle( iv.begin(), iv.end(), gen ); // Shuffle i coordinates.
+  std::shuffle( jv.begin(), jv.end(), gen ); // Shuffle i coordinates.
+
+  for(   auto i0 = 0; i0 < BSIZE; ++i0 ){
+
+    i = iv[i0]; // y from shuffled y space.
+
+    for( auto j0 = 0; j0 < BSIZE; ++j0 ){
+
+      j = jv[j0]; // x from shuffled x space.
+
+      Piece*&  currentSquarePiece = board_->changeBoard()[i][j]; // Ref to pointer
       // If piece exists and player color corresponds to piece color.
       if( currentSquarePiece &&
           currentSquarePiece->getPieceColor() == this->getColor() ){
 
-      bool isKingUnderAttack = false;
-      int32_t i2 = -1;
-      int32_t j2 = -1;
+        if ( currentSquarePiece->move( board_,
+                                       this,
+                                       currentSquarePiece,
+                                       i,
+                                       j,
+                                       i2,
+                                       j2,
+                                       isKingUnderAttack ) ){
+          assert( i != i2 || j != j2 ); // Piece moved - coords have been changed.
 
-      bool isMoved = currentSquarePiece->move( board_,
-                                               this,
-                                               currentSquarePiece,
-                                               i,
-                                               j,
-                                               i2,
-                                               j2,
-                                               isKingUnderAttack );
-      if( isMoved ) {
-        return true; // Player moved successfully.
+          return true; // Player moved successfully.
+        }
+        else
+          continue; // Pass move to next piece.
       }
-    }
-
-    ++k;
-    if ( MAX_TURNS == k ){
-      std::cout << "\nPlayer " << name_ << " had no random moves for a "
-      "reasonable time. Turn: " <<
-      static_cast<int32_t>( game_->currentTurn() ) + 1 << "\n";
-      return true; // No random moves for a reasonable time;
-    }
+    } // Treat next piece if current piece can't move.
   }
-
+*/
   return false; // Player has no moves or pieces here.
 }
 
@@ -134,14 +190,16 @@ void Player::showData() const {
 
   printPiece( board_->getLastMovedPiece().lastMovedPieceType_,
               PieceColor::WHITE );
-
   if( x < ::LATIN_ALPHABET_SIZE )
     std::cout << static_cast<char>( 'A' + x - 1 );
   else
     std::cout << x << ",";
   std::cout << board_->getLastMovedPiece().lastMovedPieceCoordinates_.y_ + 1 <<
-  ". Turn: " <<
+  " Turn: " <<
   static_cast<int32_t>( game_->currentTurn() ) + 1;
+  std::cout << " Frames: " << BoardGlobals::getFramesStep();
+  std::cout <<"/";
+  std::cout << BoardGlobals::getDelay() << " ms.";
 
   delay();
 }
@@ -270,7 +328,7 @@ void Player::knightVsRook(){
 
 void Player::classicBattle(){
 
-/* TEST 0-0 and 0-0-0
+/*// TEST 0-0 and 0-0-0
   for(   auto j = 0; j < BoardGlobals::getSize(); ++j )
     for( auto k = 1; k < 2; ++k ){
       Pawn* p = new Pawn( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
@@ -300,9 +358,8 @@ void Player::classicBattle(){
   board_->setPiece( k0b0, BoardGlobals::getSize() / 2 - 1, BoardGlobals::getSize() - 1 );
 
 return;
+
 */
-
-
 
   // WHITES
   for(   auto j = 0; j < BoardGlobals::getSize(); ++j )
@@ -326,10 +383,12 @@ return;
   Rook* r2 = new Rook( PieceCoordinates( 0, 'H' ), PieceColor::WHITE );
   board_->setPiece( r2, BoardGlobals::getSize() - 1, 0 );
 
-  Queen* q = new Queen( PieceCoordinates( 0, 'D' ), PieceColor::WHITE);
+  // Letters - left to right! H G F E D C B A
+  Queen* q = new Queen( PieceCoordinates( 0, 'E' ), PieceColor::WHITE);
   board_->setPiece( q, BoardGlobals::getSize() / 2, 0 );
 
-  King* k0 = new King( PieceCoordinates( 0, 'E' ), PieceColor::WHITE );
+  // Letters - left to right! H G F E D C B A
+  King* k0 = new King( PieceCoordinates( 0, 'D' ), PieceColor::WHITE );
   board_->setPiece( k0, BoardGlobals::getSize() / 2 - 1, 0 );
 
   // BLACKS
@@ -354,10 +413,10 @@ return;
   Rook* r2b = new Rook( PieceCoordinates( BoardGlobals::getSize() - 1, 'H' ), PieceColor::BLACK );
   board_->setPiece( r2b, BoardGlobals::getSize() - 1, BoardGlobals::getSize() - 1 );
 
-  Queen* qb = new Queen( PieceCoordinates( BoardGlobals::getSize() - 1, 'D' ), PieceColor::BLACK);
+  Queen* qb = new Queen( PieceCoordinates( BoardGlobals::getSize() - 1, 'E' ), PieceColor::BLACK);
   board_->setPiece( qb, BoardGlobals::getSize() / 2, BoardGlobals::getSize() - 1 );
 
-  King* k0b = new King( PieceCoordinates( BoardGlobals::getSize() - 1, 'E' ), PieceColor::BLACK );
+  King* k0b = new King( PieceCoordinates( BoardGlobals::getSize() - 1, 'D' ), PieceColor::BLACK );
   board_->setPiece( k0b, BoardGlobals::getSize() / 2 - 1, BoardGlobals::getSize() - 1 );
 }
 
@@ -398,11 +457,15 @@ void Player::bishopVsPawn(){
 
 void Player::randomBattle(){
 
+  static std::random_device rd; // Seed. Should be either static or external.
+  std::mt19937 gen( rd() );
+  std::uniform_int_distribution<> dis( 0, 5 );
+
   for(   auto j = 0; j < BoardGlobals::getSize(); ++j )
     for( auto k = 0; k < BoardGlobals::getSize() / 4; ++k ){
       Piece* p;
-      const int32_t PIECE = rand() % 6; // 6 types of pieces
-      switch( PIECE ){
+      int32_t var = static_cast<int32_t>( dis( gen ) );
+      switch( var ){
         default :
         case 0 : p = new Pawn( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
           break;
@@ -424,8 +487,8 @@ void Player::randomBattle(){
   for(   auto j = 0; j < BoardGlobals::getSize(); ++j )
     for( auto k = 0; k < BoardGlobals::getSize() / 4; ++k ){
       Piece* p;
-      const int32_t PIECE = rand() % 6;
-      switch( PIECE ){
+      int32_t var = static_cast<int32_t>( dis( gen ) );
+      switch( var ){
         default :
         case 0 : p = new Pawn( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
           break;
