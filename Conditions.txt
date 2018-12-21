@@ -1,6 +1,23 @@
-It is necessary to install any UTF-8 chess pictograms compatible mono wide font
-(e.g. DejaVu Sans Mono) and assign it as a console font (via registry editor).
+To view chess pieces pictograms you need to install any UTF-8 chess pictograms 
+compatible mono wide font (e.g. DejaVu Sans Mono) and assign it as a console font
+(via registry editor).
+
 After that - right click on the console window and choose Properties. 
+
 From there you can change the font to see chess pieces pictograms.
 
-Otherwise, you may use numbers instead pieces pictograms.
+
+Otherwise, you may use numbers instead pieces pictograms via menu.
+
+
+1 Classic game
+2 Knight VS Rook
+3 Queens Battle
+4 Pawns Battle
+5 Bishop VS Pawn
+6 Bishop VS Knight
+7 Bishop VS Rook
+8 Random Battle
+'c' 'v' to change speed;   'a' 's' to change frame
+'n'     to start new game; 'z' 'x' to change board size
+'t'     to switch graphic mode to glyph / text
