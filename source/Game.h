@@ -51,8 +51,8 @@ public:
   //!< Heads or tails game - who plays white.
   const PieceColor headsOrTailsColor(){
 
-    std::random_device rd;
-    std::mt19937 gen( rd() );
+    std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+    std::mt19937 gen( (*rd)() );
     // give "true" 1/2 of the time
     // give "false" 1/2 of the time
     std::bernoulli_distribution d( 0.5 );

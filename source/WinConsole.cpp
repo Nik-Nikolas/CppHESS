@@ -75,6 +75,7 @@ void WinConsole::controlKeyboard( Board& board,
       board.clearBoard();
       board.resetLastMovedPiece();
       board.resizeBoard();
+      King::resetCounter();
 
       game.reset();
       game.startNewGame( board, console );

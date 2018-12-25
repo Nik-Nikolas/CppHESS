@@ -30,8 +30,9 @@ bool Knight::move( Board* board,
   else if( killBackward1Left2( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
     return true;
 
-  static std::random_device rd; // Seed. Should be either static or external.
-  std::mt19937 gen( rd() );
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( (*rd)() );
+
   std::uniform_int_distribution<> dis( 0, 7 ); // give "true" 1/2 of the time
   const int32_t MOVE = static_cast<int32_t>( dis( gen ) );
 

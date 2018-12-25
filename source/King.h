@@ -16,7 +16,10 @@ public:
   King& operator = ( const King& ) = delete;
   King()                           = delete;
   King( const PieceCoordinates& pcd,
-        const PieceColor& pcl ): Piece( pcd, PieceType::KING, pcl ) {}
+        const PieceColor& pcl ): Piece( pcd, PieceType::KING, pcl ) {
+
+    increaseCounter();
+  }
   ~King() { throw GameIsOver(); }; //!< Kings never die.
 
   virtual bool move ( Board* board,
@@ -48,6 +51,13 @@ public:
                                    const int32_t king_coord_x,
                                    int32_t& rook_coord_x );
 
+  static const int32_t getCounter();
+  static void resetCounter();
+
 private:
+
+  static void increaseCounter();
+
+  static int32_t counter_;
 };
 #endif

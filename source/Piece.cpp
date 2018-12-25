@@ -950,8 +950,9 @@ bool Piece::movePerpendicularSquare( Board* board,
                                      int32_t& j2,
                                      bool& isKingUnderAttack ){
 
-  static std::random_device rd; // Seed. Should be either static or external.
-  std::mt19937 gen( rd() );
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( (*rd)() );
+
   std::uniform_int_distribution<> dis( 0, 3 ); // give "true" 1/2 of the time
   const int32_t MOVE = static_cast<int32_t>( dis( gen ) );
 
@@ -1012,8 +1013,9 @@ bool Piece::movePerpendicularLine( Board* board,
                                int32_t& j2,
                                bool& isKingUnderAttack ){
 
-  static std::random_device rd; // Seed. Should be either static or external.
-  std::mt19937 gen( rd() );
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( (*rd)() );
+
   std::uniform_int_distribution<> dis( 1, BoardGlobals::getSize() );
   const int32_t LENGTH = static_cast<int32_t>( dis( gen ) );
 
@@ -1074,8 +1076,10 @@ bool Piece::moveDiagonalSquare( Board* board,
                                 int32_t& i2,
                                 int32_t& j2,
                                 bool& isKingUnderAttack ){
-  static std::random_device rd; // Seed. Should be either static or external.
-  std::mt19937 gen( rd() );
+
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( (*rd)() );
+
   std::uniform_int_distribution<> dis( 0, 3 ); // give "true" 1/2 of the time
   const int32_t MOVE = static_cast<int32_t>( dis( gen ) );
 
@@ -1136,8 +1140,9 @@ bool Piece::moveDiagonalLine( Board* board,
                               int32_t& j2,
                               bool& isKingUnderAttack ){
 
-  static std::random_device rd; // Seed. Should be either static or external.
-  std::mt19937 gen( rd() );
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( (*rd)() );
+
   std::uniform_int_distribution<> dis( 1, BoardGlobals::getSize() );
   const int32_t LENGTH = static_cast<int32_t>( dis( gen ) );
 

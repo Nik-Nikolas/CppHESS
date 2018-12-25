@@ -129,3 +129,24 @@ bool King::checkEmptyHorizontalLine( const Board* board,
 
     return true;
 }
+
+
+
+const int32_t King::getCounter() {
+
+    return counter_;
+}
+
+
+
+void King::resetCounter() {
+
+    counter_ = 0;
+}
+
+
+
+void King::increaseCounter() {
+
+    ++counter_;
+}

@@ -66,8 +66,8 @@ bool Player::makeMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 ){
 bool Player::makeRandomTestMove( int32_t& i, int32_t& j,
                                  int32_t& i2, int32_t& j2 ){
 
-  static std::random_device rd; // Seed. Should be either static or external.
-  std::mt19937 gen( rd() );
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( (*rd)() );
 
   bool isKingUnderAttack = false;
   const int32_t BSIZE = BoardGlobals::getSize();
@@ -457,8 +457,9 @@ void Player::bishopVsPawn(){
 
 void Player::randomBattle(){
 
-  static std::random_device rd; // Seed. Should be either static or external.
-  std::mt19937 gen( rd() );
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( (*rd)() );
+
   std::uniform_int_distribution<> dis( 0, 5 );
 
   for(   auto j = 0; j < BoardGlobals::getSize(); ++j )
@@ -466,18 +467,28 @@ void Player::randomBattle(){
       Piece* p;
       int32_t var = static_cast<int32_t>( dis( gen ) );
       switch( var ){
-        default :
-        case 0 : p = new Pawn( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
+
+        case 0 :
+          p = new Pawn( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
           break;
-        case 1 : p = new Knight( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
+        case 1 :
+          p = new Knight( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
           break;
-        case 2 : p = new Bishop( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
+        case 2 :
+          p = new Bishop( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
           break;
-        case 3 : p = new Rook( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
+        case 3 :
+          p = new Rook( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
           break;
-        case 4 : p = new Queen( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
+        case 4 :
+          p = new Queen( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
           break;
-        case 5 : p = new King( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
+        case 5 :
+          if( 0 == King::getCounter() )
+            p = new King( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
+          else
+            p = new Pawn( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
+
           break;
       }
 
@@ -489,18 +500,33 @@ void Player::randomBattle(){
       Piece* p;
       int32_t var = static_cast<int32_t>( dis( gen ) );
       switch( var ){
-        default :
-        case 0 : p = new Pawn( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
+
+        case 0 :
+          p = new Pawn( PieceCoordinates( BoardGlobals::getSize() -
+                                          k - 1, 'A' + j ),
+                                          PieceColor::BLACK );
           break;
-        case 1 : p = new Knight( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
+        case 1 :
+          p = new Knight( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
           break;
-        case 2 : p = new Bishop( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
+        case 2 :
+          p = new Bishop( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
           break;
-        case 3 : p = new Rook( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
+        case 3 :
+          p = new Rook( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
           break;
-        case 4 : p = new Queen( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
+        case 4 :
+          p = new Queen( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
           break;
-        case 5 : p = new King( PieceCoordinates( BoardGlobals::getSize() - k - 1, 'A' + j ), PieceColor::BLACK );
+        case 5 :
+          if( 1 >= King::getCounter() )
+            p = new King( PieceCoordinates( BoardGlobals::getSize() -
+                                            k - 1, 'A' + j ),
+                                            PieceColor::BLACK );
+          else
+            p = new Pawn( PieceCoordinates( BoardGlobals::getSize() -
+                                k - 1, 'A' + j ),
+                                PieceColor::BLACK );
           break;
       }
 

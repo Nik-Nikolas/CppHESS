@@ -20,9 +20,9 @@ void Pawn::pawnBecomesNewPiece( Board* board,
   delete metamorphosis;
 
   // Create any light or heavy piece instead.
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( (*rd)() );
 
-  static std::random_device rd; // Seed. Should be either static or external.
-  std::mt19937 gen( rd() );
   std::uniform_int_distribution<> dis( 0, 3 );
   const int32_t VAR = static_cast<int32_t>( dis( gen ) );
 
@@ -383,8 +383,9 @@ bool Pawn::move( Board* board,
                  int32_t& j2,
                  bool& isKingUnderAttack ){
 
-  static std::random_device rd; // Seed. Should be either static or external.
-  std::mt19937 gen( rd() );
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( (*rd)() );
+
   std::uniform_int_distribution<> dis( 1, BoardGlobals::getLongMoveStep() );
   const int32_t MOVE = static_cast<int32_t>( dis( gen ) );
 

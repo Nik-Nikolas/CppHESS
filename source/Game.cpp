@@ -44,6 +44,7 @@ void Game::startNewGame( Board& board, WinConsole& console ){
     if( !white->makeRandomTestMove( i, j, i2, j2 ) ){
 
       console.showBoard( board );
+      console.showPlayerData( board, *black );
 
       std::cout << "\n" << white->getName()
       << " have no pieces or no moves."
@@ -68,6 +69,7 @@ void Game::startNewGame( Board& board, WinConsole& console ){
     if( !black->makeRandomTestMove( i, j, i2, j2 ) ){
 
       console.showBoard( board );
+      console.showPlayerData( board, *white );
 
       std::cout << "\n" << black->getName()
       << " have no pieces or no moves."

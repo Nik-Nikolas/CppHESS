@@ -25,7 +25,8 @@ public:
                            isEverMoved_     ( false ),
                            isMovedOnlyOnce_ ( false ),
                            isMadeLongMove_  ( false ),
-                           isUnderAttack_   ( false ){}
+                           isUnderAttack_   ( false ){
+   }
 
 
 
@@ -465,6 +466,7 @@ protected:
   PieceCoordinates pcoords_;
   PieceType        ptype_;
   PieceColor       pcolor_;
+
   bool             isEverMoved_;
   bool             isMovedOnlyOnce_; // Control the fact of single piece movement
                                      //(important for long pawn moves)

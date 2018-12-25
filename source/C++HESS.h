@@ -5,6 +5,9 @@
 
 //!< Comments style purpose: Doxygen.
 
+// Design patterns:
+// - SINGLETON ( std::random_device* )
+
 // C++ 11,14:
 // - lambdas >>> show( const std::vector<std::vector<Piece*> >& board )
 // - std::crbegin/crend ( T ) >>> show( const std::vector<std::vector<Piece*> >& board )
@@ -17,6 +20,8 @@
 // - 'override final' for virtual f of derived classes
 // - auto for cycles counters
 // - static_assert in main()
+// - uniform_int_distribution, bernoulli_distribution
+// - std::shuffle
 // - ...
 
 // TODO:
@@ -27,22 +32,20 @@
 #ifndef CPPHESS
 #define CPPHESS
 
-#include <iostream>  // Basic IO
-#include <iomanip>   // Console / IO / setw
-#include <typeinfo>  // Types distinction check.
+#include <iostream>    // Basic IO
+#include <iomanip>     // Console / IO / setw
+#include <typeinfo>    // Types distinction check.
 
 #include <vector>
-#include <stack>     // Pieces stack
 #include <algorithm>
 
-#include <random>
+#include <random>      // uniform_int_distribution, bernoulli_distribution
 
-#include <ctime>     // rand(), srand() functionality.
-#include <cmath>     // min()
+#include <cmath>       // min()
 #include <cassert>
 
-#include <conio.h>   // Console / IO / _kbhit() AS dev.test functions.
-#include <windows.h>
+#include <conio.h>     // Console / IO / _kbhit() _getch()
+#include <windows.h>   // Console / WinAPI
 
 class Piece;
 class Player;
@@ -115,13 +118,24 @@ std::ostream& operator << ( std::ostream& s, const Piece* pt );
 //! \brief Overload << to print pieces names in console char mode style.
 std::ostream& operator << ( std::ostream& s, const PieceType& pt );
 
+
+
 //! \brief Show UTF-8 chess piece image.
 void printPiece( const PieceType& PT, const PieceColor PC = PieceColor::BLACK );
+
+
 
 //! \brief Show current pieces on board set.
 void show( const std::vector<std::vector<Piece*> >& board );
 
+
+
+//! \brief Delay function.
 void delay();
+
+
+
+//! \brief Windows CLS function.
 void clear();
 
 
@@ -132,17 +146,39 @@ void clear();
 //! - y (vertical coordinate)
 //! - x (horizontal coordinate)
 struct PieceCoordinates{
+
+  PieceCoordinates( int32_t y = 0, int32_t x = A_ASCII_CODE ): y_( y ),
+                                                     x_( x - A_ASCII_CODE ) {}
+  static const int32_t A_ASCII_CODE = 'A';
   int32_t y_;
   int32_t x_;
 
-  //!< - 65 to convert char to int coordinates.
-  PieceCoordinates( int32_t y = 0, int32_t x = 65 ): y_( y ),
-                                                     x_( x - 65 ) {} // 'A' = 65
+
 };
 
 
 
 //! \brief Exception class GameIsOver.
 class GameIsOver{
+};
+
+
+
+//! \brief std::random_device singleton.
+class RandomDevice{
+public:
+  RandomDevice()                                   = delete;
+  RandomDevice( const RandomDevice& )              = delete;
+  RandomDevice& operator = ( const RandomDevice& ) = delete;
+
+  static std::random_device* getInstance(){
+    if ( rd_ == nullptr )
+      rd_ = new std::random_device;
+
+    return rd_;
+  }
+
+private:
+  static std::random_device* rd_;
 };
 #endif
