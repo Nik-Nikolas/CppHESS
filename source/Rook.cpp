@@ -13,7 +13,7 @@ bool Rook::move(  Board* board,
                   int32_t& j2,
                   bool& isKingUnderAttack ){
 
-  if ( killForwardLine( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
+  if (      killForwardLine( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
      return true;
   else if ( killBackwardLine( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
      return true;

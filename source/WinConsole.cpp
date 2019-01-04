@@ -110,7 +110,7 @@ void WinConsole::controlKeyboard( Board& board,
     //setFont( BoardGlobals::getSize() > 40 ? 2 : 9 );
   }
 
-  while( _kbhit() ) // Clear cin buff.
+  while( _kbhit() )
     _getch();
 }
 

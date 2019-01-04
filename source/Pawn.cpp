@@ -115,7 +115,7 @@ bool Pawn::killOpponentPawnAfterLongMove( Board* board,
                 enemySquare = piece;
                 enemySquare->markAsMoved();
                 enemySquare->setPieceCoordinates( PieceCoordinates ( forward_y,
-                                            'A' + x ) );
+                                                  'A' + x ) );
                 i2 = forward_y;
                 j2 = x;
                 piece = nullptr;
@@ -383,11 +383,7 @@ bool Pawn::move( Board* board,
                  int32_t& j2,
                  bool& isKingUnderAttack ){
 
-  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
-  std::mt19937 gen( (*rd)() );
 
-  std::uniform_int_distribution<> dis( 1, BoardGlobals::getLongMoveStep() );
-  const int32_t MOVE = static_cast<int32_t>( dis( gen ) );
 
   if( killLeftPawn ( board, player, piece, i, j, i2, j2, isKingUnderAttack ) )
     return true;
@@ -395,9 +391,15 @@ bool Pawn::move( Board* board,
     return true;
   else if( killOpponentPawnAfterLongMove( board, player, piece, i, j, i2, j2, isKingUnderAttack ) )
     return true;
-  else if( movePawnForward( board, player, piece, i, j, i2, j2,
-                            MOVE,
-                            isKingUnderAttack ) )
+
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( (*rd)() );
+  std::uniform_int_distribution<> dis( 1, BoardGlobals::getLongMoveStep() );
+
+  const int32_t MOVE = static_cast<int32_t>( dis( gen ) );
+  if( movePawnForward( board, player, piece, i, j, i2, j2,
+                       MOVE,
+                       isKingUnderAttack ) )
     return true;
   else
     return false;

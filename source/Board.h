@@ -31,36 +31,37 @@ class Board{
 
 public:
   Board() : lastMovedPiece_() {
+
     resizeBoard();
   }
 
   void clearBoard(){
 
+    // struct CTOR . Clear all struct data.
     LastMovedPiece();
 
+    const int32_t B_SIZE = board_.size();
+    for( auto i = 0; i < B_SIZE; ++i ){
 
-    const int32_t SIZE = board_.size();
-     for( auto i = 0; i < SIZE; ++i ){
+      const int32_t B_SIZE2 = board_[i].size();
 
-      const int32_t SIZE2 = board_[i].size();
-
-      for( auto j = 0; j <  SIZE2; ++j ){
+      for( auto j = 0; j <  B_SIZE2; ++j ){
         delete board_[i][j];
         board_[i][j] = nullptr;
       }
-     }
+    }
   }
 
   void resizeBoard(){
 
-    const int32_t SIZE = BoardGlobals::getSize();
+    const int32_t B_SIZE = BoardGlobals::getSize();
 
-    board_.resize( SIZE );
-    for( auto i = 0; i < SIZE; ++i )
-      board_[i].resize( SIZE );
+    board_.resize( B_SIZE );
+    for( auto i = 0; i < B_SIZE; ++i )
+      board_[i].resize( B_SIZE );
 
     board_.shrink_to_fit();
-    for( auto i = 0; i < SIZE; ++i )
+    for( auto i = 0; i < B_SIZE; ++i )
       board_[i].shrink_to_fit();
   }
 

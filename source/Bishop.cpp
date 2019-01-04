@@ -13,7 +13,7 @@ bool Bishop::move( Board* board,
                    int32_t& j2,
                    bool& isKingUnderAttack ){
 
-  if( killDiagonalForwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
+  if(      killDiagonalForwardLeftLine( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
     return true;
   else if( killDiagonalBackwardRightLine( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
     return true;

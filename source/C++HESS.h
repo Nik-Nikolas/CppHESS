@@ -5,29 +5,46 @@
 
 //!< Comments style purpose: Doxygen.
 
+// STL:
+// - vector of vectors of pointers std::vector<std::vector<Piece*> >
+// - for_each() with lambda functions for vector of vectors
+
 // Design patterns:
 // - SINGLETON ( std::random_device* )
+// - STRATEGY for players behavior (instead of pointers to member functions)
 
 // C++ 11,14:
 // - lambdas >>> show( const std::vector<std::vector<Piece*> >& board )
-// - std::crbegin/crend ( T ) >>> show( const std::vector<std::vector<Piece*> >& board )
+// - std::crbegin/crend ( T )
+//   >>> show( const std::vector<std::vector<Piece*> >& board )
 // - nullPtr
 // - apostrophe  1'000'000
 // - enum class
 // - fixed inreger int32_t
 // - '= delete' for CTORs and ASOPs where necessary
 // - '= default' for DTORs where necessary
-// - 'override final' for virtual f of derived classes
+// - 'override, final' for virtual f of derived classes
 // - auto for cycles counters
 // - static_assert in main()
 // - uniform_int_distribution, bernoulli_distribution
-// - std::shuffle
+// - void shuffle(RandomIt first, RandomIt last, URBG&& g)
+// - for( auto& p: vp)
 // - ...
 
+// Object Oriented Design:
+// - all pieces derived from abstract base class Piece
+// - all significant entities are objects: board, pieces, players, console, game
+
+// Tricks:
+// - Pointers to member functions (040119 replaced with STRATEGY pattern)
+//   ( Player::* whitePlayer )( int32_t&, int32_t&, int32_t&, int32_t& ) =
+//   ( ch - 48 == 1 ? &Player::makeManualMove : &Player::makeRandomTestMove );
+
 // TODO:
+// KING: is immortal now. Make him mortal.
 // KING: teach king to hide from check or to surrender certain player if mate occurs.
 // KING: check if lineBetween (king, rook) != lineUnderAttack while casting
-// More AI for better play.
+// AI:   more AI for better play.
 
 #ifndef CPPHESS
 #define CPPHESS
@@ -37,7 +54,7 @@
 #include <typeinfo>    // Types distinction check.
 
 #include <vector>
-#include <algorithm>
+#include <algorithm>   // std::shuffle
 
 #include <random>      // uniform_int_distribution, bernoulli_distribution
 

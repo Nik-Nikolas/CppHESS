@@ -13,7 +13,7 @@ void printPiece( const PieceType& PT,  const PieceColor PC ){
   HANDLE cons = GetStdHandle( STD_OUTPUT_HANDLE );
   const int BUFF_SIZE = 17;
   wchar_t p[BUFF_SIZE];
-  memset(p,'\0',BUFF_SIZE);
+  memset( p,'\0', BUFF_SIZE );
   DWORD n;
 
   switch( PT ){
@@ -83,7 +83,7 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
     isWhiteSquare = true == isWhiteSquare ? false : true;
 
     SetColor( ConsoleColor::WHITE, ConsoleColor::BLACK );
-    std::cout << "" << std::setw(2) << std::setfill(' ') << BoardGlobals::getSize() - line;
+    std::cout << "" << std::setw( 2 ) << std::setfill( ' ' ) << BoardGlobals::getSize() - line;
     ++line;
     std::cout << "\n";
   });

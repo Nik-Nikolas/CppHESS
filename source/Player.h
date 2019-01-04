@@ -6,10 +6,10 @@
 #ifndef CPPHESSCLASSESPLAYER
 #define CPPHESSCLASSESPLAYER
 
-#include "King.h"
+#include "Strategy.h"
 
 //! \brief Class Player.
-class Player{
+class Player: public Context{
 public:
   Player( const std::string& name,
           Board* board,
@@ -21,11 +21,17 @@ public:
           Game* game,
           const Player& player );
 
-  bool makeMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
+  bool makeMove          ( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
   bool makeRandomTestMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 ); //!< EXPERIMENTAL
+  bool makeManualMove    ( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
 
-  void move( const PieceCoordinates& start,
-             const PieceCoordinates& finish );
+  virtual bool useStrategy( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 ) final {
+    return operation_->use( board_, this, i, j, i2, j2 );
+  }
+
+  virtual void setStrategy( Strategy* s ) final {
+    operation_ = s;
+  }
 
   const PieceColor& getColor() const;
 

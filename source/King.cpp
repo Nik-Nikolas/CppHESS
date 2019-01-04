@@ -14,7 +14,7 @@ bool King::move( Board* board,
                  int32_t& j2,
                  bool& isKingUnderAttack ){
 
-  if( makeCastling( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
+  if(      makeCastling( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
      return true;
   else if( killForwardSquare( board, player, piece, i, j, i2, j2, isKingUnderAttack  ) )
      return true;
