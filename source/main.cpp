@@ -30,11 +30,15 @@ int main(){
   static_assert( ::START_BOARD_SIDE % 2 == 0,
                  "Board cells amount should be an even number.");
 
-  Game game;
-  Board board;
-  WinConsole console;
+  Game* game = new Game();
+  Board* board = new Board();
+  WinConsole* console = new WinConsole();
 
-  game.startNewGame( board, console );
+  game->startNewGame( *board, *console );
+
+  delete console;
+  delete board;
+  delete game;
 
   return 0;
 }

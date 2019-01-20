@@ -17,7 +17,6 @@ public:
   King()                           = delete;
   King( const PieceCoordinates& pcd,
         const PieceColor& pcl ): Piece( pcd, PieceType::KING, pcl ) {
-
     increaseCounter();
   }
   ~King() { throw GameIsOver(); }; //!< Kings never die.
@@ -51,12 +50,19 @@ public:
                                    const int32_t king_coord_x,
                                    int32_t& rook_coord_x );
 
-  static const int32_t getCounter();
-  static void resetCounter();
+
+  static const int32_t getCounter() {
+    return counter_;
+  }
+
+  static void resetCounter() {
+      counter_ = 0;
+  }
 
 private:
-
-  static void increaseCounter();
+  static void increaseCounter() {
+    ++counter_;
+  }
 
   static int32_t counter_;
 };

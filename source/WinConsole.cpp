@@ -29,7 +29,7 @@ void WinConsole::showBoard( const Board& board ){
 
 
 
-void WinConsole::showPlayerData( const Board& board, const Player& player ){
+void WinConsole::showPlayerData( const Player& player ){
   player.showData();
 }
 
@@ -42,6 +42,9 @@ void WinConsole::controlKeyboard( Board& board,
 
   if( _kbhit() ){
     int32_t keyCode = _getch();
+
+    while( _kbhit() )
+      _getch();
 
     static const int32_t STEP = BoardGlobals::getSize();
 
@@ -109,21 +112,16 @@ void WinConsole::controlKeyboard( Board& board,
 
     //setFont( BoardGlobals::getSize() > 40 ? 2 : 9 );
   }
-
-  while( _kbhit() )
-    _getch();
 }
 
 
 
 void WinConsole::delay(){
-
   ::delay();
 }
 
 
 
 void WinConsole::clear(){
-
   ::clear();
 }

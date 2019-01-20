@@ -21,11 +21,7 @@ public:
          const PieceType& pt,
          const PieceColor& pcl ): pcoords_  ( pcd ),
                            ptype_           ( pt ),
-                           pcolor_          ( pcl ),
-                           isEverMoved_     ( false ),
-                           isMovedOnlyOnce_ ( false ),
-                           isMadeLongMove_  ( false ),
-                           isUnderAttack_   ( false ){
+                           pcolor_          ( pcl ){
    }
 
 
@@ -42,7 +38,7 @@ public:
 
 
 
-  //!< General V.F. - some pieces use this behavior by default.
+  //!< General V.F. - some pieces use this implementation by default.
   virtual bool killForwardLine( Board* board,
                                 const Player* player,
                                 Piece*& piece,
@@ -417,12 +413,8 @@ public:
 
   //!< Non-V.F. - all pieces use such functionality 'as is'.
   void setPieceCoordinates( const PieceCoordinates& p ){
-
     pcoords_ = p;
   }
-
-  void setPieceType ( const PieceType& pt );
-  void setPieceColor( const PieceColor& pc );
 
   const PieceType& getPieceType() const{
     return ptype_;
@@ -467,11 +459,11 @@ protected:
   PieceType        ptype_;
   PieceColor       pcolor_;
 
-  bool             isEverMoved_;
-  bool             isMovedOnlyOnce_; // Control the fact of single piece movement
-                                     //(important for long pawn moves)
-  bool             isMadeLongMove_;
-  bool             isUnderAttack_;
+  bool             isEverMoved_    {false};
+  bool             isMovedOnlyOnce_{false};  // Control the fact of single piece movement
+                                             //(important for long pawn moves)
+  bool             isMadeLongMove_ {false};
+  bool             isUnderAttack_  {false};
 
 private:
   void replacePiece( Board* board,

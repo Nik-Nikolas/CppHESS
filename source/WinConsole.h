@@ -15,8 +15,7 @@ public:
 
   void showBoard( const Board& board );
 
-  void showPlayerData( const Board& board,
-                       const Player& player );
+  void showPlayerData( const Player& player );
 
   void controlKeyboard( Board& board,
                         Player& player,

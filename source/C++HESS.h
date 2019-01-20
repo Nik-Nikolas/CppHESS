@@ -29,6 +29,7 @@
 // - uniform_int_distribution, bernoulli_distribution
 // - void shuffle(RandomIt first, RandomIt last, URBG&& g)
 // - for( auto& p: vp)
+// - default values initialization for class members T t {val};
 // - ...
 
 // Object Oriented Design:
@@ -193,6 +194,12 @@ public:
       rd_ = new std::random_device;
 
     return rd_;
+  }
+
+  static void deleteInstance(){
+
+    delete rd_;
+    rd_ = nullptr;
   }
 
 private:

@@ -10,7 +10,7 @@ void Pawn::pawnBecomesNewPiece( Board* board,
                                 const int32_t i,
                                 const int32_t j ){
 
-  // Pawn to be riborn.
+  // Pawn to be reborn.
   Piece *& metamorphosis = board->changeBoard()[i][j];
 
   // Find out pawn color.
@@ -404,11 +404,3 @@ bool Pawn::move( Board* board,
   else
     return false;
 };
-
-
-
-// Stub for future AI func.
-bool Pawn::isLegalMove( Board* board,
-                        const PieceCoordinates& finish ){
-  ;
-}

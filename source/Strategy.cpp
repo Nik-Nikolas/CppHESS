@@ -6,14 +6,16 @@
 #include "Player.h"
 
 // Manual game behavior
-bool Strategy1::use( Board*& board_, const Player* player, int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 ){
+bool Strategy1::use( Board*& board_, const Player* player, int32_t& i,
+                     int32_t& j, int32_t& i2, int32_t& j2 ) const{
 
   const int32_t BSIZE = BoardGlobals::getSize();
-  char i_, j_, i2_, j2_;
-  char ch;
+  char j_ = '\0', j2_= '\0';
+  char ch = '\0';
+  char i_ = '\0', i2_ = '\0';
   bool isKingUnderAttack = false;
 
-  std::cout << "\n  " << player->getColor() << " turn:";
+  std::cout << "\n  " << player->getColor() << "S turn:";
 
   while ( true ){
 
@@ -81,8 +83,8 @@ bool Strategy1::use( Board*& board_, const Player* player, int32_t& i, int32_t& 
 
 
 // Random moves behavior
-bool Strategy2::use( Board*& board_, const Player* player, int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 ){
-
+bool Strategy2::use( Board*& board_, const Player* player, int32_t& i,
+                     int32_t& j, int32_t& i2, int32_t& j2 ) const{
 
   bool isKingUnderAttack = false;
   const int32_t BSIZE = BoardGlobals::getSize();
@@ -140,7 +142,8 @@ bool Strategy2::use( Board*& board_, const Player* player, int32_t& i, int32_t& 
 
 
 // Ordered behavior
-bool Strategy3::use( Board*& board_, const Player* player, int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 ){
+bool Strategy3::use( Board*& board_, const Player* player, int32_t& i,
+                     int32_t& j, int32_t& i2, int32_t& j2 ) const{
 
   const int32_t BSIZE = BoardGlobals::getSize();
   bool isKingUnderAttack = false;

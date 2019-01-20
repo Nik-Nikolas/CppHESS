@@ -28,9 +28,6 @@ public:
                       int32_t& j2,
                       bool& isKingUnderAttack ) override final;
 
-  bool isLegalMove( Board* board,
-                    const PieceCoordinates& finish );
-
 private:
   void pawnBecomesNewPiece( Board* board,
                             const int32_t i,

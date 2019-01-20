@@ -17,8 +17,6 @@
 class Game{
 public:
 
-  Game() : turns_( 0 ), isValid_( true ) {}
-
   void startNewGame( Board& board, WinConsole& con );
 
   void reset(){
@@ -61,7 +59,7 @@ public:
   }
 
 private:
-  int32_t turns_;
-  bool    isValid_;
+  int32_t turns_   { 0 };
+  bool    isValid_ { true };
 };
 #endif

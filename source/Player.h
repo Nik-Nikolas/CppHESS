@@ -22,18 +22,21 @@ public:
           const Player& player );
 
   bool makeMove          ( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
-  bool makeRandomTestMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 ); //!< EXPERIMENTAL
+  bool makeRandomTestMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
   bool makeManualMove    ( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
 
-  virtual bool useStrategy( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 ) final {
+  virtual bool useStrategy( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 )
+  final {
     return operation_->use( board_, this, i, j, i2, j2 );
   }
 
-  virtual void setStrategy( Strategy* s ) final {
+  virtual void setStrategy( const Strategy* s ) final {
     operation_ = s;
   }
 
-  const PieceColor& getColor() const;
+  const PieceColor& getColor() const {
+    return color_;
+  }
 
   const Game* getGame() const{
     return game_;

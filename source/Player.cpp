@@ -30,12 +30,6 @@ Player::Player( const std::string& name,
 
 
 
-const PieceColor& Player::getColor() const {
-  return color_;
-}
-
-
-
 void Player::showData() const {
 
   SetColor( ConsoleColor::WHITE, ConsoleColor::BLACK );
@@ -68,12 +62,14 @@ void Player::showData() const {
 
 
 void Player::setMyTurnPriority(){
+
   isMyTurn_ = color_ == PieceColor::WHITE ? true : false;
 }
 
 
 
 void Player::queensBattle(){
+
   for(   auto j = 0; j < BoardGlobals::getSize(); ++j )
     for( auto k = 0; k < BoardGlobals::getSize() / 4; ++k ){
       Queen* p = new Queen( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
@@ -90,6 +86,7 @@ void Player::queensBattle(){
 
 
 void Player::bishopVsKnight(){
+
     for(  auto j = 0; j < BoardGlobals::getSize(); ++j )
     for(auto k = 0; k < BoardGlobals::getSize() / 4; ++k ){
       Knight* p = new Knight( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
@@ -106,6 +103,7 @@ void Player::bishopVsKnight(){
 
 
 void Player::kingsDance(){
+
   for(   auto j = 0; j < BoardGlobals::getSize(); ++j )
     for( auto k = 0; k < BoardGlobals::getSize() / 4; ++k ){
       King* p = new King( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
@@ -284,6 +282,7 @@ return;
 
 
 void Player::bishopVsRook(){
+
   for(   auto j = 0; j < BoardGlobals::getSize(); ++j )
     for( auto k = 0; k < BoardGlobals::getSize() / 4; ++k ){
       Rook* p = new Rook( PieceCoordinates( k, 'A' + j ), PieceColor::WHITE );
@@ -398,6 +397,7 @@ void Player::randomBattle(){
 
 
 void Player::arrangePieces( const int32_t scenario ){
+
   switch( scenario ){
     default:
     case 1 : classicBattle();

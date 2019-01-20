@@ -12,14 +12,10 @@
 //!  Board keeps all pieces in its matrix-type container.
 class Board{
   struct LastMovedPiece{
-    PieceType lastMovedPieceType_;
-    PieceCoordinates lastMovedPieceCoordinates_;
-    PieceColor lastMovedPieceColor_;
-    int32_t lastMovedPieceTurn_;
-
-    LastMovedPiece(){
-      reset();
-    }
+    PieceType lastMovedPieceType_              { PieceType::NOT_DEFINED };
+    PieceCoordinates lastMovedPieceCoordinates_{ PieceCoordinates( -1, 'A' - 1 ) };
+    PieceColor lastMovedPieceColor_            { PieceColor::NOT_DEFINED };
+    int32_t lastMovedPieceTurn_                { -1 };
 
     void reset(){
       lastMovedPieceType_ = PieceType::NOT_DEFINED;
@@ -37,7 +33,7 @@ public:
 
   void clearBoard(){
 
-    // struct CTOR . Clear all struct data.
+    // struct CTOR . Clears all struct data.
     LastMovedPiece();
 
     const int32_t B_SIZE = board_.size();
@@ -46,6 +42,7 @@ public:
       const int32_t B_SIZE2 = board_[i].size();
 
       for( auto j = 0; j <  B_SIZE2; ++j ){
+
         delete board_[i][j];
         board_[i][j] = nullptr;
       }

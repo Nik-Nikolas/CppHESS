@@ -246,13 +246,13 @@ bool Piece::killBackwardLine( Board* board,
 
 
 bool Piece::killLeftLine( Board* board,
-                           const Player* player,
-                           Piece*& piece,
-                           const int32_t i,
-                           const int32_t j,
-                           int32_t& i2,
-                           int32_t& j2,
-                           bool& isKingUnderAttack ){
+                          const Player* player,
+                          Piece*& piece,
+                          const int32_t i,
+                          const int32_t j,
+                          int32_t& i2,
+                          int32_t& j2,
+                          bool& isKingUnderAttack ){
 
   // Kill left enemy in the any left enemy Square.
   bool foundLeftEnemy = false;

@@ -5,9 +5,6 @@
 #include "Piece.h"
 #include "C++HESS.h"
 
-
-
-
 void printPiece( const PieceType& PT,  const PieceColor PC ){
 
   HANDLE cons = GetStdHandle( STD_OUTPUT_HANDLE );
