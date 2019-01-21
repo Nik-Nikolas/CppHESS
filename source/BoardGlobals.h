@@ -11,43 +11,43 @@
 class BoardGlobals{
 public:
 
-  static const int32_t& getSize(){
+  static const int32_t& getSize() noexcept{
     return size_;
   }
 
-  static void setSize( const int32_t bsize ){
+  static void setSize( const int32_t bsize ) noexcept{
      size_ = bsize;
   }
 
-  static const int32_t& getLongMoveStep(){
+  static const int32_t& getLongMoveStep() noexcept{
     return longMoveStep_;
   }
 
-  static void setLongMoveStep( const int32_t longMoveStep ){
+  static void setLongMoveStep( const int32_t longMoveStep ) noexcept{
      longMoveStep_ = longMoveStep;
   }
 
-  static const int32_t& getDelay(){
+  static const int32_t& getDelay() noexcept{
     return delay_;
   }
 
-  static void setDelay( const int32_t delay ){
+  static void setDelay( const int32_t delay ) noexcept{
      delay_ = delay;
   }
 
-  static const int32_t& getFramesStep(){
+  static const int32_t& getFramesStep() noexcept{
     return framesStep_;
   }
 
-  static void setFramesStep( const int32_t framesStep ){
+  static void setFramesStep( const int32_t framesStep ) noexcept{
      framesStep_ = framesStep;
   }
 
-  static const bool& getGlyphMode(){
+  static const bool& getGlyphMode() noexcept{
     return isGlyphMode_;
   }
 
-  static void setGlyphMode( const bool isGlyphMode ){
+  static void setGlyphMode( const bool isGlyphMode ) noexcept{
      isGlyphMode_ = isGlyphMode;
   }
 private:

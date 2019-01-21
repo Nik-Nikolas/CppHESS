@@ -30,7 +30,7 @@ Player::Player( const std::string& name,
 
 
 
-void Player::showData() const {
+void Player::showData() const noexcept{
 
   SetColor( ConsoleColor::WHITE, ConsoleColor::BLACK );
 
@@ -61,7 +61,7 @@ void Player::showData() const {
 
 
 
-void Player::setMyTurnPriority(){
+void Player::setMyTurnPriority() noexcept{
 
   isMyTurn_ = color_ == PieceColor::WHITE ? true : false;
 }

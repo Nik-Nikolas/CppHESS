@@ -403,48 +403,48 @@ public:
                                       int32_t& j2,
                                       bool& isKingUnderAttack );
 
-  virtual void setAsMadeLongMove( const bool isMadeLongMove ){
+  virtual void setAsMadeLongMove( const bool isMadeLongMove ) noexcept{
     isMadeLongMove_ = isMadeLongMove;
   }
 
-  virtual bool isMadeLongMove() const{
+  virtual bool isMadeLongMove() const noexcept{
     return isMadeLongMove_;
   }
 
   //!< Non-V.F. - all pieces use such functionality 'as is'.
-  void setPieceCoordinates( const PieceCoordinates& p ){
+  void setPieceCoordinates( const PieceCoordinates& p ) noexcept{
     pcoords_ = p;
   }
 
-  const PieceType& getPieceType() const{
+  const PieceType& getPieceType() const noexcept{
     return ptype_;
   }
 
-  const PieceCoordinates& getPieceCoordinates() const{
+  const PieceCoordinates& getPieceCoordinates() const noexcept{
     return pcoords_;
   }
 
-  const PieceColor& getPieceColor() const{
+  const PieceColor& getPieceColor() const noexcept{
     return pcolor_;
   }
 
-  const bool isEverMoved() const{
+  const bool isEverMoved() const noexcept{
     return isEverMoved_;
   }
 
-  const bool isMovedOnlyOnce() const{
+  const bool isMovedOnlyOnce() const noexcept{
     return isMovedOnlyOnce_;
   }
 
-  const bool isUnderAttack() const{
+  const bool isUnderAttack() const noexcept{
     return isUnderAttack_;
   }
 
-  void markAsUnderAttack(){
+  void markAsUnderAttack() noexcept{
     isUnderAttack_ = true;
   }
 
-  void markAsMoved(){
+  void markAsMoved() noexcept{
 
     if( !isEverMoved_ )
       isMovedOnlyOnce_ = true;

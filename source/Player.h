@@ -30,27 +30,27 @@ public:
     return operation_->use( board_, this, i, j, i2, j2 );
   }
 
-  virtual void setStrategy( const Strategy* s ) final {
+  virtual void setStrategy( const Strategy* s ) noexcept final {
     operation_ = s;
   }
 
-  const PieceColor& getColor() const {
+  const PieceColor& getColor() const noexcept{
     return color_;
   }
 
-  const Game* getGame() const{
+  const Game* getGame() const noexcept{
     return game_;
   }
 
-  Game* changeGame(){
+  Game* changeGame() noexcept {
     return game_;
   }
 
-  const std::string& getName() const{
+  const std::string& getName() const noexcept{
     return name_;
   }
 
-  void showData() const;
+  void showData() const noexcept;
 
   void arrangePieces( const int32_t scenario );
 
@@ -65,12 +65,12 @@ private:
   void knightVsRook();
   void randomBattle();
 
-  void setMyTurnPriority ();
+  void setMyTurnPriority () noexcept;
 
   std::string name_;
   Board*      board_;
   Game*       game_;
   PieceColor  color_;
-  bool        isMyTurn_;
+  bool        isMyTurn_ { false };
 };
 #endif
