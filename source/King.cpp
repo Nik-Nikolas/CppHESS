@@ -69,11 +69,11 @@ bool King::makeCastling( Board* board,
           j2 = j + 2 * SIGN;
 
           // Move rook.
-          movePiece( board, player, board->changeBoard()[i][rook_coord_x], i, j + 1 * SIGN );
+          movePiece( board, player, board->modify()[i][rook_coord_x], i, j + 1 * SIGN );
 
           // Decrease turns counter because 2 pieces moved simultaneously - this is one turn.
           Player* p = const_cast<Player*>(player); // Safe.
-          p->changeGame()->setTurn( player->getGame()->currentTurn() - 1 );
+          p->modifyGame()->setTurn( player->getGame()->currentTurn() - 1 );
 
           return  true;
         }
@@ -91,7 +91,7 @@ bool King::findCastlingAvailiableRook( const Board* board,
 
   for( auto j = 0; j < BoardGlobals::getSize(); ++j ){
 
-    Piece* currentSquarePiece = board->readBoard()[king_coord_y][j];
+    Piece* currentSquarePiece = board->read()[king_coord_y][j];
 
     if( currentSquarePiece &&
         currentSquarePiece->getPieceColor() == this->getPieceColor() &&
@@ -115,17 +115,17 @@ bool King::checkEmptyHorizontalLine( const Board* board,
                                      const int32_t piece1_coord_x,
                                      const int32_t piece2_coord_x ){
 
-    const int32_t START_X = std::min( piece1_coord_x, piece2_coord_x ) + 1;
-    const int32_t STOP_X = std::max( piece1_coord_x, piece2_coord_x );
+  const int32_t START_X = std::min( piece1_coord_x, piece2_coord_x ) + 1;
+  const int32_t STOP_X = std::max( piece1_coord_x, piece2_coord_x );
 
-    Piece*  currentSquarePiece = nullptr;
-    for( auto j = START_X; j < STOP_X; ++j ){
+  Piece*  currentSquarePiece = nullptr;
+  for( auto j = START_X; j < STOP_X; ++j ){
 
-      currentSquarePiece = board->readBoard()[coord_y][j];
+    currentSquarePiece = board->read()[coord_y][j];
 
-      if( currentSquarePiece )
-        return false;
-    }
+    if( currentSquarePiece )
+      return false;
+  }
 
-    return true;
+  return true;
 }

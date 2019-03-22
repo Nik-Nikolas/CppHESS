@@ -11,7 +11,7 @@ void Pawn::pawnBecomesNewPiece( Board* board,
                                 const int32_t j ){
 
   // Pawn to be reborn.
-  Piece *& metamorphosis = board->changeBoard()[i][j];
+  Piece *& metamorphosis = board->modify()[i][j];
 
   // Find out pawn color.
   const PieceColor color = metamorphosis->getPieceColor();
@@ -68,7 +68,7 @@ bool Pawn::killOpponentPawnAfterLongMove( Board* board,
           BoardGlobals::getSize() - 1 >= y &&
           0 <= y );
 
-  Piece*& lastMovedPiece = board->changeBoard()[y][x];
+  Piece*& lastMovedPiece = board->modify()[y][x];
   assert ( nullptr != lastMovedPiece );
 
   int32_t forward_y = 0;
@@ -79,7 +79,7 @@ bool Pawn::killOpponentPawnAfterLongMove( Board* board,
     forward_y = i - 1;
   }
 
-  Piece*& enemySquare = board->changeBoard()[forward_y][x];
+  Piece*& enemySquare = board->modify()[forward_y][x];
   // Main conditions:
   // If potential square is empty for diagonal replacement (excessive condition?)
   // If x coord. is 1 square different.
@@ -166,7 +166,7 @@ bool Pawn::killLeftPawn ( Board* board,
   int32_t leftEnemySquare_y = i + step;
 
   Piece*& leftEnemySquare =
-  board->changeBoard()[leftEnemySquare_y][leftEnemySquare_x];
+  board->modify()[leftEnemySquare_y][leftEnemySquare_x];
 
   if( leftEnemySquare &&
       leftEnemySquare->getPieceColor() != piece->getPieceColor() ){
@@ -238,7 +238,7 @@ bool Pawn::killRightPawn ( Board* board,
   int32_t rightEnemySquare_x = j - step;
 
   Piece*& rightEnemySquare =
-  board->changeBoard()[rightEnemySquare_y][rightEnemySquare_x];
+  board->modify()[rightEnemySquare_y][rightEnemySquare_x];
 
   if( rightEnemySquare &&
       rightEnemySquare->getPieceColor() != piece->getPieceColor() ){
@@ -304,7 +304,7 @@ bool Pawn::movePawnForward ( Board* board,
   int32_t forwardSquare_y = i + step;
 
   // If in-front-square is empty - move forward.
-  Piece*& forwardSquare = board->changeBoard()[forwardSquare_y][j];
+  Piece*& forwardSquare = board->modify()[forwardSquare_y][j];
   if( nullptr != forwardSquare )
     return false;
 
@@ -313,7 +313,7 @@ bool Pawn::movePawnForward ( Board* board,
   if( false == piece->isEverMoved() ){
 
     // Pointer. Not a reference to pointer!
-    Piece* temp = board->changeBoard()[forwardSquare_y][j];
+    Piece* temp = board->modify()[forwardSquare_y][j];
     while ( nullptr == temp ){
 
       // Forbide pawn long move over half board absolute length.
@@ -328,7 +328,7 @@ bool Pawn::movePawnForward ( Board* board,
       forwardSquare_y += step;
       isLongMove = true;
 
-      temp = board->changeBoard()[forwardSquare_y][j];
+      temp = board->modify()[forwardSquare_y][j];
     }
 
     // Because we previously stepped forward to check forward obstacles.
@@ -338,7 +338,7 @@ bool Pawn::movePawnForward ( Board* board,
 
   // forwardSquare_y could be increased up to
   // BoardGlobals::getSize()/2 for first movers here.
-  Piece*& forwardSquare2 = board->changeBoard()[forwardSquare_y][j];
+  Piece*& forwardSquare2 = board->modify()[forwardSquare_y][j];
   if( !forwardSquare2 ){
 
     // Mark pawn as long moved if it has moved long move.

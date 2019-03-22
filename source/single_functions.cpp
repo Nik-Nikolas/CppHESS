@@ -5,13 +5,13 @@
 #include "Piece.h"
 #include "C++HESS.h"
 
-void printPiece( const PieceType& PT,  const PieceColor PC ){
+void printPiece( const PieceType& PT,  const PieceColor& PC ){
 
-  HANDLE cons = GetStdHandle( STD_OUTPUT_HANDLE );
-  const int BUFF_SIZE = 17;
-  wchar_t p[BUFF_SIZE];
+  static HANDLE cons = GetStdHandle( STD_OUTPUT_HANDLE );
+  static const int BUFF_SIZE = 17;
+  static wchar_t p[BUFF_SIZE];
   memset( p,'\0', BUFF_SIZE );
-  DWORD n;
+  static DWORD n;
 
   switch( PT ){
     case PieceType::PAWN   : PieceColor::WHITE == PC ? wcscpy (p, L"\u2659") : wcscpy (p, L"\u265F") ; break;
@@ -90,7 +90,7 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
   //std::cout << "\n";
   const int32_t  BS = BoardGlobals::getSize();
   for( auto k = 0; k < BS; ++k ){
-    if( k < ::LATIN_ALPHABET_SIZE )
+    if( ::LATIN_ALPHABET_SIZE > k )
         std::cout << static_cast<char>( 'A' + k ) << " ";
     else
         std::cout << k + 1;
@@ -188,10 +188,10 @@ std::ostream& operator << ( std::ostream& s, const Piece* pt ){
 
 
 //! \brief Overload << to print pieces names in console char mode style.
-std::ostream& operator << ( std::ostream& s, const PieceType& pt ){
+std::ostream& operator << ( std::ostream& s, const PieceType& PT ){
 
   std::string type;
-  switch( pt ){
+  switch( PT ){
       case PieceType::PAWN   : type = "PAWN"; break;
       case PieceType::KNIGHT : type = "KNIGHT"; break;
       case PieceType::BISHOP : type = "BISHOP"; break;

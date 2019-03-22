@@ -9,13 +9,14 @@
 #include "Strategy.h"
 
 //! \brief Class Player.
-class Player: public Context{
+class Player: public Strategy{
 public:
   Player( const std::string& name,
           Board* board,
           Game* game,
           const PieceColor& color );
 
+  // C-tor to create player based on previous player color
   Player( const std::string& name,
           Board* board,
           Game* game,
@@ -25,13 +26,13 @@ public:
   bool makeRandomTestMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
   bool makeManualMove    ( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
 
-  virtual bool useStrategy( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 )
+  virtual bool playStrategy( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 )
   final {
-    return operation_->use( board_, this, i, j, i2, j2 );
+    return currentStrategy_->play( board_, this, i, j, i2, j2 );
   }
 
-  virtual void setStrategy( const Strategy* s ) noexcept final {
-    operation_ = s;
+  virtual void setStrategy( const StrategyInterface* s ) noexcept final {
+    currentStrategy_ = s;
   }
 
   const PieceColor& getColor() const noexcept{
@@ -42,7 +43,7 @@ public:
     return game_;
   }
 
-  Game* changeGame() noexcept {
+  Game* modifyGame() noexcept {
     return game_;
   }
 
@@ -52,7 +53,7 @@ public:
 
   void showData() const noexcept;
 
-  void arrangePieces( const int32_t scenario );
+  void arrangePieces();
 
 private:
   void queensBattle ();

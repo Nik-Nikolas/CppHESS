@@ -45,7 +45,7 @@ void Player::showData() const noexcept{
 
   printPiece( board_->getLastMovedPiece().lastMovedPieceType_,
               PieceColor::WHITE );
-  if( x < ::LATIN_ALPHABET_SIZE )
+  if( ::LATIN_ALPHABET_SIZE > x )
     std::cout << static_cast<char>( 'A' + x - 1 );
   else
     std::cout << x << ",";
@@ -396,7 +396,9 @@ void Player::randomBattle(){
 
 
 
-void Player::arrangePieces( const int32_t scenario ){
+void Player::arrangePieces(){
+
+  const char scenario = _getch() - 48;
 
   switch( scenario ){
     default:

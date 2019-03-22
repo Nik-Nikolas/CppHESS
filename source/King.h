@@ -19,7 +19,7 @@ public:
         const PieceColor& pcl ): Piece( pcd, PieceType::KING, pcl ) {
     increaseCounter();
   }
-  ~King() { throw GameIsOver(); }; //!< Kings never die.
+  ~King() { throw GameIsOver(); }; //!< Kings never die before the final.
 
   virtual bool move ( Board* board,
                       const Player* player,

@@ -23,21 +23,10 @@ std::random_device* RandomDevice::rd_ = nullptr;
 
 int main(){
 
-  BoardGlobals::setSize( ::START_BOARD_SIDE );
-  BoardGlobals::setLongMoveStep( ::START_BOARD_SIDE / 2 );
-  BoardGlobals::setDelay( ::START_DELAY );
-
-  static_assert( ::START_BOARD_SIDE % 2 == 0,
-                 "Board cells amount should be an even number.");
-
   Game* game = new Game();
-  Board* board = new Board();
-  WinConsole* console = new WinConsole();
 
-  game->startNewGame( *board, *console );
+  game->start();
 
-  delete console;
-  delete board;
   delete game;
 
   return 0;

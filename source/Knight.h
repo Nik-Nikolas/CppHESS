@@ -16,7 +16,7 @@ public:
   Knight& operator = ( const Knight& ) = delete;
   Knight()                             = delete;
   Knight( const PieceCoordinates& pcd,
-        const PieceColor& pcl ): Piece( pcd, PieceType::KNIGHT, pcl ) {}
+          const PieceColor& pcl ): Piece( pcd, PieceType::KNIGHT, pcl ) {}
   ~Knight() = default;
 
   virtual bool move ( Board* board,

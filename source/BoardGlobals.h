@@ -2,6 +2,8 @@
 // (C)Igor Lobanov. 2017
 //
 // This is a header file.
+//
+// Singleton design pattern (see GoF)
 
 #ifndef CPPHESSCLASSESBOARDG
 #define CPPHESSCLASSESBOARDG

@@ -28,10 +28,10 @@ class Board{
 public:
   Board() : lastMovedPiece_() {
 
-    resizeBoard();
+    resize();
   }
 
-  void clearBoard(){
+  void clear(){
 
     // struct CTOR . Clears all struct data.
     LastMovedPiece();
@@ -49,7 +49,7 @@ public:
     }
   }
 
-  void resizeBoard(){
+  void resize(){
 
     const int32_t B_SIZE = BoardGlobals::getSize();
 
@@ -86,11 +86,11 @@ public:
     lastMovedPiece_.reset();
   }
 
-  const std::vector<std::vector<Piece*> >& readBoard() const{
+  const std::vector<std::vector<Piece*> >& read() const{
     return board_;
   }
 
-  std::vector<std::vector<Piece*> >& changeBoard() {
+  std::vector<std::vector<Piece*> >& modify() {
     return board_;
   }
 

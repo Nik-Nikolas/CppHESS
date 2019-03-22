@@ -6,7 +6,7 @@
 #include "Player.h"
 
 // Manual game behavior
-bool Strategy1::use( Board*& board_, const Player* player, int32_t& i,
+bool Strategy1::play( Board*& board_, const Player* player, int32_t& i,
                      int32_t& j, int32_t& i2, int32_t& j2 ) const{
 
   const int32_t BSIZE = BoardGlobals::getSize();
@@ -52,7 +52,7 @@ bool Strategy1::use( Board*& board_, const Player* player, int32_t& i,
          0 > i2 )
           continue;
 
-    Piece*& currentSquarePiece = board_->changeBoard()[i][j]; // Ref to pointer
+    Piece*& currentSquarePiece = board_->modify()[i][j]; // Ref to pointer
     // If piece exists and player color corresponds to piece color.
     if( currentSquarePiece &&
         currentSquarePiece->getPieceColor() == player->getColor() ){
@@ -83,7 +83,7 @@ bool Strategy1::use( Board*& board_, const Player* player, int32_t& i,
 
 
 // Random moves behavior
-bool Strategy2::use( Board*& board_, const Player* player, int32_t& i,
+bool Strategy2::play( Board*& board_, const Player* player, int32_t& i,
                      int32_t& j, int32_t& i2, int32_t& j2 ) const{
 
   bool isKingUnderAttack = false;
@@ -98,7 +98,7 @@ bool Strategy2::use( Board*& board_, const Player* player, int32_t& i,
   for(   auto i0 = 0; i0 < BSIZE; ++i0 )
     for( auto j0 = 0; j0 < BSIZE; ++j0 ){
 
-      Piece*& currentSquarePiece = board_->changeBoard()[i0][j0];
+      Piece*& currentSquarePiece = board_->modify()[i0][j0];
 
       if( currentSquarePiece &&
           currentSquarePiece->getPieceColor() == currentPlayerColor ){
@@ -116,7 +116,7 @@ bool Strategy2::use( Board*& board_, const Player* player, int32_t& i,
     i = p.first;
     j = p.second;
 
-    Piece*& thisPiece = board_->changeBoard()[i][j];
+    Piece*& thisPiece = board_->modify()[i][j];
 
     assert( thisPiece != nullptr );
 
@@ -142,7 +142,7 @@ bool Strategy2::use( Board*& board_, const Player* player, int32_t& i,
 
 
 // Ordered behavior
-bool Strategy3::use( Board*& board_, const Player* player, int32_t& i,
+bool Strategy3::play( Board*& board_, const Player* player, int32_t& i,
                      int32_t& j, int32_t& i2, int32_t& j2 ) const{
 
   const int32_t BSIZE = BoardGlobals::getSize();
@@ -150,7 +150,7 @@ bool Strategy3::use( Board*& board_, const Player* player, int32_t& i,
 
   for(    i = 0; i < BSIZE;  ++i ){
     for(  j = 0; j < BSIZE;  ++j ){
-      Piece*&  currentSquarePiece = board_->changeBoard()[i][j]; // Ref to pointer
+      Piece*&  currentSquarePiece = board_->modify()[i][j]; // Ref to pointer
       // If piece exists and player color corresponds to piece color.
       if( currentSquarePiece &&
           currentSquarePiece->getPieceColor() == player->getColor() ){

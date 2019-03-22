@@ -21,8 +21,7 @@ public:
          const PieceType& pt,
          const PieceColor& pcl ): pcoords_  ( pcd ),
                            ptype_           ( pt ),
-                           pcolor_          ( pcl ){
-   }
+                           pcolor_          ( pcl ){}
 
 
 
@@ -454,23 +453,23 @@ public:
     isEverMoved_ = true;
   }
 
+private:
+  void remove( Board* board,
+               const Player* player,
+               Piece*& winnerPieceSquare,
+               Piece*& looserPieceSquare,
+               const int32_t i,
+               const int32_t j );
+
 protected:
   PieceCoordinates pcoords_;
   PieceType        ptype_;
   PieceColor       pcolor_;
 
-  bool             isEverMoved_    {false};
-  bool             isMovedOnlyOnce_{false};  // Control the fact of single piece movement
-                                             //(important for long pawn moves)
-  bool             isMadeLongMove_ {false};
-  bool             isUnderAttack_  {false};
-
-private:
-  void replacePiece( Board* board,
-                     const Player* player,
-                     Piece*& winnerPieceSquare,
-                     Piece*& looserPieceSquare,
-                     const int32_t i,
-                     const int32_t j );
+  bool             isEverMoved_    { false };
+  bool             isMovedOnlyOnce_{ false };  // Control the fact of single piece movement
+                                               //(important for long pawn moves)
+  bool             isMadeLongMove_ { false };
+  bool             isUnderAttack_  { false };
 };
 #endif

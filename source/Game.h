@@ -16,49 +16,35 @@
 //! - time control
 class Game{
 public:
+  Game();
+  ~Game();
 
-  void startNewGame( Board& board, WinConsole& con );
+  void start();
 
-  void reset(){
-    turns_ = 0;
-    isValid_ = true;
-  }
+  void setStrategy( Player* player );
 
-  void nextTurn(){
-    ++turns_;
+  void reset();
 
-    if (turns_ == ::TURNS_MAX)
-      isValid_ = false;
+  void nextTurn();
 
-    if (turns_ > ::TURNS_MAX)
-      throw GameIsOver();
-  }
+  const int32_t currentTurn() const;
 
-  const bool isRunning() const {
-    return isValid_;
-  }
+  void setTurn( const int32_t turns );
 
-  const int32_t currentTurn() const{
-    return turns_;
-  }
+  void makeTurn( Player* const player1,
+                 const Player* const player2,
+                 WinConsole& console,
+                 Board& board );
 
-  void setTurn( const int32_t turns ){
-    turns_ = turns;
-  }
+  const bool isRunning() const;
 
   //!< Heads or tails game - who plays white.
-  const PieceColor headsOrTailsColor(){
-
-    std::random_device* rd = RandomDevice::getInstance(); // Singleton.
-    std::mt19937 gen( ( *rd )() );
-    // give "true" 1/2 of the time
-    // give "false" 1/2 of the time
-    std::bernoulli_distribution d( 0.5 );
-
-    return d( gen ) ? PieceColor::WHITE : PieceColor::BLACK;
-  }
+  const PieceColor headsOrTailsColor();
 
 private:
+  Board* board_;
+  WinConsole* winConsole_;
+
   int32_t turns_   { 0 };
   bool    isValid_ { true };
 };

@@ -5,12 +5,14 @@
 #include "Player.h"
 #include "Piece.h"
 
-void Piece::replacePiece( Board* board,
-                          const Player* player,
-                          Piece*& newPiece,
-                          Piece*& oldPiece,
-                          const int32_t i,
-                          const int32_t j ){
+// Removes piece (newPiece) to enemy square,
+// killing the enemy piece (oldPiece).
+void Piece::remove( Board* board,
+                    const Player* player,
+                    Piece*& newPiece,
+                    Piece*& oldPiece,
+                    const int32_t i,
+                    const int32_t j ){
 
   // Old piece pointer now points to new piece.
   delete oldPiece;
@@ -41,7 +43,7 @@ bool Piece::killPiece( Board* board,
   isKingUnderAttack = false;
 
   Piece*& enemySquare =
-  board->changeBoard()[i][j];
+  board->modify()[i][j];
 
   if( nullptr == enemySquare ){
     // Check for empty square.
@@ -59,7 +61,7 @@ bool Piece::killPiece( Board* board,
   }
   else{
 
-    replacePiece( board, player, piece, enemySquare, i, j );
+    remove( board, player, piece, enemySquare, i, j );
 
     // Pass next move to opponent.
     return true;
@@ -76,7 +78,7 @@ bool Piece::movePiece( Board* board,
 
   // If no coordinates were changed or square is busy - treat next piece.
   Piece*& boardSquare =
-  board->changeBoard()[i][j];
+  board->modify()[i][j];
   if( boardSquare ){
     return false;
   }
@@ -121,7 +123,7 @@ bool Piece::killForwardLine( Board* board,
       ++forwardEnemySquare_y;
 
       Piece* potentialPiece =
-      board->changeBoard()[forwardEnemySquare_y][forwardEnemySquare_x];
+      board->modify()[forwardEnemySquare_y][forwardEnemySquare_x];
       // If nearest forward piece == white - exit.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::WHITE )
@@ -140,7 +142,7 @@ bool Piece::killForwardLine( Board* board,
       --forwardEnemySquare_y;
 
       Piece* potentialPiece =
-      board->changeBoard()[forwardEnemySquare_y][forwardEnemySquare_x];
+      board->modify()[forwardEnemySquare_y][forwardEnemySquare_x];
       // If nearest forward piece - black - do nothing.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::BLACK )
@@ -192,7 +194,7 @@ bool Piece::killBackwardLine( Board* board,
       ++backwardEnemySquare_y;
 
       Piece* potentialPiece =
-      board->changeBoard()[backwardEnemySquare_y][backwardEnemySquare_x];
+      board->modify()[backwardEnemySquare_y][backwardEnemySquare_x];
       // If nearest forward piece == same color - exit.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::BLACK )
@@ -211,7 +213,7 @@ bool Piece::killBackwardLine( Board* board,
       --backwardEnemySquare_y;
 
       Piece* potentialPiece =
-      board->changeBoard()[backwardEnemySquare_y][backwardEnemySquare_x];
+      board->modify()[backwardEnemySquare_y][backwardEnemySquare_x];
       // If nearest forward piece - same color - do nothing.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::WHITE )
@@ -265,7 +267,7 @@ bool Piece::killLeftLine( Board* board,
       ++leftEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[leftEnemySquare_y][leftEnemySquare_x];
+      board->modify()[leftEnemySquare_y][leftEnemySquare_x];
       // If nearest left piece == same color - exit.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == this->getPieceColor() )
@@ -283,7 +285,7 @@ bool Piece::killLeftLine( Board* board,
       --leftEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[leftEnemySquare_y][leftEnemySquare_x];
+      board->modify()[leftEnemySquare_y][leftEnemySquare_x];
       // If nearest left piece - same color - do nothing.
       if( potentialPiece ){
           if( potentialPiece->getPieceColor() == this->getPieceColor() )
@@ -335,7 +337,7 @@ bool Piece::killRightLine( Board* board,
       ++rightEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[rightEnemySquare_y][rightEnemySquare_x];
+      board->modify()[rightEnemySquare_y][rightEnemySquare_x];
       // If nearest right piece == same color - exit.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::BLACK )
@@ -354,7 +356,7 @@ bool Piece::killRightLine( Board* board,
       --rightEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[rightEnemySquare_y][rightEnemySquare_x];
+      board->modify()[rightEnemySquare_y][rightEnemySquare_x];
       // If nearest right piece - same color - do nothing.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::WHITE )
@@ -410,7 +412,7 @@ bool Piece::moveForwardLine2( Board* board,
       ++squareIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[forwardSquare_y][forwardSquare_x];
+      board->modify()[forwardSquare_y][forwardSquare_x];
       // If nearest Square is busy - break cycle.
       if( potentialSquare ){
         --forwardSquare_y;
@@ -426,7 +428,7 @@ bool Piece::moveForwardLine2( Board* board,
       ++squareIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[forwardSquare_y][forwardSquare_x];
+      board->modify()[forwardSquare_y][forwardSquare_x];
       // If nearest Square is busy - break cycle.
       if( potentialSquare ){
         ++forwardSquare_y;
@@ -477,7 +479,7 @@ bool Piece::moveBackwardLine2( Board* board,
       ++squareIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[backwardSquare_y][backwardSquare_x];
+      board->modify()[backwardSquare_y][backwardSquare_x];
       // If nearest Square is busy - break cycle.
       if( potentialSquare ){
         --backwardSquare_y;
@@ -493,7 +495,7 @@ bool Piece::moveBackwardLine2( Board* board,
       ++squareIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[backwardSquare_y][backwardSquare_x];
+      board->modify()[backwardSquare_y][backwardSquare_x];
       // If nearest Square is busy - break cycle.
       if( potentialSquare ){
 
@@ -538,7 +540,7 @@ bool Piece::moveLeftLine2( Board* board,
       ++squareIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[leftSquare_y][leftSquare_x];
+      board->modify()[leftSquare_y][leftSquare_x];
       // If nearest Square is busy - break cycle.
       if( potentialSquare){
         --leftSquare_x;
@@ -554,7 +556,7 @@ bool Piece::moveLeftLine2( Board* board,
       ++squareIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[leftSquare_y][leftSquare_x];
+      board->modify()[leftSquare_y][leftSquare_x];
       // If nearest Square is busy - break cycle.
       if( potentialSquare ){
         ++leftSquare_x;
@@ -600,7 +602,7 @@ bool Piece::moveRightLine2( Board* board,
       ++squareIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[rightSquare_y][rightSquare_x];
+      board->modify()[rightSquare_y][rightSquare_x];
       // If nearest Square is busy - break cycle.
       if( potentialSquare){
         --rightSquare_x;
@@ -616,7 +618,7 @@ bool Piece::moveRightLine2( Board* board,
       ++squareIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[rightSquare_y][rightSquare_x];
+      board->modify()[rightSquare_y][rightSquare_x];
       // If nearest Square is busy - break cycle.
       if( potentialSquare ){
         ++rightSquare_x;
@@ -1219,7 +1221,7 @@ bool Piece::killDiagonalForwardLeftLine( Board* board,
       ++forwardEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[forwardEnemySquare_y][forwardEnemySquare_x];
+      board->modify()[forwardEnemySquare_y][forwardEnemySquare_x];
       // If nearest forward piece == white - exit.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::WHITE )
@@ -1239,7 +1241,7 @@ bool Piece::killDiagonalForwardLeftLine( Board* board,
       --forwardEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[forwardEnemySquare_y][forwardEnemySquare_x];
+      board->modify()[forwardEnemySquare_y][forwardEnemySquare_x];
       // If nearest forward piece - black - do nothing.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::BLACK )
@@ -1294,7 +1296,7 @@ bool Piece::killDiagonalBackwardRightLine( Board* board,
       --backwardEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[backwardEnemySquare_y][backwardEnemySquare_x];
+      board->modify()[backwardEnemySquare_y][backwardEnemySquare_x];
       // If nearest backward piece == white - exit.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::WHITE )
@@ -1317,7 +1319,7 @@ bool Piece::killDiagonalBackwardRightLine( Board* board,
       ++backwardEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[backwardEnemySquare_y][backwardEnemySquare_x];
+      board->modify()[backwardEnemySquare_y][backwardEnemySquare_x];
       // If nearest backward piece - black - do nothing.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::BLACK )
@@ -1373,7 +1375,7 @@ bool Piece::killDiagonalForwardRightLine( Board* board,
       --forwardEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[forwardEnemySquare_y][forwardEnemySquare_x];
+      board->modify()[forwardEnemySquare_y][forwardEnemySquare_x];
       // If nearest forward piece == white - exit.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::WHITE )
@@ -1394,7 +1396,7 @@ bool Piece::killDiagonalForwardRightLine( Board* board,
       ++forwardEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[forwardEnemySquare_y][forwardEnemySquare_x];
+      board->modify()[forwardEnemySquare_y][forwardEnemySquare_x];
       // If nearest forward piece - black - do nothing.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::BLACK )
@@ -1451,7 +1453,7 @@ bool Piece::killDiagonalBackwardLeftLine( Board* board,
       ++backwardEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[backwardEnemySquare_y][backwardEnemySquare_x];
+      board->modify()[backwardEnemySquare_y][backwardEnemySquare_x];
       // If nearest backward piece == white - exit.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::WHITE )
@@ -1472,7 +1474,7 @@ bool Piece::killDiagonalBackwardLeftLine( Board* board,
       --backwardEnemySquare_x;
 
       Piece* potentialPiece =
-      board->changeBoard()[backwardEnemySquare_y][backwardEnemySquare_x];
+      board->modify()[backwardEnemySquare_y][backwardEnemySquare_x];
       // If nearest backward piece - black - do nothing.
       if( potentialPiece ){
         if( potentialPiece->getPieceColor() == PieceColor::BLACK )
@@ -1881,7 +1883,7 @@ bool Piece::moveDiagonalForwardLeftLine( Board* board,
       ++lengthIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[forwardEnemySquare_y][forwardEnemySquare_x];
+      board->modify()[forwardEnemySquare_y][forwardEnemySquare_x];
       // If nearest square is busy - go to previous free pos. and break cycle.
       if( potentialSquare ){
         --forwardEnemySquare_y;
@@ -1902,7 +1904,7 @@ bool Piece::moveDiagonalForwardLeftLine( Board* board,
       ++lengthIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[forwardEnemySquare_y][forwardEnemySquare_x];
+      board->modify()[forwardEnemySquare_y][forwardEnemySquare_x];
       // If nearest square is busy - go to previous free pos. and break cycle.
       if( potentialSquare ){
         ++forwardEnemySquare_y;
@@ -1952,7 +1954,7 @@ bool Piece::moveDiagonalBackwardRightLine( Board* board,
       ++lengthIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[backwardEnemySquare_y][backwardEnemySquare_x];
+      board->modify()[backwardEnemySquare_y][backwardEnemySquare_x];
       // If nearest square is busy - go to previous free pos. and break cycle.
       if( potentialSquare ){
         ++backwardEnemySquare_y;
@@ -1973,7 +1975,7 @@ bool Piece::moveDiagonalBackwardRightLine( Board* board,
       ++lengthIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[backwardEnemySquare_y][backwardEnemySquare_x];
+      board->modify()[backwardEnemySquare_y][backwardEnemySquare_x];
       // If nearest square is busy - go to previous free pos. and break cycle.
       if( potentialSquare ){
         --backwardEnemySquare_y;
@@ -2023,7 +2025,7 @@ bool Piece::moveDiagonalForwardRightLine( Board* board,
       ++lengthIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[square_y][square_x];
+      board->modify()[square_y][square_x];
       // If nearest square is busy - go to previous free pos. and break cycle.
       if( potentialSquare ){
         --square_y;
@@ -2044,7 +2046,7 @@ bool Piece::moveDiagonalForwardRightLine( Board* board,
       ++lengthIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[square_y][square_x];
+      board->modify()[square_y][square_x];
       // If nearest square is busy - go to previous free pos. and break cycle.
       if( potentialSquare ){
         ++square_y;
@@ -2094,7 +2096,7 @@ bool Piece::moveDiagonalBackwardLeftLine( Board* board,
       ++lengthIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[square_y][square_x];
+      board->modify()[square_y][square_x];
       // If nearest square is busy - go to previous free pos. and break cycle.
       if( potentialSquare ){
         ++square_y;
@@ -2115,7 +2117,7 @@ bool Piece::moveDiagonalBackwardLeftLine( Board* board,
       ++lengthIter;
 
       Piece* potentialSquare =
-      board->changeBoard()[square_y][square_x];
+      board->modify()[square_y][square_x];
       // If nearest square is busy - go to previous free pos. and break cycle.
       if( potentialSquare ){
         --square_y;

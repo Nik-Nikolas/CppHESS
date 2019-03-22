@@ -2,6 +2,8 @@
 // (C)Igor Lobanov. 2017
 //
 // This is a header file.
+//
+// Global constants, enums, structs, single functions, overloaded operators
 
 //!< Comments style purpose: Doxygen.
 
@@ -30,6 +32,7 @@
 // - void shuffle(RandomIt first, RandomIt last, URBG&& g)
 // - for( auto& p: vp)
 // - default values initialization for class members T t {val};
+// - noexcept functions
 // - ...
 
 // Object Oriented Design:
@@ -139,7 +142,8 @@ std::ostream& operator << ( std::ostream& s, const PieceType& pt );
 
 
 //! \brief Show UTF-8 chess piece image.
-void printPiece( const PieceType& PT, const PieceColor PC = PieceColor::BLACK );
+void printPiece( const PieceType& PT,
+                 const PieceColor& PC = PieceColor::BLACK );
 
 
 
@@ -165,13 +169,12 @@ void clear();
 //! - x (horizontal coordinate)
 struct PieceCoordinates{
 
-  PieceCoordinates( int32_t y = 0, int32_t x = A_ASCII_CODE ): y_( y ),
-                                                     x_( x - A_ASCII_CODE ) {}
+  PieceCoordinates( int32_t y = 0,
+                    int32_t x = A_ASCII_CODE ): y_( y ),
+                                                x_( x - A_ASCII_CODE ) {}
   static const int32_t A_ASCII_CODE = 'A';
   int32_t y_;
   int32_t x_;
-
-
 };
 
 
@@ -197,7 +200,6 @@ public:
   }
 
   static void deleteInstance(){
-
     delete rd_;
     rd_ = nullptr;
   }

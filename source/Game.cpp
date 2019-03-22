@@ -5,19 +5,39 @@
 #include "Player.h"
 #include "Game.h"
 
-void Game::startNewGame( Board& board, WinConsole& console ){
+Game::Game()
+{
+  // Set global settings
+  BoardGlobals::setSize( ::START_BOARD_SIDE );
+  BoardGlobals::setLongMoveStep( ::START_BOARD_SIDE / 2 );
+  BoardGlobals::setDelay( ::START_DELAY );
 
-  //console.setFont( BoardGlobals::getSize() > 40 ? 2 : 9 );
+  static_assert( ::START_BOARD_SIDE % 2 == 0,
+                 "Board cells amount should be an even number.");
 
-  // OK as long as the Game object isn't const.
-  Game* game = const_cast<Game*>(this);
+  board_ = new Board();
+  winConsole_ = new WinConsole();
+}
 
-  Player player1( "Jeeves",  &board, game, headsOrTailsColor() );
-  Player player2( "Wooster", &board, game, player1 );
+Game::~Game()
+{
+  delete board_;
+  delete winConsole_;
+}
+
+void Game::start(){
+
+  // First player plays headsOrTails game to choose pieces color
+  Player player1( "Jeeves",  board_, this, headsOrTailsColor() );
+
+  // Second player takes another color
+  Player player2( "Wooster", board_, this, player1 );
+
+  // Pointers to players
   Player* white = player1.getColor() == PieceColor::WHITE ? &player1 : &player2;
   Player* black = player2.getColor() == PieceColor::BLACK ? &player2 : &player1;
 
-  /*
+  /* BLOCK WITH Pointers to class Player member functions. Obsolete
   char ch;
   std::cout <<  "\n1 Player1 - user game"
                 "\n2         - simulations (C-Life game RANDOM)"
@@ -48,36 +68,20 @@ void Game::startNewGame( Board& board, WinConsole& console ){
     blackPlayer = &Player::makeMove;
     */
 
-  const Strategy1 userGame;    // user game
-  const Strategy2 randomGame;  // C-Life game RANDOM
-  const Strategy3 orderedGame; // C-Life game ORDERED
-
-  char ch;
   std::cout <<  "\nWHITES 1 user game"
                 "\n       2 simulations (C-Life game RANDOM)"
                 "\n       3 simulations (C-Life game ORDERED): ";
-  ch = _getch();
 
-  if( ch - 48 == 1 )
-    white->setStrategy( &userGame );
-  else if( ch - 48 == 2 )
-    white->setStrategy( &randomGame );
-  else
-    white->setStrategy( &orderedGame );
+  setStrategy( white );
 
   std::cout << "\n";
   std::cout <<  "\nBLACKS 1 user game"
                 "\n       2 simulations (C-Life game RANDOM)"
                 "\n       3 simulations (C-Life game ORDERED): ";
-  ch = _getch();
-  if( ch - 48 == 1 )
-    black->setStrategy( &userGame );
-  else if( ch - 48 == 2 )
-    black->setStrategy( &randomGame );
-  else
-    black->setStrategy( &orderedGame );
 
-  console.showBoard( board );
+  setStrategy( black );
+
+  winConsole_->showBoard( *board_ );
   std::cout <<  "1 Classic game\n"
                 "2 Knight VS Rook\n"
                 "3 Queens Battle\n"
@@ -90,77 +94,124 @@ void Game::startNewGame( Board& board, WinConsole& console ){
                 "'n'     to start new game; 'z' 'x' to change board size\n"
                 "'t'     to switch graphic mode to glyph / text";
 
-  ch = _getch();
-  player1.arrangePieces( ch - 48 );
+  player1.arrangePieces();
 
-  int32_t i, j, i2, j2;
-  i = j = i2 = j2 = -1;
-  bool frameIsShown = false;
-  int32_t frameStep = 0;
+  winConsole_->showBoard( *board_ );
 
-  console.showBoard( board );
-
+  // Main game cycle
   while( isRunning() ){
 
-    frameStep = BoardGlobals::getFramesStep();
-    frameIsShown =
-    !static_cast<bool>( game->currentTurn() % frameStep );
+    // WHITES play
+    makeTurn( white, black, *winConsole_, *board_ );
+    winConsole_->controlKeyboard( *board_, player1, *this, *winConsole_ );
 
-    //if( !( white->*whitePlayer )( i, j, i2, j2 ) ){
-    if( !white->useStrategy( i, j, i2, j2 ) ){
-
-      console.showBoard( board );
-      console.showPlayerData( *black );
-
-      std::cout << "\n" << white->getName()
-      << " have no pieces or no moves."
-         " Press ANY KEY to START NEW GAME.";
-      _getch();
-
-      board.clearBoard();
-      board.resetLastMovedPiece();
-      board.resizeBoard();
-
-      game->reset();
-      game->startNewGame( board, console );
-    }
-    else if( frameIsShown ){ // Visualize board and data each 1 of m frames
-
-      console.showBoard( board );
-      console.showPlayerData( *white );
-    }
-
-    console.controlKeyboard( board, player1, *game, console );
-
-    //if( !( black->*blackPlayer )( i, j, i2, j2 ) ){
-    if( !black->useStrategy( i, j, i2, j2 ) ){
-
-      console.showBoard( board );
-      console.showPlayerData( *white );
-
-      std::cout << "\n" << black->getName()
-      << " have no pieces or no moves."
-         " Press ANY KEY to START NEW GAME.";
-      _getch();
-
-      board.clearBoard();
-      board.resetLastMovedPiece();
-      board.resizeBoard();
-
-      game->reset();
-      game->startNewGame( board, console );
-    }
-    else if( frameIsShown &&
-             frameStep == 1 ){ // Visualize board and data each 1 of m frames
-
-      console.showBoard( board );
-      console.showPlayerData( *black );
-    }
-
-    console.controlKeyboard( board, player1, *game, console );
+    // BLACKS play
+    makeTurn( black, white, *winConsole_, *board_ );
+    winConsole_->controlKeyboard( *board_, player1, *this, *winConsole_ );
 
     nextTurn();
   }
 
   _getch();
+
+  // Delete Random Device - we dont need it anymore
+  RandomDevice::deleteInstance();
+}
+
+// Player makes turn in accordance with chosen strategy
+void Game::makeTurn( Player* const player1,
+                     const Player* const player2,
+                     WinConsole& console,
+                     Board& board ){
+
+  int32_t i, j, i2, j2; // Coords before/after move.
+  i = j = i2 = j2 = -1;
+
+  int32_t frameStep = BoardGlobals::getFramesStep();
+  bool frameIsShown = !static_cast<bool>( currentTurn() % frameStep );
+
+  if( !player1->playStrategy( i, j, i2, j2 ) ){
+
+    console.showBoard( board );
+    console.showPlayerData( *player2 );
+
+    std::cout << "\n" << player1->getName()
+    << " have no pieces or no moves."
+       " Press ANY KEY to START NEW GAME.";
+    _getch();
+
+    board.clear();
+    board.resetLastMovedPiece();
+    board.resize();
+
+    this->reset(); // reset game
+    this->start(); // start new game
+  }
+  else if( frameIsShown ){ // Visualize board and data each 1 of m frames
+
+    if( frameStep == 1 ){
+      console.showBoard( board );
+      console.showPlayerData( *player1 );
+    }
+    // If frameStep > 1 - show only data after WHITE piece move to prevent
+    // display similar board views
+    else if( player1->getColor() == PieceColor::WHITE ){
+      console.showBoard( board );
+      console.showPlayerData( *player1 );
+    }
+  }
+}
+
+void Game::setStrategy( Player* player ){
+
+  const char ch = _getch();
+
+  const StrategyInterface* playerStrategy;
+  switch( ch - 48 ){
+
+    case 1  : playerStrategy = new Strategy1; break; // user game
+    case 2  : playerStrategy = new Strategy2; break; // C-Life game RANDOM
+    default : playerStrategy = new Strategy3; break; // C-Life game ORDERED
+  }
+
+  player->setStrategy( playerStrategy );
+}
+
+inline void Game::nextTurn(){
+  ++turns_;
+
+  if ( ::TURNS_MAX <= turns_ ){
+    isValid_ = false;
+
+    throw GameIsOver();
+  }
+}
+
+void Game::reset(){
+  turns_ = 0;
+  isValid_ = true;
+}
+
+inline const bool Game::isRunning() const {
+  return isValid_;
+}
+
+const int32_t Game::currentTurn() const{
+  return turns_;
+}
+
+void Game::setTurn( const int32_t turns ){
+  turns_ = turns;
+}
+
+//!< Heads or tails game - who plays white.
+const PieceColor Game::headsOrTailsColor(){
+
+  std::random_device* rd = RandomDevice::getInstance(); // Singleton.
+  std::mt19937 gen( ( *rd )() );
+  // give "true" 1/2 of the time
+  // give "false" 1/2 of the time
+  std::bernoulli_distribution d( 0.5 );
+
+  return d( gen ) ? PieceColor::WHITE : PieceColor::BLACK;
 }
