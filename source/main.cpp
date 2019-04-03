@@ -10,24 +10,49 @@
 #include "C++HESS.h"
 
 // Encapsulated in class (as a private static) variables.
-int32_t BoardGlobals::size_        = 0;
-int32_t BoardGlobals::longMoveStep_= 0;
-int32_t BoardGlobals::delay_       = 0;
-int32_t BoardGlobals::framesStep_  = START_FRAME;
-bool    BoardGlobals::isGlyphMode_ = true;
+int32_t BoardGlobals::size_         = 0;
+int32_t BoardGlobals::longMoveStep_ = 0;
+int32_t BoardGlobals::delay_        = 0;
+int32_t BoardGlobals::framesStep_   = START_FRAME;
+bool    BoardGlobals::isGlyphMode_  = true;
+int32_t King::counter_              = 0;
 
-int32_t King::counter_             = 0;
-
-// Singleton class member.
-std::random_device* RandomDevice::rd_ = nullptr;
+// Singletons class members.
+std::random_device*   RandomDevice::rd_ = nullptr;
+std::mutex* MutexDevice::m_ = nullptr;
 
 int main(){
 
-  Game* game = new Game();
+  // Mutex singleton
+  std::mutex* mutex = MutexDevice::getInstance();
 
-  game->start();
+  Board* board           = new Board;
+  WinConsole* winConsole = new WinConsole( mutex );
+  // Game needs board to change it and console to show board graphics
+  Game* game             = new Game( board, winConsole, mutex );
+
+  // Separate thread (second)
+  winConsole->start( *board, *game);
+
+  // Multigame cycle
+  // (new game could be launched from main menu or when game is out of turns)
+  while( true ){
+    try{
+      game->start();
+    }
+    catch( GameIsOver& g ){
+      delete game;
+      game = new Game( board, winConsole, mutex );
+    }
+    catch(...){
+      throw;
+    }
+  }
 
   delete game;
+  delete winConsole;
+  delete board;
+  MutexDevice::deleteInstance();
 
   return 0;
 }

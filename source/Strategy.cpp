@@ -6,7 +6,7 @@
 #include "Player.h"
 
 // Manual game behavior
-bool Strategy1::play( Board*& board_, const Player* player, int32_t& i,
+bool Strategy1::play( Board* board_, const Player* player, int32_t& i,
                      int32_t& j, int32_t& i2, int32_t& j2 ) const{
 
   const int32_t BSIZE = BoardGlobals::getSize();
@@ -83,7 +83,7 @@ bool Strategy1::play( Board*& board_, const Player* player, int32_t& i,
 
 
 // Random moves behavior
-bool Strategy2::play( Board*& board_, const Player* player, int32_t& i,
+bool Strategy2::play( Board* board_, const Player* player, int32_t& i,
                      int32_t& j, int32_t& i2, int32_t& j2 ) const{
 
   bool isKingUnderAttack = false;
@@ -142,7 +142,7 @@ bool Strategy2::play( Board*& board_, const Player* player, int32_t& i,
 
 
 // Ordered behavior
-bool Strategy3::play( Board*& board_, const Player* player, int32_t& i,
+bool Strategy3::play( Board* board_, const Player* player, int32_t& i,
                      int32_t& j, int32_t& i2, int32_t& j2 ) const{
 
   const int32_t BSIZE = BoardGlobals::getSize();

@@ -5,33 +5,22 @@
 #include "Player.h"
 #include "Game.h"
 
-Game::Game()
-{
-  // Set global settings
-  BoardGlobals::setSize( ::START_BOARD_SIDE );
-  BoardGlobals::setLongMoveStep( ::START_BOARD_SIDE / 2 );
-  BoardGlobals::setDelay( ::START_DELAY );
-
-  static_assert( ::START_BOARD_SIDE % 2 == 0,
-                 "Board cells amount should be an even number.");
-
-  board_ = new Board();
-  winConsole_ = new WinConsole();
-}
+Game::Game( Board* board,
+            WinConsole*& winConsole,
+            std::mutex*& mainMutex ) : board_( board ),
+                                       winConsole_( winConsole ),
+                                       mainMutex_ ( mainMutex ){}
 
 Game::~Game()
-{
-  delete board_;
-  delete winConsole_;
-}
+{}
 
 void Game::start(){
 
   // First player plays headsOrTails game to choose pieces color
-  Player player1( "Jeeves",  board_, this, headsOrTailsColor() );
+  Player player1( "Jeeves",  board_, this, headsOrTailsColor(), mainMutex_ );
 
   // Second player takes another color
-  Player player2( "Wooster", board_, this, player1 );
+  Player player2( "Wooster", board_, this, player1, mainMutex_ );
 
   // Pointers to players
   Player* white = player1.getColor() == PieceColor::WHITE ? &player1 : &player2;
@@ -94,6 +83,7 @@ void Game::start(){
                 "'n'     to start new game; 'z' 'x' to change board size\n"
                 "'t'     to switch graphic mode to glyph / text";
 
+
   player1.arrangePieces();
 
   winConsole_->showBoard( *board_ );
@@ -101,18 +91,20 @@ void Game::start(){
   // Main game cycle
   while( isRunning() ){
 
+    std::lock_guard<std::mutex> guard ( *mainMutex_ );
+
+    checkValid(); // If others threads changed game validness - throw exception
+
     // WHITES play
-    makeTurn( white, black, *winConsole_, *board_ );
-    winConsole_->controlKeyboard( *board_, player1, *this, *winConsole_ );
+    makeTurn( white, black, winConsole_, *board_ );
 
     // BLACKS play
-    makeTurn( black, white, *winConsole_, *board_ );
-    winConsole_->controlKeyboard( *board_, player1, *this, *winConsole_ );
+    makeTurn( black, white, winConsole_, *board_ );
 
     nextTurn();
   }
 
-  _getch();
+  //_getch();
 
   // Delete Random Device - we dont need it anymore
   RandomDevice::deleteInstance();
@@ -121,7 +113,7 @@ void Game::start(){
 // Player makes turn in accordance with chosen strategy
 void Game::makeTurn( Player* const player1,
                      const Player* const player2,
-                     WinConsole& console,
+                     const WinConsole* console,
                      Board& board ){
 
   int32_t i, j, i2, j2; // Coords before/after move.
@@ -132,32 +124,33 @@ void Game::makeTurn( Player* const player1,
 
   if( !player1->playStrategy( i, j, i2, j2 ) ){
 
-    console.showBoard( board );
-    console.showPlayerData( *player2 );
+    checkValid(); // If others threads changed game validness - throw exception
+
+    console->showBoard( board );
+    console->showPlayerData( *player2 );
+
+    board.clear();
+    board.resetLastMovedPiece();
+    board.resize();
 
     std::cout << "\n" << player1->getName()
     << " have no pieces or no moves."
        " Press ANY KEY to START NEW GAME.";
     _getch();
 
-    board.clear();
-    board.resetLastMovedPiece();
-    board.resize();
-
-    this->reset(); // reset game
-    this->start(); // start new game
+    throw GameIsOver();
   }
   else if( frameIsShown ){ // Visualize board and data each 1 of m frames
 
     if( frameStep == 1 ){
-      console.showBoard( board );
-      console.showPlayerData( *player1 );
+      console->showBoard( board );
+      console->showPlayerData( *player1 );
     }
     // If frameStep > 1 - show only data after WHITE piece move to prevent
     // display similar board views
     else if( player1->getColor() == PieceColor::WHITE ){
-      console.showBoard( board );
-      console.showPlayerData( *player1 );
+      console->showBoard( board );
+      console->showPlayerData( *player1 );
     }
   }
 }
@@ -185,6 +178,15 @@ inline void Game::nextTurn(){
 
     throw GameIsOver();
   }
+}
+
+void Game::setInvalid() noexcept{
+    isValid_ = false;
+}
+
+void Game::checkValid(){
+  if( false == isValid_ )
+     throw GameIsOver();
 }
 
 void Game::reset(){

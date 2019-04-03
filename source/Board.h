@@ -28,6 +28,14 @@ class Board{
 public:
   Board() : lastMovedPiece_() {
 
+    // Set global settings
+    BoardGlobals::setSize( ::START_BOARD_SIDE );
+    BoardGlobals::setLongMoveStep( ::START_BOARD_SIDE / 2 );
+    BoardGlobals::setDelay( ::START_DELAY );
+
+    static_assert( ::START_BOARD_SIDE % 2 == 0,
+                  "Board cells amount should be an even number.");
+
     resize();
   }
 

@@ -20,37 +20,55 @@ void WinConsole::setFont( const int32_t font ){
 
 
 
-void WinConsole::showBoard( const Board& board ){
+void WinConsole::showBoard( const Board& board ) const{
  ::clear();
  ::show( board.read() );
 }
 
 
 
-void WinConsole::showPlayerData( const Player& player ){
+void WinConsole::showPlayerData( const Player& player ) const{
   player.showData();
 }
 
 
 
 void WinConsole::controlKeyboard( Board& board,
-                                  Player& player1,
-                                  Game& game,
-                                  WinConsole& console ){
+                                  Game& currentGame ){
+  while( true ){
+    if( _kbhit() ){
 
-  if( _kbhit() ){
-    int32_t keyCode = _getch();
+      std::lock_guard<std::mutex> guard ( *mainMutex_ );
 
-    while( _kbhit() )
-      _getch();
+      // Establish mutex to exclude access from main thread
+      //std::lock_guard<std::mutex> guard1( *mainMutex_ );
 
-    static const int32_t STEP = BoardGlobals::getSize();
+      int32_t keyCode = _getch();
 
-    switch( keyCode ){
-      case 122 :
-        if( BoardGlobals::getSize() > STEP ){ // 'z'
+      while( _kbhit() )
+        _getch();
 
-          BoardGlobals::setSize( BoardGlobals::getSize() / 2 );
+      static const int32_t STEP = BoardGlobals::getSize();
+
+      switch( keyCode ){
+        // 'z'
+        case 122 :
+          if( BoardGlobals::getSize() > STEP ){
+
+            BoardGlobals::setSize( BoardGlobals::getSize() / 2 );
+            BoardGlobals::setLongMoveStep( BoardGlobals::getSize() / 2 );
+            board.resetLastMovedPiece();
+
+            board.modify().resize( BoardGlobals::getSize() );
+
+            for( auto i = 0; i < BoardGlobals::getSize(); ++i )
+              board.modify()[i].resize( BoardGlobals::getSize() );
+          }
+          break;
+        // 'x'
+        case 120 :
+
+          BoardGlobals::setSize( BoardGlobals::getSize() * 2 );
           BoardGlobals::setLongMoveStep( BoardGlobals::getSize() / 2 );
           board.resetLastMovedPiece();
 
@@ -58,64 +76,69 @@ void WinConsole::controlKeyboard( Board& board,
 
           for( auto i = 0; i < BoardGlobals::getSize(); ++i )
             board.modify()[i].resize( BoardGlobals::getSize() );
-        }
-        break;
-      case 120 : // 'x'
-        BoardGlobals::setSize( BoardGlobals::getSize() * 2 );
-        BoardGlobals::setLongMoveStep( BoardGlobals::getSize() / 2 );
-        board.resetLastMovedPiece();
 
-        board.modify().resize( BoardGlobals::getSize() );
+          //for( auto i = BoardGlobals::getSize() - STEP; i < BoardGlobals::getSize(); ++i )
+          //  for( auto j = BoardGlobals::getSize() - STEP; j < BoardGlobals::getSize(); ++j )
+          //    board.modify()[i][j] = nullptr;
 
-        for( auto i = 0; i < BoardGlobals::getSize(); ++i )
-          board.modify()[i].resize( BoardGlobals::getSize() );
+          break;
+        // 'n'
+        case 110 :
 
-        //for( auto i = BoardGlobals::getSize() - STEP; i < BoardGlobals::getSize(); ++i )
-        //  for( auto j = BoardGlobals::getSize() - STEP; j < BoardGlobals::getSize(); ++j )
-        //    board.modify()[i][j] = nullptr;
-        break;
-      case 110 : // 'n'
-        board.clear();
-            board.resetLastMovedPiece();
-        board.resize();
-        King::resetCounter();
+          // Clear all board data
+          board.clear();
+          board.resetLastMovedPiece();
+          board.resize();
 
-        game.reset();
-        game.start();
-        break;
-      case 118 : // 'v'
-        if ( 0 == BoardGlobals::getDelay() )
-          BoardGlobals::setDelay( 100 );
-        else
-          BoardGlobals::setDelay( BoardGlobals::getDelay() * 2 );
-        break;
-      case 99 : // 'c'
-        BoardGlobals::setDelay( BoardGlobals::getDelay() / 2 );
-        break;
-      case 32 : // ' '
-        std::cout << " PAUSE MODE - PRINT ANY KEY TO PROCEED:";
-        _getch();
-        break;
-      case 97 : // 'a'
-        BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() / 2 );
-        break;
-      case 115 : // 's'
-        BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() * 2 );
-        break;
-      case 116 :
-        BoardGlobals::setGlyphMode( !BoardGlobals::getGlyphMode() );
-        break;
-      case 27 :
-        exit( 0 );
-      default:
-        break;
+          // Clear King data
+          King::resetCounter();
+
+          // Set invalid status. Then game will notice it in main thread -
+          // it throws exception
+          currentGame.setInvalid();
+
+          break;
+        // 'v'
+        case 118 :
+          if ( 0 == BoardGlobals::getDelay() )
+            BoardGlobals::setDelay( 100 );
+          else
+            BoardGlobals::setDelay( BoardGlobals::getDelay() * 2 );
+          break;
+        // 'c'
+        case 99 :
+          BoardGlobals::setDelay( BoardGlobals::getDelay() / 2 );
+          break;
+        // space
+        case 32 :
+          std::cout << " PAUSE MODE - PRINT ANY KEY TO PROCEED:";
+          _getch();
+          break;
+        // 'a'
+        case 97 :
+          BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() / 2 );
+          break;
+        // 's'
+        case 115 :
+          BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() * 2 );
+          break;
+        // 't'
+        case 116 :
+          BoardGlobals::setGlyphMode( !BoardGlobals::getGlyphMode() );
+          break;
+        // ESC
+        case 27 :
+          exit( 0 );
+        default:
+          break;
+      }
+
+      if ( 0 > BoardGlobals::getDelay() )
+        BoardGlobals::setDelay( 0 );
+
+      if ( 0 >= BoardGlobals::getFramesStep() )
+        BoardGlobals::setFramesStep( 1 );
     }
-
-    if ( 0 > BoardGlobals::getDelay() )
-      BoardGlobals::setDelay( 0 );
-
-    if ( 0 >= BoardGlobals::getFramesStep() )
-      BoardGlobals::setFramesStep( 1 );
   }
 }
 
@@ -129,4 +152,22 @@ void WinConsole::delay(){
 
 void WinConsole::clear(){
   ::clear();
+}
+
+
+
+void WinConsole::start( Board& board, Game& game ){
+
+  // Multithreading part to split control and main processes.
+  //     1. Launch winConsole_->controlKeyboard(...) in separate thread.
+  std::thread control ( &WinConsole::controlKeyboard, // pointer to member function
+                        this,                   // pointer to obj
+                        std::ref( board ),           // references to args
+                        std::ref( game ) );          // because function changes board and game objects
+
+  //     2. Detach the thread.
+  control.detach();
+
+  assert( std::thread::hardware_concurrency() >= 2);
+  // End of multithreading part.
 }

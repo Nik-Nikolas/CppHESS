@@ -16,7 +16,10 @@
 //! - time control
 class Game{
 public:
-  Game();
+  Game( Board* board,
+        WinConsole*& winConsole,
+        std::mutex*& mainMutex );
+
   ~Game();
 
   void start();
@@ -27,13 +30,17 @@ public:
 
   void nextTurn();
 
+  void setInvalid() noexcept;
+
+  void checkValid();
+
   const int32_t currentTurn() const;
 
   void setTurn( const int32_t turns );
 
   void makeTurn( Player* const player1,
                  const Player* const player2,
-                 WinConsole& console,
+                 const WinConsole* console,
                  Board& board );
 
   const bool isRunning() const;
@@ -41,9 +48,14 @@ public:
   //!< Heads or tails game - who plays white.
   const PieceColor headsOrTailsColor();
 
+  std::mutex*& getMutex(){
+    return mainMutex_;
+  }
+
 private:
   Board* board_;
-  WinConsole* winConsole_;
+  const WinConsole* winConsole_;
+  std::mutex*& mainMutex_;
 
   int32_t turns_   { 0 };
   bool    isValid_ { true };

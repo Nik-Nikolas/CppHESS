@@ -20,12 +20,12 @@
 // - std::crbegin/crend ( T )
 //   >>> show( const std::vector<std::vector<Piece*> >& board )
 // - nullPtr
-// - apostrophe  1'000'000
+// - apostrophe  1'000'000x
 // - enum class
 // - fixed inreger int32_t
 // - '= delete' for CTORs and ASOPs where necessary
 // - '= default' for DTORs where necessary
-// - 'override, final' for virtual f of derived classes
+// - '= override', '= final' for virtual f of derived classes
 // - auto for cycles counters
 // - static_assert in main()
 // - uniform_int_distribution, bernoulli_distribution
@@ -33,6 +33,10 @@
 // - for( auto& p: vp)
 // - default values initialization for class members T t {val};
 // - noexcept functions
+// - multithreading:
+//     - Detached threads with parameters
+//     - std::mutex,
+//     - std::lock_guard<std::mutex>
 // - ...
 
 // Object Oriented Design:
@@ -68,6 +72,10 @@
 #include <conio.h>     // Console / IO / _kbhit() _getch()
 #include <windows.h>   // Console / WinAPI
 
+#include <mutex>
+#include <thread>
+//#include <memory>
+
 class Piece;
 class Player;
 class Board;
@@ -93,12 +101,12 @@ enum class PieceColor : int32_t{ NOT_DEFINED = -1,
 
 
 enum class PieceType : int32_t{ NOT_DEFINED = -1,
-                                PAWN   = 1,
-                                KNIGHT = 3,
-                                BISHOP = 4,
-                                ROOK   = 5,
-                                QUEEN  = 9,
-                                KING   = 0 };
+                                PAWN        = 1,
+                                KNIGHT      = 3,
+                                BISHOP      = 4,
+                                ROOK        = 5,
+                                QUEEN       = 9,
+                                KING        = 0 };
 
 
 
@@ -206,5 +214,27 @@ public:
 
 private:
   static std::random_device* rd_;
+};
+
+class MutexDevice{
+public:
+  MutexDevice()                                  = delete;
+  MutexDevice( const MutexDevice& )              = delete;
+  MutexDevice& operator = ( const MutexDevice& ) = delete;
+
+  static std::mutex* getInstance(){
+    if ( m_ == nullptr )
+      m_ = new std::mutex;
+
+    return m_;
+  }
+
+  static void deleteInstance(){
+    delete m_;
+    m_ = nullptr;
+  }
+
+private:
+  static std::mutex* m_;
 };
 #endif

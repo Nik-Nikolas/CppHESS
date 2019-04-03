@@ -14,13 +14,15 @@ public:
   Player( const std::string& name,
           Board* board,
           Game* game,
-          const PieceColor& color );
+          const PieceColor& color,
+          std::mutex*& mainMutex);
 
   // C-tor to create player based on previous player color
   Player( const std::string& name,
           Board* board,
           Game* game,
-          const Player& player );
+          const Player& player,
+          std::mutex*& mainMutex );
 
   bool makeMove          ( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
   bool makeRandomTestMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
@@ -68,10 +70,11 @@ private:
 
   void setMyTurnPriority () noexcept;
 
-  std::string name_;
-  Board*      board_;
-  Game*       game_;
-  PieceColor  color_;
-  bool        isMyTurn_ { false };
+  std::string  name_;
+  Board*       board_;
+  Game*        game_;
+  PieceColor   color_;
+  bool         isMyTurn_ { false };
+  std::mutex*& mainMutex_;
 };
 #endif

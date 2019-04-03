@@ -7,10 +7,12 @@
 Player::Player( const std::string& name,
                 Board* board,
                 Game* game,
-                const PieceColor& color ) : name_ ( name ),
-                                            board_( board ),
-                                            game_ ( game ),
-                                            color_( color ){
+                const PieceColor& color,
+                std::mutex*& mainMutex ) : name_ ( name ),
+                                           board_( board ),
+                                           game_ ( game ),
+                                           color_( color ),
+                                           mainMutex_( mainMutex ){
   setMyTurnPriority ();
 }
 
@@ -19,12 +21,14 @@ Player::Player( const std::string& name,
 Player::Player( const std::string& name,
                 Board* board,
                 Game* game,
-                const Player& player ) : name_ ( name ),
-                                         board_( board ),
-                                         game_ ( game ),
-                                         color_( player.getColor() ==
-                                         PieceColor::WHITE ? PieceColor::BLACK :
-                                                             PieceColor::WHITE ){
+                const Player& player,
+                std::mutex*& mainMutex ) : name_ ( name ),
+                                           board_( board ),
+                                           game_ ( game ),
+                                           color_( player.getColor() ==
+                                           PieceColor::WHITE ? PieceColor::BLACK :
+                                                               PieceColor::WHITE ),
+                                           mainMutex_( mainMutex ){
   setMyTurnPriority ();
 }
 
@@ -397,6 +401,8 @@ void Player::randomBattle(){
 
 
 void Player::arrangePieces(){
+
+  std::lock_guard<std::mutex> guard ( *mainMutex_ );
 
   const char scenario = _getch() - 48;
 
