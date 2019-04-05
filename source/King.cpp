@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "King.h"
 
-bool King::move( Board* board,
+bool King::move( std::shared_ptr<Board> board,
                  const Player* player,
                  Piece*& piece,
                  const int32_t i,
@@ -42,7 +42,7 @@ bool King::move( Board* board,
 
 
 
-bool King::makeCastling( Board* board,
+bool King::makeCastling( std::shared_ptr<Board> board,
                          const Player* player,
                          Piece*& piece,
                          const int32_t i,
@@ -85,7 +85,7 @@ bool King::makeCastling( Board* board,
 
 // King looks for any available for castling rook.
 // Rook: same horizontal line, never moved, same color.
-bool King::findCastlingAvailiableRook( const Board* board,
+bool King::findCastlingAvailiableRook( const std::shared_ptr<Board> board,
                                        const int32_t king_coord_y,
                                        int32_t& rook_coord_x ){
 
@@ -110,7 +110,7 @@ bool King::findCastlingAvailiableRook( const Board* board,
 
 
 // Try to find any piece within (not including boarders) certain horizontal line.
-bool King::checkEmptyHorizontalLine( const Board* board,
+bool King::checkEmptyHorizontalLine( const std::shared_ptr<Board> board,
                                      const int32_t coord_y,
                                      const int32_t piece1_coord_x,
                                      const int32_t piece2_coord_x ){

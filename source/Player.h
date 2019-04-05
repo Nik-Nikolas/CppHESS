@@ -12,17 +12,17 @@
 class Player: public Strategy{
 public:
   Player( const std::string& name,
-          Board* board,
-          Game* game,
+          std::shared_ptr<Board> board,
+          std::shared_ptr<Game> game,
           const PieceColor& color,
-          std::mutex*& mainMutex);
+          std::unique_ptr<std::mutex>& mainMutex);
 
   // C-tor to create player based on previous player color
   Player( const std::string& name,
-          Board* board,
-          Game* game,
+          std::shared_ptr<Board> board,
+          std::shared_ptr<Game> game,
           const Player& player,
-          std::mutex*& mainMutex );
+          std::unique_ptr<std::mutex>& mainMutex );
 
   bool makeMove          ( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
   bool makeRandomTestMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
@@ -41,11 +41,11 @@ public:
     return color_;
   }
 
-  const Game* getGame() const noexcept{
+  const std::shared_ptr<Game> getGame() const noexcept{
     return game_;
   }
 
-  Game* modifyGame() noexcept {
+  std::shared_ptr<Game> modifyGame() noexcept {
     return game_;
   }
 
@@ -70,11 +70,11 @@ private:
 
   void setMyTurnPriority () noexcept;
 
-  std::string  name_;
-  Board*       board_;
-  Game*        game_;
-  PieceColor   color_;
-  bool         isMyTurn_ { false };
-  std::mutex*& mainMutex_;
+  std::string                  name_;
+  std::shared_ptr<Board>       board_;
+  std::shared_ptr<Game>        game_;
+  PieceColor                   color_;
+  bool                         isMyTurn_ { false };
+  std::unique_ptr<std::mutex>& mainMutex_;
 };
 #endif

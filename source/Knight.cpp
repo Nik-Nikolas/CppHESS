@@ -4,7 +4,7 @@
 // This is a cpp file.
 #include "Knight.h"
 
-bool Knight::move( Board* board,
+bool Knight::move( std::shared_ptr<Board> board,
                    const Player* player,
                    Piece*& piece,
                    const int32_t i,
@@ -186,7 +186,7 @@ bool Knight::move( Board* board,
 
 
 
-bool Knight::moveForward2Right1( Board* board,
+bool Knight::moveForward2Right1( std::shared_ptr<Board> board,
                                  const Player* player,
                                  Piece*& piece,
                                  int32_t i,
@@ -224,7 +224,7 @@ bool Knight::moveForward2Right1( Board* board,
 
 
 
-bool Knight::killForward2Right1( Board* board,
+bool Knight::killForward2Right1( std::shared_ptr<Board> board,
                                  const Player* player,
                                  Piece*& piece,
                                  const int32_t i,
@@ -262,7 +262,7 @@ bool Knight::killForward2Right1( Board* board,
 
 
 
-bool Knight::moveBackward2Left1( Board* board,
+bool Knight::moveBackward2Left1( std::shared_ptr<Board> board,
                                  const Player* player,
                                  Piece*& piece,
                                  const int32_t i,
@@ -300,7 +300,7 @@ bool Knight::moveBackward2Left1( Board* board,
 
 
 
-bool Knight::killBackward2Left1( Board* board,
+bool Knight::killBackward2Left1( std::shared_ptr<Board> board,
                                  const Player* player,
                                  Piece*& piece,
                                  const int32_t i,
@@ -338,7 +338,7 @@ bool Knight::killBackward2Left1( Board* board,
 
 
 
-bool Knight::moveForward1Right2( Board* board,
+bool Knight::moveForward1Right2( std::shared_ptr<Board> board,
                                  const Player* player,
                                  Piece*& piece,
                                  const int32_t i,
@@ -376,7 +376,7 @@ bool Knight::moveForward1Right2( Board* board,
 
 
 
-bool Knight::killForward1Right2( Board* board,
+bool Knight::killForward1Right2( std::shared_ptr<Board> board,
                                  const Player* player,
                                  Piece*& piece,
                                  const int32_t i,
@@ -415,7 +415,7 @@ bool Knight::killForward1Right2( Board* board,
 
 
 
-bool Knight::moveBackward1Left2( Board* board,
+bool Knight::moveBackward1Left2( std::shared_ptr<Board> board,
                                  const Player* player,
                                  Piece*& piece,
                                  const int32_t i,
@@ -453,7 +453,7 @@ bool Knight::moveBackward1Left2( Board* board,
 
 
 
-bool Knight::killBackward1Left2( Board* board,
+bool Knight::killBackward1Left2( std::shared_ptr<Board> board,
                                  const Player* player,
                                  Piece*& piece,
                                  const int32_t i,
@@ -491,7 +491,7 @@ bool Knight::killBackward1Left2( Board* board,
 
 
 
-bool Knight::moveForward2Left1( Board* board,
+bool Knight::moveForward2Left1( std::shared_ptr<Board> board,
                                 const Player* player,
                                 Piece*& piece,
                                 const int32_t i,
@@ -529,7 +529,7 @@ bool Knight::moveForward2Left1( Board* board,
 
 
 
-bool Knight::killForward2Left1( Board* board,
+bool Knight::killForward2Left1( std::shared_ptr<Board> board,
                                const Player* player,
                                Piece*& piece,
                                const int32_t i,
@@ -568,7 +568,7 @@ bool Knight::killForward2Left1( Board* board,
 
 
 
-bool Knight::moveBackward2Right1( Board* board,
+bool Knight::moveBackward2Right1( std::shared_ptr<Board> board,
                                   const Player* player,
                                   Piece*& piece,
                                   const int32_t i,
@@ -606,7 +606,7 @@ bool Knight::moveBackward2Right1( Board* board,
 
 
 
-bool Knight::killBackward2Right1( Board* board,
+bool Knight::killBackward2Right1( std::shared_ptr<Board> board,
                                    const Player* player,
                                    Piece*& piece,
                                    const int32_t i,
@@ -644,7 +644,7 @@ bool Knight::killBackward2Right1( Board* board,
 
 
 
-bool Knight::moveForward1Left2( Board* board,
+bool Knight::moveForward1Left2( std::shared_ptr<Board> board,
                                 const Player* player,
                                 Piece*& piece,
                                 const int32_t i,
@@ -682,7 +682,7 @@ bool Knight::moveForward1Left2( Board* board,
 
 
 
-bool Knight::killForward1Left2( Board* board,
+bool Knight::killForward1Left2( std::shared_ptr<Board> board,
                                  const Player* player,
                                  Piece*& piece,
                                  const int32_t i,
@@ -720,7 +720,7 @@ bool Knight::killForward1Left2( Board* board,
 
 
 
-bool Knight::moveBackward1Right2( Board* board,
+bool Knight::moveBackward1Right2( std::shared_ptr<Board> board,
                                   const Player* player,
                                   Piece*& piece,
                                   const int32_t i,
@@ -758,7 +758,7 @@ bool Knight::moveBackward1Right2( Board* board,
 
 
 
-bool Knight::killBackward1Right2( Board* board,
+bool Knight::killBackward1Right2( std::shared_ptr<Board> board,
                                   const Player* player,
                                   Piece*& piece,
                                   const int32_t i,

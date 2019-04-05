@@ -6,7 +6,7 @@
 #include "Pawn.h"
 
 // Pawn becomes new piece on the opposite board edge.
-void Pawn::pawnBecomesNewPiece( Board* board,
+void Pawn::pawnBecomesNewPiece( std::shared_ptr<Board> board,
                                 const int32_t i,
                                 const int32_t j ){
 
@@ -46,7 +46,7 @@ void Pawn::pawnBecomesNewPiece( Board* board,
 
 
 // Kill opponent pawn after long move.
-bool Pawn::killOpponentPawnAfterLongMove( Board* board,
+bool Pawn::killOpponentPawnAfterLongMove( std::shared_ptr<Board> board,
                                           const Player* player,
                                           Piece*& piece,
                                           const int32_t i,
@@ -135,7 +135,7 @@ bool Pawn::killOpponentPawnAfterLongMove( Board* board,
 
 
 
-bool Pawn::killLeftPawn ( Board* board,
+bool Pawn::killLeftPawn ( std::shared_ptr<Board> board,
                           const Player* player,
                           Piece*& piece,
                           const int32_t i,
@@ -207,7 +207,7 @@ bool Pawn::killLeftPawn ( Board* board,
 
 
 
-bool Pawn::killRightPawn ( Board* board,
+bool Pawn::killRightPawn ( std::shared_ptr<Board> board,
                            const Player* player,
                            Piece*& piece,
                            const int32_t i,
@@ -275,7 +275,7 @@ bool Pawn::killRightPawn ( Board* board,
 
 
 
-bool Pawn::movePawnForward ( Board* board,
+bool Pawn::movePawnForward ( std::shared_ptr<Board> board,
                              const Player* player,
                              Piece*& piece,
                              const int32_t i,
@@ -374,7 +374,7 @@ bool Pawn::movePawnForward ( Board* board,
 
 
 
-bool Pawn::move( Board* board,
+bool Pawn::move( std::shared_ptr<Board> board,
                  const Player* player,
                  Piece*& piece,
                  const int32_t i,

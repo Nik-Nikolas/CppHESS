@@ -21,7 +21,7 @@ public:
   }
   ~King() { throw GameIsOver(); }; //!< Kings never die before the final.
 
-  virtual bool move ( Board* board,
+  virtual bool move ( std::shared_ptr<Board> board,
                       const Player* player,
                       Piece*& piece,
                       const int32_t i,
@@ -31,7 +31,7 @@ public:
                       bool& isKingUnderAttack ) override final;
 
 
-  bool makeCastling( Board* board,
+  bool makeCastling( std::shared_ptr<Board> board,
                      const Player* player,
                      Piece*& piece,
                      const int32_t i,
@@ -41,12 +41,12 @@ public:
                      bool& isKingUnderAttack );
 
 
-  bool checkEmptyHorizontalLine( const Board* board,
+  bool checkEmptyHorizontalLine( const std::shared_ptr<Board> board,
                                  const int32_t coord_y,
                                  const int32_t piece1_coord_x,
                                  const int32_t piece2_coord_x );
 
-  bool findCastlingAvailiableRook( const Board* board,
+  bool findCastlingAvailiableRook( const std::shared_ptr<Board> board,
                                    const int32_t king_coord_x,
                                    int32_t& rook_coord_x );
 

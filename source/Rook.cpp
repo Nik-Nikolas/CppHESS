@@ -4,7 +4,7 @@
 // This is a cpp file.
 #include "Rook.h"
 
-bool Rook::move(  Board* board,
+bool Rook::move(  std::shared_ptr<Board> board,
                   const Player* player,
                   Piece*& piece,
                   const int32_t i,

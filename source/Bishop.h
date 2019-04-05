@@ -19,7 +19,7 @@ public:
           const PieceColor& pcl ): Piece( pcd, PieceType::BISHOP, pcl ) {}
   ~Bishop() = default;
 
-  virtual bool move ( Board* board,
+  virtual bool move ( std::shared_ptr<Board> board,
                       const Player* player,
                       Piece*& piece,
                       const int32_t i,

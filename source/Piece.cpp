@@ -7,7 +7,7 @@
 
 // Removes piece (newPiece) to enemy square,
 // killing the enemy piece (oldPiece).
-void Piece::remove( Board* board,
+void Piece::remove( std::shared_ptr<Board> board,
                     const Player* player,
                     Piece*& newPiece,
                     Piece*& oldPiece,
@@ -33,7 +33,7 @@ void Piece::remove( Board* board,
 
 
 
-bool Piece::killPiece( Board* board,
+bool Piece::killPiece( std::shared_ptr<Board> board,
                        const Player* player,
                        Piece*& piece,
                        const int32_t i,
@@ -70,7 +70,7 @@ bool Piece::killPiece( Board* board,
 
 
 
-bool Piece::movePiece( Board* board,
+bool Piece::movePiece( std::shared_ptr<Board> board,
                        const Player* player,
                        Piece*& piece,
                        const int32_t i,
@@ -104,7 +104,7 @@ bool Piece::movePiece( Board* board,
 
 
 
-bool Piece::killForwardLine( Board* board,
+bool Piece::killForwardLine( std::shared_ptr<Board> board,
                              const Player* player,
                              Piece*& piece,
                              const int32_t i,
@@ -174,7 +174,7 @@ bool Piece::killForwardLine( Board* board,
 
 
 
-bool Piece::killBackwardLine( Board* board,
+bool Piece::killBackwardLine( std::shared_ptr<Board> board,
                                const Player* player,
                                Piece*& piece,
                                const int32_t i,
@@ -247,7 +247,7 @@ bool Piece::killBackwardLine( Board* board,
 
 
 
-bool Piece::killLeftLine( Board* board,
+bool Piece::killLeftLine( std::shared_ptr<Board> board,
                           const Player* player,
                           Piece*& piece,
                           const int32_t i,
@@ -318,7 +318,7 @@ bool Piece::killLeftLine( Board* board,
 
 
 
-bool Piece::killRightLine( Board* board,
+bool Piece::killRightLine( std::shared_ptr<Board> board,
                            const Player* player,
                            Piece*& piece,
                            const int32_t i,
@@ -390,7 +390,7 @@ bool Piece::killRightLine( Board* board,
 
 
 
-bool Piece::moveForwardLine2( Board* board,
+bool Piece::moveForwardLine2( std::shared_ptr<Board> board,
                               const Player* player,
                               Piece*& piece,
                               const int32_t i,
@@ -455,7 +455,7 @@ bool Piece::moveForwardLine2( Board* board,
 
 
 
-bool Piece::moveBackwardLine2( Board* board,
+bool Piece::moveBackwardLine2( std::shared_ptr<Board> board,
                                const Player* player,
                                Piece*& piece,
                                const int32_t i,
@@ -518,7 +518,7 @@ bool Piece::moveBackwardLine2( Board* board,
 }
 
 
-bool Piece::moveLeftLine2( Board* board,
+bool Piece::moveLeftLine2( std::shared_ptr<Board> board,
                            const Player* player,
                            Piece*& piece,
                            const int32_t i,
@@ -579,7 +579,7 @@ bool Piece::moveLeftLine2( Board* board,
 
 
 
-bool Piece::moveRightLine2( Board* board,
+bool Piece::moveRightLine2( std::shared_ptr<Board> board,
                            const Player* player,
                            Piece*& piece,
                            const int32_t i,
@@ -641,7 +641,7 @@ bool Piece::moveRightLine2( Board* board,
 
 
 
-bool Piece::moveForwardSquare( Board* board,
+bool Piece::moveForwardSquare( std::shared_ptr<Board> board,
                                const Player* player,
                                Piece*& piece,
                                const int32_t i,
@@ -678,7 +678,7 @@ bool Piece::moveForwardSquare( Board* board,
 
 
 
-bool Piece::killForwardSquare( Board* board,
+bool Piece::killForwardSquare( std::shared_ptr<Board> board,
                                const Player* player,
                                Piece*& piece,
                                const int32_t i,
@@ -715,7 +715,7 @@ bool Piece::killForwardSquare( Board* board,
     return false; // If no coordinates were changed or square is busy - treat next piece.
 }
 
-bool Piece::moveBackwardSquare( Board* board,
+bool Piece::moveBackwardSquare( std::shared_ptr<Board> board,
                                 const Player* player,
                                 Piece*& piece,
                                 const int32_t i,
@@ -752,7 +752,7 @@ bool Piece::moveBackwardSquare( Board* board,
       return false; // If no coordinates were changed or square is busy - treat next piece.
 }
 
-bool Piece::killBackwardSquare( Board* board,
+bool Piece::killBackwardSquare( std::shared_ptr<Board> board,
                                 const Player* player,
                                 Piece*& piece,
                                 const int32_t i,
@@ -791,7 +791,7 @@ bool Piece::killBackwardSquare( Board* board,
 
 
 
-bool Piece::moveLeftSquare( Board* board,
+bool Piece::moveLeftSquare( std::shared_ptr<Board> board,
                             const Player* player,
                             Piece*& piece,
                             const int32_t i,
@@ -828,7 +828,7 @@ bool Piece::moveLeftSquare( Board* board,
 
 
 
-bool Piece::killLeftSquare( Board* board,
+bool Piece::killLeftSquare( std::shared_ptr<Board> board,
                             const Player* player,
                             Piece*& piece,
                             const int32_t i,
@@ -866,7 +866,7 @@ bool Piece::killLeftSquare( Board* board,
 
 
 
-bool Piece::moveRightSquare( Board* board,
+bool Piece::moveRightSquare( std::shared_ptr<Board> board,
                              const Player* player,
                              Piece*& piece,
                              const int32_t i,
@@ -904,7 +904,7 @@ bool Piece::moveRightSquare( Board* board,
 
 
 
-bool Piece::killRightSquare( Board* board,
+bool Piece::killRightSquare( std::shared_ptr<Board> board,
                              const Player* player,
                              Piece*& piece,
                              const int32_t i,
@@ -943,7 +943,7 @@ bool Piece::killRightSquare( Board* board,
 
 
 
-bool Piece::movePerpendicularSquare( Board* board,
+bool Piece::movePerpendicularSquare( std::shared_ptr<Board> board,
                                      const Player* player,
                                      Piece*& piece,
                                      const int32_t i,
@@ -1006,7 +1006,7 @@ bool Piece::movePerpendicularSquare( Board* board,
 
 
 
-bool Piece::movePerpendicularLine( Board* board,
+bool Piece::movePerpendicularLine( std::shared_ptr<Board> board,
                                const Player* player,
                                Piece*& piece,
                                const int32_t i,
@@ -1070,7 +1070,7 @@ bool Piece::movePerpendicularLine( Board* board,
 
 
 
-bool Piece::moveDiagonalSquare( Board* board,
+bool Piece::moveDiagonalSquare( std::shared_ptr<Board> board,
                                 const Player* player,
                                 Piece*& piece,
                                 const int32_t i,
@@ -1133,7 +1133,7 @@ bool Piece::moveDiagonalSquare( Board* board,
 
 
 
-bool Piece::moveDiagonalLine( Board* board,
+bool Piece::moveDiagonalLine( std::shared_ptr<Board> board,
                               const Player* player,
                               Piece*& piece,
                               const int32_t i,
@@ -1197,7 +1197,7 @@ bool Piece::moveDiagonalLine( Board* board,
 
 
 
-bool Piece::killDiagonalForwardLeftLine( Board* board,
+bool Piece::killDiagonalForwardLeftLine( std::shared_ptr<Board> board,
                                          const Player* player,
                                          Piece*& piece,
                                          const int32_t i,
@@ -1275,7 +1275,7 @@ bool Piece::killDiagonalForwardLeftLine( Board* board,
 
 
 
-bool Piece::killDiagonalBackwardRightLine( Board* board,
+bool Piece::killDiagonalBackwardRightLine( std::shared_ptr<Board> board,
                                            const Player* player,
                                            Piece*& piece,
                                            const int32_t i,
@@ -1351,7 +1351,7 @@ bool Piece::killDiagonalBackwardRightLine( Board* board,
 
 
 
-bool Piece::killDiagonalForwardRightLine( Board* board,
+bool Piece::killDiagonalForwardRightLine( std::shared_ptr<Board> board,
                                            const Player* player,
                                            Piece*& piece,
                                            const int32_t i,
@@ -1429,7 +1429,7 @@ bool Piece::killDiagonalForwardRightLine( Board* board,
 
 
 
-bool Piece::killDiagonalBackwardLeftLine( Board* board,
+bool Piece::killDiagonalBackwardLeftLine( std::shared_ptr<Board> board,
                                          const Player* player,
                                          Piece*& piece,
                                          const int32_t i,
@@ -1506,7 +1506,7 @@ bool Piece::killDiagonalBackwardLeftLine( Board* board,
 
 
 
-bool Piece::moveDiagonalForwardLeftSquare( Board* board,
+bool Piece::moveDiagonalForwardLeftSquare( std::shared_ptr<Board> board,
                                            const Player* player,
                                            Piece*& piece,
                                            const int32_t i,
@@ -1546,7 +1546,7 @@ bool Piece::moveDiagonalForwardLeftSquare( Board* board,
 }
 
 
-bool Piece::killDiagonalForwardLeftSquare( Board* board,
+bool Piece::killDiagonalForwardLeftSquare( std::shared_ptr<Board> board,
                                            const Player* player,
                                            Piece*& piece,
                                            const int32_t i,
@@ -1592,7 +1592,7 @@ bool Piece::killDiagonalForwardLeftSquare( Board* board,
 
 
 
-bool Piece::moveDiagonalBackwardRightSquare( Board* board,
+bool Piece::moveDiagonalBackwardRightSquare( std::shared_ptr<Board> board,
                                              const Player* player,
                                              Piece*& piece,
                                              const int32_t i,
@@ -1633,7 +1633,7 @@ bool Piece::moveDiagonalBackwardRightSquare( Board* board,
 
 
 
-bool Piece::killDiagonalBackwardRightSquare( Board* board,
+bool Piece::killDiagonalBackwardRightSquare( std::shared_ptr<Board> board,
                                              const Player* player,
                                              Piece*& piece,
                                              const int32_t i,
@@ -1678,7 +1678,7 @@ bool Piece::killDiagonalBackwardRightSquare( Board* board,
 
 
 
-bool Piece::moveDiagonalForwardRightSquare( Board* board,
+bool Piece::moveDiagonalForwardRightSquare( std::shared_ptr<Board> board,
                                             const Player* player,
                                             Piece*& piece,
                                             const int32_t i,
@@ -1720,7 +1720,7 @@ bool Piece::moveDiagonalForwardRightSquare( Board* board,
 }
 
 
-bool Piece::killDiagonalForwardRightSquare( Board* board,
+bool Piece::killDiagonalForwardRightSquare( std::shared_ptr<Board> board,
                                            const Player* player,
                                            Piece*& piece,
                                            const int32_t i,
@@ -1767,7 +1767,7 @@ bool Piece::killDiagonalForwardRightSquare( Board* board,
 
 
 
-bool Piece::moveDiagonalBackwardLeftSquare( Board* board,
+bool Piece::moveDiagonalBackwardLeftSquare( std::shared_ptr<Board> board,
                                             const Player* player,
                                             Piece*& piece,
                                             const int32_t i,
@@ -1809,7 +1809,7 @@ bool Piece::moveDiagonalBackwardLeftSquare( Board* board,
 }
 
 
-bool Piece::killDiagonalBackwardLeftSquare( Board* board,
+bool Piece::killDiagonalBackwardLeftSquare( std::shared_ptr<Board> board,
                                              const Player* player,
                                              Piece*& piece,
                                              const int32_t i,
@@ -1857,7 +1857,7 @@ bool Piece::killDiagonalBackwardLeftSquare( Board* board,
 
 
 
-bool Piece::moveDiagonalForwardLeftLine( Board* board,
+bool Piece::moveDiagonalForwardLeftLine( std::shared_ptr<Board> board,
                                          const Player* player,
                                          Piece*& piece,
                                          const int32_t i,
@@ -1928,7 +1928,7 @@ bool Piece::moveDiagonalForwardLeftLine( Board* board,
 
 
 
-bool Piece::moveDiagonalBackwardRightLine( Board* board,
+bool Piece::moveDiagonalBackwardRightLine( std::shared_ptr<Board> board,
                                            const Player* player,
                                            Piece*& piece,
                                            const int32_t i,
@@ -1999,7 +1999,7 @@ bool Piece::moveDiagonalBackwardRightLine( Board* board,
 
 
 
-bool Piece::moveDiagonalForwardRightLine( Board* board,
+bool Piece::moveDiagonalForwardRightLine( std::shared_ptr<Board> board,
                                           const Player* player,
                                           Piece*& piece,
                                           const int32_t i,
@@ -2070,7 +2070,7 @@ bool Piece::moveDiagonalForwardRightLine( Board* board,
 
 
 
-bool Piece::moveDiagonalBackwardLeftLine( Board* board,
+bool Piece::moveDiagonalBackwardLeftLine( std::shared_ptr<Board> board,
                                           const Player* player,
                                           Piece*& piece,
                                           const int32_t i,

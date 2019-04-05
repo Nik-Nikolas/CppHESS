@@ -4,7 +4,7 @@
 // This is a cpp file.
 #include "Queen.h"
 
-bool Queen::move( Board* board,
+bool Queen::move( std::shared_ptr<Board> board,
                   const Player* player,
                   Piece*& piece,
                   const int32_t i,

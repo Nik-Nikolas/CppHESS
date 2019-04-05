@@ -34,10 +34,17 @@
 // - default values initialization for class members T t {val};
 // - noexcept functions
 // - multithreading:
-//     - Detached threads with parameters
+//     - Detached threads with passed parameters
 //     - std::mutex,
-//     - std::lock_guard<std::mutex>
+//     - std::lock_guard<std::mutex> RAII mutex guard
+// - std::unique_ptr<std::mutex>
+// - std::shared_ptr<T> semantics:
+//     - class Game: public std::enable_shared_from_this<Game>
+//     - shared_from_this() as a shared_ptr which mutually owns the same object
 // - ...
+
+// Multithreading:
+// - all keyboard events are being processed independently in separate thread
 
 // Object Oriented Design:
 // - all pieces derived from abstract base class Piece

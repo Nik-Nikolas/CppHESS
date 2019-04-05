@@ -14,11 +14,11 @@
 //! Game validity state control:
 //! - turns counter
 //! - time control
-class Game{
+class Game: public std::enable_shared_from_this<Game> {
 public:
-  Game( Board* board,
-        WinConsole*& winConsole,
-        std::mutex*& mainMutex );
+  Game( std::shared_ptr<Board> board,
+        std::shared_ptr<WinConsole> winConsole,
+        std::unique_ptr<std::mutex>& mainMutex );
 
   ~Game();
 
@@ -26,7 +26,7 @@ public:
 
   void setStrategy( Player* player );
 
-  void reset();
+  void resetGame();
 
   void nextTurn();
 
@@ -40,22 +40,22 @@ public:
 
   void makeTurn( Player* const player1,
                  const Player* const player2,
-                 const WinConsole* console,
-                 Board& board );
+                 const std::shared_ptr<WinConsole> console,
+                 std::shared_ptr<Board> board );
 
   const bool isRunning() const;
 
   //!< Heads or tails game - who plays white.
   const PieceColor headsOrTailsColor();
 
-  std::mutex*& getMutex(){
+  std::unique_ptr<std::mutex>& getMutex(){
     return mainMutex_;
   }
 
 private:
-  Board* board_;
-  const WinConsole* winConsole_;
-  std::mutex*& mainMutex_;
+  std::shared_ptr<Board> board_;
+  const std::shared_ptr<WinConsole> winConsole_;
+  std::unique_ptr<std::mutex>& mainMutex_;
 
   int32_t turns_   { 0 };
   bool    isValid_ { true };

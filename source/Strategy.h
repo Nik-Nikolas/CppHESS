@@ -13,7 +13,7 @@
 class StrategyInterface{
 public:
   virtual ~StrategyInterface(){}
-  virtual bool play( Board* board_,
+  virtual bool play( std::shared_ptr<Board> board_,
                      const Player* player_,
                      int32_t& i,
                      int32_t& j,
@@ -25,7 +25,7 @@ public:
 
 class Strategy1: public StrategyInterface{
 public:
-  virtual bool play( Board* board_,
+  virtual bool play( std::shared_ptr<Board> board_,
                      const Player* player_,
                      int32_t& i,
                      int32_t& j,
@@ -37,7 +37,7 @@ public:
 
 class Strategy2: public StrategyInterface{
 public:
-  virtual bool play( Board* board_,
+  virtual bool play( std::shared_ptr<Board> board_,
                      const Player* player_,
                      int32_t& i,
                      int32_t& j,
@@ -49,7 +49,7 @@ public:
 
 class Strategy3: public StrategyInterface{
 public:
-  virtual bool play( Board* board_,
+  virtual bool play( std::shared_ptr<Board> board_,
                      const Player* player_,
                      int32_t& i,
                      int32_t& j,

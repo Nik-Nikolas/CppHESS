@@ -18,41 +18,41 @@ bool    BoardGlobals::isGlyphMode_  = true;
 int32_t King::counter_              = 0;
 
 // Singletons class members.
-std::random_device*   RandomDevice::rd_ = nullptr;
-std::mutex* MutexDevice::m_ = nullptr;
+std::random_device* RandomDevice::rd_ = nullptr;
+std::mutex* MutexDevice::m_           = nullptr;
 
 int main(){
 
-  // Mutex singleton
-  std::mutex* mutex = MutexDevice::getInstance();
+  // Mutex singleton (use unique_ptr to exclude mutual ownership)
+  std::unique_ptr<std::mutex> mainMutex( MutexDevice::getInstance() );
 
-  Board* board           = new Board;
-  WinConsole* winConsole = new WinConsole( mutex );
-  // Game needs board to change it and console to show board graphics
-  Game* game             = new Game( board, winConsole, mutex );
+  // Primary objects (use shared_ptr to share ownership because we use copies
+  // of pointers in objects)
+  std::shared_ptr<Board> board( new Board );
+  std::shared_ptr<WinConsole> winConsole ( new WinConsole( mainMutex ) );
+  std::shared_ptr<Game> game ( new Game( board, winConsole, mainMutex ) );
 
-  // Separate thread (second)
-  winConsole->start( *board, *game);
+  // Execution in separate detached thread (keyboard events)
+  winConsole->start( board, game );
 
   // Multigame cycle
-  // (new game could be launched from main menu or when game is out of turns)
+  // (new game maybe launched from main menu or when game is out of turns)
   while( true ){
     try{
       game->start();
     }
     catch( GameIsOver& g ){
-      delete game;
-      game = new Game( board, winConsole, mutex );
+      // Reset game status
+      game->resetGame();
+      // Destroy old game and create a new one
+      game.reset( new Game( board, winConsole, mainMutex ) );
     }
     catch(...){
       throw;
     }
   }
 
-  delete game;
-  delete winConsole;
-  delete board;
-  MutexDevice::deleteInstance();
+  RandomDevice::deleteInstance();
 
   return 0;
 }

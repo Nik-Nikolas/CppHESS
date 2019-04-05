@@ -19,7 +19,7 @@ public:
           const PieceColor& pcl ): Piece( pcd, PieceType::KNIGHT, pcl ) {}
   ~Knight() = default;
 
-  virtual bool move ( Board* board,
+  virtual bool move ( std::shared_ptr<Board> board,
                       const Player* player,
                       Piece*& piece,
                       const int32_t i,
@@ -30,7 +30,7 @@ public:
 
 
 
-   bool moveForward2Right1( Board* board,
+   bool moveForward2Right1( std::shared_ptr<Board> board,
                             const Player* player,
                             Piece*& piece,
                             const int32_t i,
@@ -39,7 +39,7 @@ public:
                             int32_t& j2,
                             bool& isKingUnderAttack );
 
-   bool moveForward1Right2( Board* board,
+   bool moveForward1Right2( std::shared_ptr<Board> board,
                             const Player* player,
                             Piece*& piece,
                             const int32_t i,
@@ -48,7 +48,7 @@ public:
                             int32_t& j2,
                             bool& isKingUnderAttack );
 
-   bool moveForward2Left1( Board* board,
+   bool moveForward2Left1( std::shared_ptr<Board> board,
                            const Player* player,
                            Piece*& piece,
                            const int32_t i,
@@ -57,7 +57,7 @@ public:
                            int32_t& j2,
                            bool& isKingUnderAttack );
 
-   bool moveForward1Left2( Board* board,
+   bool moveForward1Left2( std::shared_ptr<Board> board,
                            const Player* player,
                            Piece*& piece,
                            const int32_t i,
@@ -66,7 +66,7 @@ public:
                            int32_t& j2,
                            bool& isKingUnderAttack );
 
-   bool moveBackward2Right1( Board* board,
+   bool moveBackward2Right1( std::shared_ptr<Board> board,
                              const Player* player,
                              Piece*& piece,
                              const int32_t i,
@@ -75,7 +75,7 @@ public:
                              int32_t& j2,
                              bool& isKingUnderAttack );
 
-   bool moveBackward1Right2( Board* board,
+   bool moveBackward1Right2( std::shared_ptr<Board> board,
                              const Player* player,
                              Piece*& piece,
                              const int32_t i,
@@ -84,7 +84,7 @@ public:
                              int32_t& j2,
                              bool& isKingUnderAttack );
 
-   bool moveBackward2Left1( Board* board,
+   bool moveBackward2Left1( std::shared_ptr<Board> board,
                             const Player* player,
                             Piece*& piece,
                             const int32_t i,
@@ -93,7 +93,7 @@ public:
                             int32_t& j2,
                             bool& isKingUnderAttack );
 
-   bool moveBackward1Left2( Board* board,
+   bool moveBackward1Left2( std::shared_ptr<Board> board,
                             const Player* player,
                             Piece*& piece,
                             const int32_t i,
@@ -104,7 +104,7 @@ public:
 
 
 
-   bool killForward2Right1( Board* board,
+   bool killForward2Right1( std::shared_ptr<Board> board,
                             const Player* player,
                             Piece*& piece,
                             const int32_t i,
@@ -113,7 +113,7 @@ public:
                             int32_t& j2,
                             bool& isKingUnderAttack );
 
-   bool killForward1Right2( Board* board,
+   bool killForward1Right2( std::shared_ptr<Board> board,
                             const Player* player,
                             Piece*& piece,
                             const int32_t i,
@@ -122,7 +122,7 @@ public:
                             int32_t& j2,
                             bool& isKingUnderAttack );
 
-   bool killForward2Left1( Board* board,
+   bool killForward2Left1( std::shared_ptr<Board> board,
                            const Player* player,
                            Piece*& piece,
                            const int32_t i,
@@ -131,7 +131,7 @@ public:
                            int32_t& j2,
                            bool& isKingUnderAttack );
 
-   bool killForward1Left2( Board* board,
+   bool killForward1Left2( std::shared_ptr<Board> board,
                            const Player* player,
                            Piece*& piece,
                            const int32_t i,
@@ -140,7 +140,7 @@ public:
                            int32_t& j2,
                            bool& isKingUnderAttack );
 
-   bool killBackward2Right1( Board* board,
+   bool killBackward2Right1( std::shared_ptr<Board> board,
                              const Player* player,
                              Piece*& piece,
                              const int32_t i,
@@ -149,7 +149,7 @@ public:
                              int32_t& j2,
                              bool& isKingUnderAttack );
 
-   bool killBackward1Right2( Board* board,
+   bool killBackward1Right2( std::shared_ptr<Board> board,
                              const Player* player,
                              Piece*& piece,
                              const int32_t i,
@@ -158,7 +158,7 @@ public:
                              int32_t& j2,
                              bool& isKingUnderAttack );
 
-   bool killBackward2Left1( Board* board,
+   bool killBackward2Left1( std::shared_ptr<Board> board,
                             const Player* player,
                             Piece*& piece,
                             const int32_t i,
@@ -167,7 +167,7 @@ public:
                             int32_t& j2,
                             bool& isKingUnderAttack );
 
-   bool killBackward1Left2( Board* board,
+   bool killBackward1Left2( std::shared_ptr<Board> board,
                             const Player* player,
                             Piece*& piece,
                             const int32_t i,

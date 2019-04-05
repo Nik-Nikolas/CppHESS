@@ -5,11 +5,11 @@
 #include "Player.h"
 #include "Game.h"
 
-Game::Game( Board* board,
-            WinConsole*& winConsole,
-            std::mutex*& mainMutex ) : board_( board ),
-                                       winConsole_( winConsole ),
-                                       mainMutex_ ( mainMutex ){}
+Game::Game( std::shared_ptr<Board> board,
+            std::shared_ptr<WinConsole> winConsole,
+            std::unique_ptr<std::mutex>& mainMutex ) : board_( board ),
+                                                       winConsole_( winConsole ),
+                                                       mainMutex_ ( mainMutex ){}
 
 Game::~Game()
 {}
@@ -17,10 +17,10 @@ Game::~Game()
 void Game::start(){
 
   // First player plays headsOrTails game to choose pieces color
-  Player player1( "Jeeves",  board_, this, headsOrTailsColor(), mainMutex_ );
+  Player player1( "Jeeves",  board_, shared_from_this(), headsOrTailsColor(), mainMutex_ );
 
   // Second player takes another color
-  Player player2( "Wooster", board_, this, player1, mainMutex_ );
+  Player player2( "Wooster", board_, shared_from_this(), player1, mainMutex_ );
 
   // Pointers to players
   Player* white = player1.getColor() == PieceColor::WHITE ? &player1 : &player2;
@@ -70,7 +70,7 @@ void Game::start(){
 
   setStrategy( black );
 
-  winConsole_->showBoard( *board_ );
+  winConsole_->showBoard( board_ );
   std::cout <<  "1 Classic game\n"
                 "2 Knight VS Rook\n"
                 "3 Queens Battle\n"
@@ -86,35 +86,35 @@ void Game::start(){
 
   player1.arrangePieces();
 
-  winConsole_->showBoard( *board_ );
+  winConsole_->showBoard( board_ );
 
   // Main game cycle
   while( isRunning() ){
 
+    // Establish RAII mutex to exclude access from main thread
     std::lock_guard<std::mutex> guard ( *mainMutex_ );
 
     checkValid(); // If others threads changed game validness - throw exception
 
     // WHITES play
-    makeTurn( white, black, winConsole_, *board_ );
+    makeTurn( white, black, winConsole_, board_ );
 
     // BLACKS play
-    makeTurn( black, white, winConsole_, *board_ );
+    makeTurn( black, white, winConsole_, board_ );
 
     nextTurn();
   }
 
   //_getch();
-
-  // Delete Random Device - we dont need it anymore
-  RandomDevice::deleteInstance();
 }
 
 // Player makes turn in accordance with chosen strategy
 void Game::makeTurn( Player* const player1,
                      const Player* const player2,
-                     const WinConsole* console,
-                     Board& board ){
+                     const std::shared_ptr<WinConsole> console,
+                     std::shared_ptr<Board> board ){
+
+  checkValid(); // If others threads changed game validness - throw exception
 
   int32_t i, j, i2, j2; // Coords before/after move.
   i = j = i2 = j2 = -1;
@@ -124,14 +124,12 @@ void Game::makeTurn( Player* const player1,
 
   if( !player1->playStrategy( i, j, i2, j2 ) ){
 
-    checkValid(); // If others threads changed game validness - throw exception
-
     console->showBoard( board );
     console->showPlayerData( *player2 );
 
-    board.clear();
-    board.resetLastMovedPiece();
-    board.resize();
+    board->clear();
+    board->resetLastMovedPiece();
+    board->resize();
 
     std::cout << "\n" << player1->getName()
     << " have no pieces or no moves."
@@ -189,7 +187,7 @@ void Game::checkValid(){
      throw GameIsOver();
 }
 
-void Game::reset(){
+void Game::resetGame(){
   turns_ = 0;
   isValid_ = true;
 }

@@ -5,10 +5,11 @@
 #include "Player.h"
 
 Player::Player( const std::string& name,
-                Board* board,
-                Game* game,
+                std::shared_ptr<Board> board,
+                std::shared_ptr<Game> game,
                 const PieceColor& color,
-                std::mutex*& mainMutex ) : name_ ( name ),
+                std::unique_ptr<std::mutex>& mainMutex ) :
+                                           name_ ( name ),
                                            board_( board ),
                                            game_ ( game ),
                                            color_( color ),
@@ -19,16 +20,17 @@ Player::Player( const std::string& name,
 
 
 Player::Player( const std::string& name,
-                Board* board,
-                Game* game,
+                std::shared_ptr<Board> board,
+                std::shared_ptr<Game> game,
                 const Player& player,
-                std::mutex*& mainMutex ) : name_ ( name ),
-                                           board_( board ),
-                                           game_ ( game ),
-                                           color_( player.getColor() ==
-                                           PieceColor::WHITE ? PieceColor::BLACK :
-                                                               PieceColor::WHITE ),
-                                           mainMutex_( mainMutex ){
+                std::unique_ptr<std::mutex>& mainMutex ) :
+                                        name_ ( name ),
+                                        board_( board ),
+                                        game_ ( game ),
+                                        color_( player.getColor() ==
+                                        PieceColor::WHITE ? PieceColor::BLACK :
+                                                            PieceColor::WHITE ),
+                                        mainMutex_( mainMutex ){
   setMyTurnPriority ();
 }
 
@@ -402,6 +404,7 @@ void Player::randomBattle(){
 
 void Player::arrangePieces(){
 
+  // Establish RAII mutex to exclude access from main thread
   std::lock_guard<std::mutex> guard ( *mainMutex_ );
 
   const char scenario = _getch() - 48;

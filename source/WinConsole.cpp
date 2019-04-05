@@ -20,9 +20,9 @@ void WinConsole::setFont( const int32_t font ){
 
 
 
-void WinConsole::showBoard( const Board& board ) const{
+void WinConsole::showBoard( const std::shared_ptr<Board> board ) const{
  ::clear();
- ::show( board.read() );
+ ::show( board->read() );
 }
 
 
@@ -33,15 +33,13 @@ void WinConsole::showPlayerData( const Player& player ) const{
 
 
 
-void WinConsole::controlKeyboard( Board& board,
-                                  Game& currentGame ){
+void WinConsole::controlKeyboard( std::shared_ptr<Board> board,
+                                  std::shared_ptr<Game> currentGame ){
   while( true ){
     if( _kbhit() ){
 
+      // Establish RAII mutex to exclude access from main thread
       std::lock_guard<std::mutex> guard ( *mainMutex_ );
-
-      // Establish mutex to exclude access from main thread
-      //std::lock_guard<std::mutex> guard1( *mainMutex_ );
 
       int32_t keyCode = _getch();
 
@@ -57,12 +55,12 @@ void WinConsole::controlKeyboard( Board& board,
 
             BoardGlobals::setSize( BoardGlobals::getSize() / 2 );
             BoardGlobals::setLongMoveStep( BoardGlobals::getSize() / 2 );
-            board.resetLastMovedPiece();
+            board->resetLastMovedPiece();
 
-            board.modify().resize( BoardGlobals::getSize() );
+            board->modify().resize( BoardGlobals::getSize() );
 
             for( auto i = 0; i < BoardGlobals::getSize(); ++i )
-              board.modify()[i].resize( BoardGlobals::getSize() );
+              board->modify()[i].resize( BoardGlobals::getSize() );
           }
           break;
         // 'x'
@@ -70,12 +68,12 @@ void WinConsole::controlKeyboard( Board& board,
 
           BoardGlobals::setSize( BoardGlobals::getSize() * 2 );
           BoardGlobals::setLongMoveStep( BoardGlobals::getSize() / 2 );
-          board.resetLastMovedPiece();
+          board->resetLastMovedPiece();
 
-          board.modify().resize( BoardGlobals::getSize() );
+          board->modify().resize( BoardGlobals::getSize() );
 
           for( auto i = 0; i < BoardGlobals::getSize(); ++i )
-            board.modify()[i].resize( BoardGlobals::getSize() );
+            board->modify()[i].resize( BoardGlobals::getSize() );
 
           //for( auto i = BoardGlobals::getSize() - STEP; i < BoardGlobals::getSize(); ++i )
           //  for( auto j = BoardGlobals::getSize() - STEP; j < BoardGlobals::getSize(); ++j )
@@ -86,16 +84,16 @@ void WinConsole::controlKeyboard( Board& board,
         case 110 :
 
           // Clear all board data
-          board.clear();
-          board.resetLastMovedPiece();
-          board.resize();
+          board->clear();
+          board->resetLastMovedPiece();
+          board->resize();
 
           // Clear King data
           King::resetCounter();
 
           // Set invalid status. Then game will notice it in main thread -
-          // it throws exception
-          currentGame.setInvalid();
+          // it will throw exception
+          currentGame->setInvalid();
 
           break;
         // 'v'
@@ -156,14 +154,15 @@ void WinConsole::clear(){
 
 
 
-void WinConsole::start( Board& board, Game& game ){
+void WinConsole::start( std::shared_ptr<Board> board,
+                        std::shared_ptr<Game> game ){
 
   // Multithreading part to split control and main processes.
-  //     1. Launch winConsole_->controlKeyboard(...) in separate thread.
+  //     1. Launch controlKeyboard(...) in separate thread.
   std::thread control ( &WinConsole::controlKeyboard, // pointer to member function
-                        this,                   // pointer to obj
-                        std::ref( board ),           // references to args
-                        std::ref( game ) );          // because function changes board and game objects
+                        this,                         // pointer to obj
+                        std::ref( board ),            // references to args
+                        std::ref( game ) );           // because function changes board and game objects
 
   //     2. Detach the thread.
   control.detach();

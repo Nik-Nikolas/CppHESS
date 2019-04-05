@@ -19,7 +19,7 @@ public:
          const PieceColor& pcl ): Piece( pcd, PieceType::QUEEN, pcl ) {}
   ~Queen() = default;
 
-  virtual bool move ( Board* board,
+  virtual bool move ( std::shared_ptr<Board> board,
                       const Player* player,
                       Piece*& piece,
                       const int32_t i,

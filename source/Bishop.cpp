@@ -4,7 +4,7 @@
 // This is a cpp file.
 #include "Bishop.h"
 
-bool Bishop::move( Board* board,
+bool Bishop::move( std::shared_ptr<Board> board,
                    const Player* player,
                    Piece*& piece,
                    const int32_t i,

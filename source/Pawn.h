@@ -19,7 +19,7 @@ public:
         const PieceColor& pcl ): Piece( pcd, PieceType::PAWN, pcl ) {}
   ~Pawn() = default;
 
-  virtual bool move ( Board* board,
+  virtual bool move ( std::shared_ptr<Board> board,
                       const Player* player,
                       Piece*& piece,
                       const int32_t i,
@@ -29,11 +29,11 @@ public:
                       bool& isKingUnderAttack ) override final;
 
 private:
-  void pawnBecomesNewPiece( Board* board,
+  void pawnBecomesNewPiece( std::shared_ptr<Board> board,
                             const int32_t i,
                             const int32_t j );
 
-  bool killOpponentPawnAfterLongMove( Board* board,
+  bool killOpponentPawnAfterLongMove( std::shared_ptr<Board> board,
                                       const Player* player,
                                       Piece*& piece,
                                       const int32_t i,
@@ -42,7 +42,7 @@ private:
                                       int32_t& j2,
                                       bool& isKingUnderAttack );
 
-  bool killLeftPawn ( Board* board,
+  bool killLeftPawn ( std::shared_ptr<Board> board,
                       const Player* player,
                       Piece*& piece,
                       const int32_t i,
@@ -51,7 +51,7 @@ private:
                       int32_t& j2,
                       bool& isKingUnderAttack );
 
-  bool killRightPawn ( Board* board,
+  bool killRightPawn ( std::shared_ptr<Board> board,
                        const Player* player,
                        Piece*& piece,
                        const int32_t i,
@@ -60,7 +60,7 @@ private:
                        int32_t& j2,
                        bool& isKingUnderAttack );
 
-  bool movePawnForward ( Board* board,
+  bool movePawnForward ( std::shared_ptr<Board> board,
                          const Player* player,
                          Piece*& piece,
                          const int32_t i,
