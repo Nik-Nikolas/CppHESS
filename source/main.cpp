@@ -2,6 +2,7 @@
 // (C)Igor Lobanov. 2017
 //
 // This is a cpp file.
+
 #include "Board.h"
 #include "Game.h"
 #include "WinConsole.h"
@@ -9,7 +10,9 @@
 #include "King.h"
 #include "C++HESS.h"
 
-// Encapsulated in class (as a private static) variables.
+#include "GameFactory.h"
+
+// Encapsulated in class (as the private static) variables.
 int32_t BoardGlobals::size_         = 0;
 int32_t BoardGlobals::longMoveStep_ = 0;
 int32_t BoardGlobals::delay_        = 0;
@@ -22,36 +25,34 @@ std::random_device* RandomDevice::rd_ = nullptr;
 std::mutex* MutexDevice::m_           = nullptr;
 
 int main(){
+  // Create a factory to build the main game entities.
+  GameFactory factory;
+  auto board = factory.makeBoard();
+  auto winConsole = factory.makeConsole( MutexDevice::getInstance() );
+  auto game = factory.makeGame( board, winConsole, MutexDevice::getInstance() );
 
-  // Mutex singleton (use unique_ptr to exclude mutual ownership)
-  std::unique_ptr<std::mutex> mainMutex( MutexDevice::getInstance() );
-
-  // Primary objects (use shared_ptr to share ownership because we use copies
-  // of pointers in objects)
-  std::shared_ptr<Board> board( new Board );
-  std::shared_ptr<WinConsole> winConsole ( new WinConsole( mainMutex ) );
-  std::shared_ptr<Game> game ( new Game( board, winConsole, mainMutex ) );
-
-  // Execution in separate detached thread (keyboard events)
+  // Keyboard events processing a separate detached thread.
   winConsole->start( board, game );
 
-  // Multigame cycle
-  // (new game maybe launched from main menu or when game is out of turns)
+  // Multiple game cycle.
   while( true ){
     try{
       game->start();
     }
-    catch( GameIsOver& g ){
-      // Reset game status
+    catch( const GameIsOver& g ){
+      // Reset the game
       game->resetGame();
-      // Destroy old game and create a new one
-      game.reset( new Game( board, winConsole, mainMutex ) );
+
+      // Destroy the current game and create a new one instead.
+      game.reset( factory.makeGame( board, winConsole, MutexDevice::getInstance() ).get() );
     }
     catch(...){
-      throw;
+      std::cerr << std::endl << "Unknown error occured." << std::endl;
+      throw; // Abort the game.
     }
   }
 
+  // Remove the mutex instance since it's not being used anymore.
   RandomDevice::deleteInstance();
 
   return 0;

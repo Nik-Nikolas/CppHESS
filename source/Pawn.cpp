@@ -2,8 +2,15 @@
 // (C)Igor Lobanov. 2017
 //
 // This is a cpp file.
+
 #include "Player.h"
+
 #include "Pawn.h"
+#include "Queen.h"
+#include "Rook.h"
+#include "Bishop.h"
+#include "Knight.h"
+#include "King.h"
 
 // Pawn becomes new piece on the opposite board edge.
 void Pawn::pawnBecomesNewPiece( std::shared_ptr<Board> board,

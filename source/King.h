@@ -19,7 +19,10 @@ public:
         const PieceColor& pcl ): Piece( pcd, PieceType::KING, pcl ) {
     increaseCounter();
   }
-  ~King() { throw GameIsOver(); }; //!< Kings never die before the final.
+  ~King() {
+      // TODO this is UB. Find another way.
+      //throw GameIsOver();
+  }; //!< Kings never die before the final.
 
   virtual bool move ( std::shared_ptr<Board> board,
                       const Player* player,

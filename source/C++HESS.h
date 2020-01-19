@@ -21,7 +21,7 @@
 //   >>> show( const std::vector<std::vector<Piece*> >& board )
 // - nullPtr
 // - apostrophe  1'000'000x
-// - enum class
+// - enum class uint8_t
 // - fixed inreger int32_t
 // - '= delete' for CTORs and ASOPs where necessary
 // - '= default' for DTORs where necessary
@@ -41,6 +41,7 @@
 // - std::shared_ptr<T> semantics:
 //     - class Game: public std::enable_shared_from_this<Game>
 //     - shared_from_this() as a shared_ptr which mutually owns the same object
+//     (Player player1( "Jeeves",  board_, shared_from_this(), headsOrTailsColor(), mainMutex_ );
 // - ...
 
 // Multithreading:
@@ -89,31 +90,31 @@ class Board;
 class Game;
 
 // Start conditions.
-static const int32_t START_FRAME      = 1;   // Distance between shown turns.
-                                             // E.g. 100 means that first shown
-                                             // turn is 1, next shown one is 101.
+static const int32_t START_FRAME         = 1;   // Distance between shown turns.
+                                                // E.g. 100 means that first shown
+                                                // turn is 1, next shown one is 101.
 
-static const int32_t START_DELAY      = 100; // Delay between frames.
-static const int32_t START_BOARD_SIDE = 8;
+static const int32_t START_DELAY         = 100; // Delay between frames.
+static const int32_t START_BOARD_SIDE    = 8;
 
 // Common constants.
-static const int32_t TURNS_MAX = 1'000'000'000; // Typically it takes 50 turns
-                                                // for classic chess game.
+static const int32_t TURNS_MAX           = 1'000'000'000; // Typically it takes 50 turns
+                                                          // for classic chess game.
 static const int32_t LATIN_ALPHABET_SIZE = 26;
 
-enum class PieceColor : int32_t{ NOT_DEFINED = -1,
-                                 BLACK,
-                                 WHITE };
+enum class PieceColor : int8_t{ NOT_DEFINED = -1,
+                                BLACK,
+                                WHITE };
 
 
 
-enum class PieceType : int32_t{ NOT_DEFINED = -1,
-                                PAWN        = 1,
-                                KNIGHT      = 3,
-                                BISHOP      = 4,
-                                ROOK        = 5,
-                                QUEEN       = 9,
-                                KING        = 0 };
+enum class PieceType : int8_t{ NOT_DEFINED = -1,
+                               PAWN        = 1,
+                               KNIGHT      = 3,
+                               BISHOP      = 4,
+                               ROOK        = 5,
+                               QUEEN       = 9,
+                               KING        = 0 };
 
 
 

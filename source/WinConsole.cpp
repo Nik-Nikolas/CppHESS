@@ -2,9 +2,17 @@
 // (C)Igor Lobanov. 2017
 //
 // This is a cpp file.
+
 #include "Player.h"
 #include "Board.h"
 #include "WinConsole.h"
+
+#include "Pawn.h"
+#include "Queen.h"
+#include "Rook.h"
+#include "Bishop.h"
+#include "Knight.h"
+#include "King.h"
 
 void WinConsole::setFont( const int32_t font ){
 
@@ -36,10 +44,10 @@ void WinConsole::showPlayerData( const Player& player ) const{
 void WinConsole::controlKeyboard( std::shared_ptr<Board> board,
                                   std::shared_ptr<Game> currentGame ){
   while( true ){
-    if( _kbhit() ){
+    // Establish RAII mutex to exclude access from main thread
+    std::lock_guard<std::mutex> guard ( *mainMutex_ );
 
-      // Establish RAII mutex to exclude access from main thread
-      std::lock_guard<std::mutex> guard ( *mainMutex_ );
+    if( _kbhit() ){
 
       int32_t keyCode = _getch();
 

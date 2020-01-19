@@ -2,6 +2,7 @@
 // (C)Igor Lobanov. 2017
 //
 // This is a cpp file.
+
 #include "Player.h"
 #include "King.h"
 

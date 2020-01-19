@@ -1,13 +1,18 @@
 // C++HESS.
 // (C)Igor Lobanov. 2017
 //
-// This is a cpp file.
+// This is a cpp file
+
 #include "Player.h"
 #include "Game.h"
 
+#include "StrategyManual.h"
+#include "StrategyOrdered.h"
+#include "StrategyRandom.h"
+
 Game::Game( std::shared_ptr<Board> board,
             std::shared_ptr<WinConsole> winConsole,
-            std::unique_ptr<std::mutex>& mainMutex ) : board_( board ),
+            std::mutex* mainMutex ) : board_( board ),
                                                        winConsole_( winConsole ),
                                                        mainMutex_ ( mainMutex ){}
 
@@ -80,8 +85,8 @@ void Game::start(){
                 "7 Bishop VS Rook\n"
                 "8 Random Battle\n"
                 "'c' 'v' to change speed;   'a' 's' to change frame\n"
-                "'n'     to start new game; 'z' 'x' to change board size\n"
-                "'t'     to switch graphic mode to glyph / text";
+                "'n'     to start a new game; 'z' 'x' to change board size\n"
+                "'t'     to switch pieces representation to glyph / text";
 
 
   player1.arrangePieces();
@@ -89,12 +94,13 @@ void Game::start(){
   winConsole_->showBoard( board_ );
 
   // Main game cycle
-  while( isRunning() ){
+  while( true ){
 
     // Establish RAII mutex to exclude access from main thread
     std::lock_guard<std::mutex> guard ( *mainMutex_ );
 
-    checkValid(); // If others threads changed game validness - throw exception
+    if(!isRunning())
+      break;
 
     // WHITES play
     makeTurn( white, black, winConsole_, board_ );
@@ -160,15 +166,15 @@ void Game::setStrategy( Player* player ){
   const StrategyInterface* playerStrategy;
   switch( ch - 48 ){
 
-    case 1  : playerStrategy = new Strategy1; break; // user game
-    case 2  : playerStrategy = new Strategy2; break; // C-Life game RANDOM
-    default : playerStrategy = new Strategy3; break; // C-Life game ORDERED
+    case 1  : playerStrategy = new StrategyManual; break; // user game
+    case 2  : playerStrategy = new StrategyRandom; break; // C-Life game RANDOM
+    default : playerStrategy = new StrategyOrdered; break; // C-Life game ORDERED
   }
 
   player->setStrategy( playerStrategy );
 }
 
-inline void Game::nextTurn(){
+void Game::nextTurn(){
   ++turns_;
 
   if ( ::TURNS_MAX <= turns_ ){

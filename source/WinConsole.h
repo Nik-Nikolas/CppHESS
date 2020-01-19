@@ -12,7 +12,7 @@
 class WinConsole{
 public:
 
-  WinConsole( std::unique_ptr<std::mutex>& mainMutex ) : mainMutex_( mainMutex ){}
+  WinConsole(  std::mutex* mainMutex ) : mainMutex_( mainMutex ){}
 
   void setFont( const int32_t font );
 
@@ -29,11 +29,11 @@ public:
 
   void start( std::shared_ptr<Board> board, std::shared_ptr<Game> game );
 
-  std::unique_ptr<std::mutex>& getMutex(){
+  std::mutex* getMutex(){
     return mainMutex_;
   }
 
 private:
-  std::unique_ptr<std::mutex>& mainMutex_;
+   std::mutex* mainMutex_;
 };
 #endif

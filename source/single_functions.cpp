@@ -37,11 +37,11 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
   int32_t line       = 0;
   bool isWhiteSquare = false;
 
-  ConsoleColor currentBackColor  = ConsoleColor::WHITE;
-  ConsoleColor currentPieceColor = ConsoleColor::WHITE;
+  static ConsoleColor currentBackColor  = ConsoleColor::WHITE;
+  static ConsoleColor currentPieceColor = ConsoleColor::WHITE;
 
-  std::for_each( std::crbegin( board ), std::crend( board ), [&]( std::vector<Piece*> ivec ){
-    std::for_each( std::crbegin( ivec ), std::crend( ivec ), [&]( Piece* piece ){
+  std::for_each( std::crbegin( board ), std::crend( board ), [&]( const auto& ivec ){
+    std::for_each( std::crbegin( ivec ), std::crend( ivec ), [&]( const auto& piece ){
       if( isWhiteSquare ){
         SetColor( ConsoleColor::BLACK, ConsoleColor::DARKGRAY );
         currentBackColor = ConsoleColor::DARKGRAY;

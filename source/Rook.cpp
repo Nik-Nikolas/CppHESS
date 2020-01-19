@@ -2,6 +2,7 @@
 // (C)Igor Lobanov. 2017
 //
 // This is a cpp file.
+
 #include "Rook.h"
 
 bool Rook::move(  std::shared_ptr<Board> board,

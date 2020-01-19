@@ -2,8 +2,10 @@
 // (C)Igor Lobanov. 2017
 //
 // This is a cpp file.
+
 #include "Player.h"
 #include "Piece.h"
+#include "King.h"
 
 // Removes piece (newPiece) to enemy square,
 // killing the enemy piece (oldPiece).

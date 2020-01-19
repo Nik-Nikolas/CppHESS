@@ -6,23 +6,23 @@
 #ifndef CPPHESSCLASSESPLAYER
 #define CPPHESSCLASSESPLAYER
 
-#include "Strategy.h"
+#include "StrategyGeneral.h"
 
 //! \brief Class Player.
-class Player: public Strategy{
+class Player: public StrategyGeneral{
 public:
   Player( const std::string& name,
           std::shared_ptr<Board> board,
           std::shared_ptr<Game> game,
           const PieceColor& color,
-          std::unique_ptr<std::mutex>& mainMutex);
+          std::mutex* mainMutex);
 
   // C-tor to create player based on previous player color
   Player( const std::string& name,
           std::shared_ptr<Board> board,
           std::shared_ptr<Game> game,
           const Player& player,
-          std::unique_ptr<std::mutex>& mainMutex );
+          std::mutex* mainMutex );
 
   bool makeMove          ( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
   bool makeRandomTestMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
@@ -75,6 +75,6 @@ private:
   std::shared_ptr<Game>        game_;
   PieceColor                   color_;
   bool                         isMyTurn_ { false };
-  std::unique_ptr<std::mutex>& mainMutex_;
+  std::mutex*                  mainMutex_;
 };
 #endif

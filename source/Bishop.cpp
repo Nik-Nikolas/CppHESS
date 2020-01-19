@@ -2,6 +2,7 @@
 // (C)Igor Lobanov. 2017
 //
 // This is a cpp file.
+
 #include "Bishop.h"
 
 bool Bishop::move( std::shared_ptr<Board> board,

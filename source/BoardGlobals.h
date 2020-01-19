@@ -5,13 +5,15 @@
 //
 // Singleton design pattern (see GoF)
 
-#ifndef CPPHESSCLASSESBOARDG
-#define CPPHESSCLASSESBOARDG
+#ifndef CPPHESSCLASSESBOARDGLOBALS
+#define CPPHESSCLASSESBOARDGLOBALS
 
 #include "C++HESS.h"
 
 class BoardGlobals{
 public:
+
+  BoardGlobals() = default;
 
   static const int32_t& getSize() noexcept{
     return size_;

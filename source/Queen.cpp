@@ -2,6 +2,7 @@
 // (C)Igor Lobanov. 2017
 //
 // This is a cpp file.
+
 #include "Queen.h"
 
 bool Queen::move( std::shared_ptr<Board> board,

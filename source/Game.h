@@ -18,7 +18,7 @@ class Game: public std::enable_shared_from_this<Game> {
 public:
   Game( std::shared_ptr<Board> board,
         std::shared_ptr<WinConsole> winConsole,
-        std::unique_ptr<std::mutex>& mainMutex );
+        std::mutex* mainMutex );
 
   ~Game();
 
@@ -48,14 +48,14 @@ public:
   //!< Heads or tails game - who plays white.
   const PieceColor headsOrTailsColor();
 
-  std::unique_ptr<std::mutex>& getMutex(){
+   std::mutex* getMutex(){
     return mainMutex_;
   }
 
 private:
   std::shared_ptr<Board> board_;
   const std::shared_ptr<WinConsole> winConsole_;
-  std::unique_ptr<std::mutex>& mainMutex_;
+  std::mutex* mainMutex_;
 
   int32_t turns_   { 0 };
   bool    isValid_ { true };

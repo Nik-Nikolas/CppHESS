@@ -4,11 +4,18 @@
 // This is a cpp file.
 #include "Player.h"
 
+#include "Pawn.h"
+#include "Queen.h"
+#include "Rook.h"
+#include "Bishop.h"
+#include "Knight.h"
+#include "King.h"
+
 Player::Player( const std::string& name,
                 std::shared_ptr<Board> board,
                 std::shared_ptr<Game> game,
                 const PieceColor& color,
-                std::unique_ptr<std::mutex>& mainMutex ) :
+                std::mutex* mainMutex ) :
                                            name_ ( name ),
                                            board_( board ),
                                            game_ ( game ),
@@ -23,7 +30,7 @@ Player::Player( const std::string& name,
                 std::shared_ptr<Board> board,
                 std::shared_ptr<Game> game,
                 const Player& player,
-                std::unique_ptr<std::mutex>& mainMutex ) :
+                std::mutex* mainMutex ) :
                                         name_ ( name ),
                                         board_( board ),
                                         game_ ( game ),
