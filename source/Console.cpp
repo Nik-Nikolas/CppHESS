@@ -5,7 +5,7 @@
 
 #include "Player.h"
 #include "Board.h"
-#include "WinConsole.h"
+#include "Console.h"
 
 #include "Pawn.h"
 #include "Queen.h"
@@ -14,8 +14,11 @@
 #include "Knight.h"
 #include "King.h"
 
-void WinConsole::setFont( const int32_t font ){
+void Console::setFont( const int32_t font ){
 
+#ifdef __linux__ 
+
+#elif _WIN32
   static HMODULE hmod = GetModuleHandleA( "KERNEL32.DLL" );
   typedef BOOL ( WINAPI* SETCONSOLEFONT )( HANDLE, DWORD );
   static SETCONSOLEFONT SetConsoleFont =
@@ -24,24 +27,26 @@ void WinConsole::setFont( const int32_t font ){
   // console font (2, 6, 9-seems good) scale
   SetConsoleFont( GetStdHandle( STD_OUTPUT_HANDLE ), font );
   system( "mode con cols=600 lines=400" );
+#else
+#endif
 }
 
 
 
-void WinConsole::showBoard( const std::shared_ptr<Board> board ) const{
- ::clear();
+void Console::showBoard( const std::shared_ptr<Board> board ) const{
+ ::clearscr();
  ::show( board->read() );
 }
 
 
 
-void WinConsole::showPlayerData( const Player& player ) const{
+void Console::showPlayerData( const Player& player ) const{
   player.showData();
 }
 
 
 
-void WinConsole::controlKeyboard( std::shared_ptr<Board> board,
+void Console::controlKeyboard( std::shared_ptr<Board> board,
                                   std::shared_ptr<Game> currentGame ){
   while( true ){
     // Establish RAII mutex to exclude access from main thread
@@ -50,9 +55,6 @@ void WinConsole::controlKeyboard( std::shared_ptr<Board> board,
     if( _kbhit() ){
 
       int32_t keyCode = _getch();
-
-      while( _kbhit() )
-        _getch();
 
       static const int32_t STEP = BoardGlobals::getSize();
 
@@ -150,24 +152,24 @@ void WinConsole::controlKeyboard( std::shared_ptr<Board> board,
 
 
 
-void WinConsole::delay(){
+void Console::delay(){
   ::delay();
 }
 
 
 
-void WinConsole::clear(){
-  ::clear();
+void Console::clear(){
+  ::clearscr();
 }
 
 
 
-void WinConsole::start( std::shared_ptr<Board> board,
+void Console::start( std::shared_ptr<Board> board,
                         std::shared_ptr<Game> game ){
 
   // Multithreading part to split control and main processes.
   //     1. Launch controlKeyboard(...) in separate thread.
-  std::thread control ( &WinConsole::controlKeyboard, // pointer to member function
+  std::thread control ( &Console::controlKeyboard, // pointer to member function
                         this,                         // pointer to obj
                         std::ref( board ),            // references to args
                         std::ref( game ) );           // because function changes board and game objects

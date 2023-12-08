@@ -3,10 +3,10 @@
 
 #include "Board.h"
 #include "Game.h"
-#include "WinConsole.h"
+#include "Console.h"
 
 #include <mutex>
-#include<memory>
+#include <memory>
 
 //! \brief Abstract factory to construct specific objects
 class GameFactory
@@ -16,12 +16,12 @@ class GameFactory
     virtual ~GameFactory() = default;
 
     std::shared_ptr<Game> makeGame( std::shared_ptr<Board>& board_,
-                                    std::shared_ptr<WinConsole>& cons_,
+                                    std::shared_ptr<Console>& cons_,
                                     std::mutex* mutex_ );
 
     std::shared_ptr<Board> makeBoard();
 
-    std::shared_ptr<WinConsole> makeConsole(  std::mutex* mutex_ );
+    std::shared_ptr<Console> makeConsole(  std::mutex* mutex_ );
 };
 
 #endif // GAMEFACTORY_H

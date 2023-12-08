@@ -9,19 +9,7 @@
 #define CPPHESSCLASSESSTRATEGY
 
 #include "King.h"
-
-class StrategyInterface{
-public:
-  virtual ~StrategyInterface(){}
-  virtual bool play( std::shared_ptr<Board> board_,
-                     const Player* player_,
-                     int32_t& i,
-                     int32_t& j,
-                     int32_t& i2,
-                     int32_t& j2 ) const = 0; // Pure V.F.
-};
-
-
+#include "StrategyInterface.h"
 
 class Strategy1: public StrategyInterface{
 public:

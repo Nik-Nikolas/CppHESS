@@ -8,11 +8,18 @@
 
 #include "BoardGlobals.h"
 
-//! \brief Class WinConsole.
-class WinConsole{
+//! \brief Class Console.
+class Console{
 public:
 
-  WinConsole(  std::mutex* mainMutex ) : mainMutex_( mainMutex ){}
+  Console(  std::mutex* mainMutex ) : mainMutex_( mainMutex ){
+
+    // std::cin.clear();
+    // fflush(stdin);
+    // std::cin.ignore( 100, '\n' );
+
+
+  }
 
   void setFont( const int32_t font );
 

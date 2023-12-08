@@ -18,7 +18,7 @@ bool StrategyManual::play( std::shared_ptr<Board> board_, const Player* player, 
 
   const int32_t BSIZE = BoardGlobals::getSize();
   char j_ = '\0', j2_= '\0';
-  char ch = '\0';
+  int32_t ch = '\0';
   char i_ = '\0', i2_ = '\0';
   bool isKingUnderAttack = false;
 
@@ -26,12 +26,11 @@ bool StrategyManual::play( std::shared_ptr<Board> board_, const Player* player, 
 
   while ( true ){
 
-    while( _kbhit() )
-      _getch();
-
     // To allow left game before each turn.
     std::cout << "\n  Press ANY KEY to proceed, ESC to exit to main menu: ";
+
     ch = _getch();
+
     if( 27 == ch )
       return false;
 

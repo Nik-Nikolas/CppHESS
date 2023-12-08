@@ -11,9 +11,9 @@
 #include "StrategyRandom.h"
 
 Game::Game( std::shared_ptr<Board> board,
-            std::shared_ptr<WinConsole> winConsole,
+            std::shared_ptr<Console> Console,
             std::mutex* mainMutex ) : board_( board ),
-                                                       winConsole_( winConsole ),
+                                                       Console_( Console ),
                                                        mainMutex_ ( mainMutex ){}
 
 Game::~Game()
@@ -62,51 +62,55 @@ void Game::start(){
     blackPlayer = &Player::makeMove;
     */
 
-  std::cout <<  "\nWHITES 1 user game"
-                "\n       2 simulations (C-Life game RANDOM)"
-                "\n       3 simulations (C-Life game ORDERED): ";
+  {
+    std::lock_guard<std::mutex> guard ( *mainMutex_ );
 
-  setStrategy( white );
+    std::cout <<  "\nWHITES 1 user game"
+                  "\n       2 simulations (C-Life game RANDOM)"
+                  "\n       3 simulations (C-Life game ORDERED): ";
 
-  std::cout << "\n";
-  std::cout <<  "\nBLACKS 1 user game"
-                "\n       2 simulations (C-Life game RANDOM)"
-                "\n       3 simulations (C-Life game ORDERED): ";
+    setStrategy( white );
 
-  setStrategy( black );
+    std::cout << "\n";
+    std::cout <<  "\nBLACKS 1 user game"
+                  "\n       2 simulations (C-Life game RANDOM)"
+                  "\n       3 simulations (C-Life game ORDERED): ";
 
-  winConsole_->showBoard( board_ );
-  std::cout <<  "1 Classic game\n"
-                "2 Knight VS Rook\n"
-                "3 Queens Battle\n"
-                "4 Pawns Battle\n"
-                "5 Bishop VS Pawn\n"
-                "6 Bishop VS Knight\n"
-                "7 Bishop VS Rook\n"
-                "8 Random Battle\n"
-                "'c' 'v' to change speed;   'a' 's' to change frame\n"
-                "'n'     to start a new game; 'z' 'x' to change board size\n"
-                "'t'     to switch pieces representation to glyph / text";
+    setStrategy( black );
+
+    Console_->showBoard( board_ );
+    std::cout <<  "1 Classic game\n"
+                  "2 Knight VS Rook\n"
+                  "3 Queens Battle\n"
+                  "4 Pawns Battle\n"
+                  "5 Bishop VS Pawn\n"
+                  "6 Bishop VS Knight\n"
+                  "7 Bishop VS Rook\n"
+                  "8 Random Battle\n"
+                  "'c' 'v' to change speed;   'a' 's' to change frame\n"
+                  "'n'     to start a new game; 'z' 'x' to change board size\n"
+                  "'t'     to switch pieces representation to glyph / text";
 
 
-  player1.arrangePieces();
+    player1.arrangePieces();
 
-  winConsole_->showBoard( board_ );
+    Console_->showBoard( board_ );
+  }
 
   // Main game cycle
   while( true ){
 
     // Establish RAII mutex to exclude access from main thread
-    std::lock_guard<std::mutex> guard ( *mainMutex_ );
+    // std::lock_guard<std::mutex> guard ( *mainMutex_ );
 
     if(!isRunning())
       break;
 
     // WHITES play
-    makeTurn( white, black, winConsole_, board_ );
+    makeTurn( white, black, Console_, board_ );
 
     // BLACKS play
-    makeTurn( black, white, winConsole_, board_ );
+    makeTurn( black, white, Console_, board_ );
 
     nextTurn();
   }
@@ -117,7 +121,7 @@ void Game::start(){
 // Player makes turn in accordance with chosen strategy
 void Game::makeTurn( Player* const player1,
                      const Player* const player2,
-                     const std::shared_ptr<WinConsole> console,
+                     const std::shared_ptr<Console> console,
                      std::shared_ptr<Board> board ){
 
   checkValid(); // If others threads changed game validness - throw exception
@@ -161,7 +165,7 @@ void Game::makeTurn( Player* const player1,
 
 void Game::setStrategy( Player* player ){
 
-  const char ch = _getch();
+  const int32_t ch = _getch();
 
   const StrategyInterface* playerStrategy;
   switch( ch - 48 ){

@@ -411,10 +411,7 @@ void Player::randomBattle(){
 
 void Player::arrangePieces(){
 
-  // Establish RAII mutex to exclude access from main thread
-  std::lock_guard<std::mutex> guard ( *mainMutex_ );
-
-  const char scenario = _getch() - 48;
+  const int scenario = _getch() - 48;
 
   switch( scenario ){
     default:

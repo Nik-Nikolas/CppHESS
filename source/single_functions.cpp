@@ -6,6 +6,9 @@
 #include "C++HESS.h"
 
 void printPiece( const PieceType& PT,  const PieceColor& PC ){
+#ifdef __linux__ 
+
+#elif _WIN32
 
   static HANDLE cons = GetStdHandle( STD_OUTPUT_HANDLE );
   static const int BUFF_SIZE = 17;
@@ -24,6 +27,8 @@ void printPiece( const PieceType& PT,  const PieceColor& PC ){
   }
 
   WriteConsoleW( cons, p, wcslen( p ), &n, NULL );
+#else
+#endif
 }
 
 
@@ -33,6 +38,7 @@ void printPiece( const PieceType& PT,  const PieceColor& PC ){
 //! \param
 //! \return
 void show( const std::vector<std::vector<Piece*> >& board ) {
+  std::cout << "\n";
 
   int32_t line       = 0;
   bool isWhiteSquare = false;
@@ -105,14 +111,25 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
 //! \param cycles Cycles amt
 //! \return void
 void delay(){
+#ifdef __linux__ 
+  std::this_thread::sleep_for(std::chrono::milliseconds(BoardGlobals::getDelay()));
+
+#elif _WIN32
 
   Sleep( BoardGlobals::getDelay() );
+
+#else
+#endif
 }
 
 
 
 //! \brief Windows CLS function.
-void clear() {
+void clearscr() {
+#ifdef __linux__ 
+    std::system ("clear");
+
+#elif _WIN32
 
     COORD topLeft  = { 0, 0 };
     HANDLE console = GetStdHandle( STD_OUTPUT_HANDLE );
@@ -135,6 +152,8 @@ void clear() {
                                 &written );
 
     SetConsoleCursorPosition( console, topLeft );
+#else
+#endif
 }
 
 
@@ -157,10 +176,14 @@ std::ostream& operator << ( std::ostream& s, const PieceColor& pt ){
 
 //! \brief Set console colors.
 void SetColor( ConsoleColor text, ConsoleColor background ){
+#ifdef __linux__ 
 
+#elif _WIN32
 	HANDLE hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
 
   SetConsoleTextAttribute( hStdOut, ( WORD )( ( background << 4 ) | text ) );
+#else
+#endif
 }
 
 
@@ -204,3 +227,63 @@ std::ostream& operator << ( std::ostream& s, const PieceType& PT ){
   s << type;
   return s;
 }
+
+
+
+// #ifdef __linux__ 
+
+//   #include <unistd.h>
+//   #include <termios.h>
+//   #include <sys/ioctl.h>
+
+//   char _getch(bool echo)
+//   {
+//       char buf = 0;
+//       struct termios old = {0};
+//       fflush(stdout);
+//       if(tcgetattr(0, &old) < 0)
+//           perror("tcsetattr()");
+//       old.c_lflag &= ~ICANON;
+//       old.c_lflag &= ~ECHO;
+//       old.c_cc[VMIN] = 1;
+//       old.c_cc[VTIME] = 0;
+//       if(tcsetattr(0, TCSANOW, &old) < 0)
+//           perror("tcsetattr ICANON");
+//       if(read(0, &buf, 1) < 0)
+//           perror("read()");
+//       old.c_lflag |= ICANON;
+//       old.c_lflag |= ECHO;
+//       if(tcsetattr(0, TCSADRAIN, &old) < 0)
+//           perror("tcsetattr ~ICANON");
+
+//       if(echo)
+//         printf("%c\n", buf);
+        
+//       return buf;
+//   }
+
+//   char _getche()
+//   {
+//       return _getch(true);
+//   }
+
+//   bool _kbhit()
+//   {
+//       termios term;
+//       tcgetattr(0, &term);
+
+//       termios term2 = term;
+//       term2.c_lflag &= ~ICANON;
+//       tcsetattr(0, TCSANOW, &term2);
+
+//       int byteswaiting;
+//       ioctl(0, FIONREAD, &byteswaiting);
+
+//       tcsetattr(0, TCSANOW, &term);
+
+//       return byteswaiting > 0;
+//   }
+
+// #endif  
+
+

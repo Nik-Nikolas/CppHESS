@@ -6,7 +6,7 @@
 #ifndef CPPHESSCLASSESGAME
 #define CPPHESSCLASSESGAME
 
-#include "WinConsole.h"
+#include "Console.h"
 
 //! \brief Class Game.
 //!  Describes game process.
@@ -17,7 +17,7 @@
 class Game: public std::enable_shared_from_this<Game> {
 public:
   Game( std::shared_ptr<Board> board,
-        std::shared_ptr<WinConsole> winConsole,
+        std::shared_ptr<Console> Console,
         std::mutex* mainMutex );
 
   ~Game();
@@ -40,7 +40,7 @@ public:
 
   void makeTurn( Player* const player1,
                  const Player* const player2,
-                 const std::shared_ptr<WinConsole> console,
+                 const std::shared_ptr<Console> console,
                  std::shared_ptr<Board> board );
 
   const bool isRunning() const;
@@ -54,7 +54,7 @@ public:
 
 private:
   std::shared_ptr<Board> board_;
-  const std::shared_ptr<WinConsole> winConsole_;
+  const std::shared_ptr<Console> Console_;
   std::mutex* mainMutex_;
 
   int32_t turns_   { 0 };

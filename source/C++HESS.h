@@ -77,12 +77,22 @@
 #include <cmath>       // min()
 #include <cassert>
 
-#include <conio.h>     // Console / IO / _kbhit() _getch()
-#include <windows.h>   // Console / WinAPI
-
 #include <mutex>
 #include <thread>
-//#include <memory>
+#include <memory>
+
+
+#ifdef __linux__ 
+  #include "conio.h"     // Console / IO / _kbhit() _getch()
+
+#elif _WIN32
+  #include <conio.h>     // Console / IO / _kbhit() _getch()
+  #include <windows.h>   // Console / WinAPI
+#else
+#endif
+
+
+// #include <curses.h>
 
 class Piece;
 class Player;
@@ -174,7 +184,16 @@ void delay();
 
 
 //! \brief Windows CLS function.
-void clear();
+void clearscr();
+
+// //! \brief Reload Windows conio functions for Linux
+// #ifdef __linux__ 
+
+//   char _getch(bool echo = false);
+//   char _getche();
+//   bool _kbhit();
+
+// #endif  
 
 
 
