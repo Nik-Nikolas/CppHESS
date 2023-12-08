@@ -16,9 +16,6 @@ Game::Game( std::shared_ptr<Board> board,
                                                        Console_( Console ),
                                                        mainMutex_ ( mainMutex ){}
 
-Game::~Game()
-{}
-
 void Game::start(){
 
   // First player plays headsOrTails game to choose pieces color

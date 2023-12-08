@@ -20,7 +20,9 @@ public:
         std::shared_ptr<Console> Console,
         std::mutex* mainMutex );
 
-  ~Game();
+  ~Game(){
+    RandomDevice::deleteInstance();
+  };
 
   void start();
 

@@ -4,9 +4,53 @@
 // This is a cpp file.
 #include "Piece.h"
 #include "C++HESS.h"
+#include<iostream>
+#include <locale>
+#include <cstring>
+
+
+void printwc(wchar_t wc)
+{
+	char buf[2 * MB_CUR_MAX];
+
+	mbstate_t state;
+	memset(&state,0,sizeof(state));
+
+	size_t offset1 = wcrtomb(buf, wc, &state);
+
+	if(offset1 == size_t(-1))
+	{
+		std::cerr << "wcrtomb failed (1)" << std::endl;
+		return;
+	}
+
+	size_t offset2 = wcrtomb(buf + offset1, L'\0', &state);
+
+	if(offset2 == size_t(-1))
+	{
+		std::cerr << "wcrtomb failed (2)" << std::endl;
+		return;
+	}
+
+	std::cout << buf;
+}
 
 void printPiece( const PieceType& PT,  const PieceColor& PC ){
 #ifdef __linux__ 
+  static wchar_t p;
+
+  switch( PT ){
+    case PieceType::PAWN   : PieceColor::WHITE == PC ? p = L'\u2659'  : p = L'\u265F' ; break;
+    case PieceType::KNIGHT : PieceColor::WHITE == PC ? p = L'\u2658' : p = L'\u265E'; break;
+    case PieceType::BISHOP : PieceColor::WHITE == PC ? p = L'\u2657' : p = L'\u265D'; break;
+    case PieceType::ROOK   : PieceColor::WHITE == PC ? p = L'\u2656' : p = L'\u265C'; break;
+    case PieceType::QUEEN  : PieceColor::WHITE == PC ? p = L'\u2655' : p = L'\u265B'; break;
+    case PieceType::KING   : PieceColor::WHITE == PC ? p = L'\u2654' : p = L'\u265A'; break;
+    default                : p = L'?'; break;
+  }
+
+	setlocale(LC_ALL, "");
+	printwc(p);
 
 #elif _WIN32
 
@@ -32,6 +76,37 @@ void printPiece( const PieceType& PT,  const PieceColor& PC ){
 }
 
 
+namespace Color {
+
+    // "\033[{FORMAT_ATTRIBUTE};{FORGROUND_COLOR};{BACKGROUND_COLOR}m{TEXT}\033[{RESET_FORMATE_ATTRIBUTE}m"
+    enum Code {
+        FG_RED      = 31,
+        FG_GREEN    = 32,
+        FG_BLUE     = 34,
+        FG_GRAY     = 37,
+        FG_DEFAULT  = 39,
+        FG_WHITE    = 97,
+
+        BG_BLACK    = 40,
+        BG_RED      = 41,
+        BG_GREEN    = 42,
+        BG_BLUE     = 44,
+        BG_GRAY     = 47,
+        BG_DEFAULT  = 49
+    };
+
+    class Modifier {
+        Code fg;
+        Code bg;
+    public:
+        Modifier(Code fg, Code bg) : fg(fg), bg(bg) {}
+        friend std::ostream&
+        operator<<(std::ostream& os, const Modifier& mod) {
+            return os << "\033[" << mod.fg << ';' << mod.bg << "m";
+        }
+    };
+}
+
 
 //! \brief Show board function.
 //!
@@ -49,7 +124,7 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
   std::for_each( std::crbegin( board ), std::crend( board ), [&]( const auto& ivec ){
     std::for_each( std::crbegin( ivec ), std::crend( ivec ), [&]( const auto& piece ){
       if( isWhiteSquare ){
-        SetColor( ConsoleColor::BLACK, ConsoleColor::DARKGRAY );
+        SetColor( ConsoleColor::BLACK, ConsoleColor::LIGHTGRAY );
         currentBackColor = ConsoleColor::DARKGRAY;
       }
       else{
@@ -61,10 +136,10 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
       if( piece ){
 
         currentPieceColor = piece->getPieceColor() ==
-        PieceColor::WHITE ? ConsoleColor::WHITE : ConsoleColor::BLACK;
+        PieceColor::WHITE ? ConsoleColor::RED : ConsoleColor::BLUE;
 
         if( ConsoleColor::DARKGRAY == currentBackColor ){
-          SetColor( currentPieceColor, ConsoleColor::DARKGRAY );
+          SetColor( currentPieceColor, ConsoleColor::LIGHTGRAY );
         }
         else{
           SetColor( currentPieceColor, ConsoleColor::GREEN );
@@ -178,6 +253,29 @@ std::ostream& operator << ( std::ostream& s, const PieceColor& pt ){
 void SetColor( ConsoleColor text, ConsoleColor background ){
 #ifdef __linux__ 
 
+    Color::Code fg;
+    Color::Code bg;
+
+    switch(text){
+      case RED:         fg = Color::Code::FG_RED; break;
+      case GREEN:       fg = Color::Code::FG_GREEN; break;
+      case BLUE:        fg = Color::Code::FG_BLUE; break;
+      case LIGHTGRAY:   fg = Color::Code::FG_GRAY; break;
+      case WHITE:       fg = Color::Code::FG_WHITE; break;
+      default:          fg = Color::Code::FG_GREEN;
+    }
+
+      switch(background){
+      case RED:         bg = Color::Code::BG_RED; break;
+      case GREEN:       bg = Color::Code::BG_GREEN; break;
+      case BLUE:        bg = Color::Code::BG_BLUE; break;
+      case LIGHTGRAY:   bg = Color::Code::BG_GRAY; break;
+      case BLACK    :   bg = Color::Code::BG_BLACK; break;
+      default:          bg = Color::Code::BG_GREEN;
+    }
+
+    std::cout << Color::Modifier(fg, bg);
+
 #elif _WIN32
 	HANDLE hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
 
@@ -200,7 +298,7 @@ std::ostream& operator << ( std::ostream& s, const Piece* pt ){
       case PieceType::BISHOP : ch = '4'; break;
       case PieceType::ROOK   : ch = '5'; break;
       case PieceType::QUEEN  : ch = '9'; break;
-      case PieceType::KING   : ch =  5;  break;
+      case PieceType::KING   : ch = '0';  break;
       default                : ch = '?';
   }
 

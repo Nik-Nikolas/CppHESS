@@ -17,7 +17,7 @@ int32_t BoardGlobals::size_         = 0;
 int32_t BoardGlobals::longMoveStep_ = 0;
 int32_t BoardGlobals::delay_        = 0;
 int32_t BoardGlobals::framesStep_   = START_FRAME;
-bool    BoardGlobals::isGlyphMode_  = false;
+bool    BoardGlobals::isGlyphMode_  = true;
 int32_t King::counter_              = 0;
 
 // Singletons class members.
@@ -31,11 +31,11 @@ int main(){
   // Create a factory to build the main game entities.
   GameFactory factory;
   auto board = factory.makeBoard();
-  auto Console = factory.makeConsole( MutexDevice::getInstance() );
-  auto game = factory.makeGame( board, Console, MutexDevice::getInstance() );
+  auto console = factory.makeConsole( MutexDevice::getInstance() );
+  auto game = factory.makeGame( board, console, MutexDevice::getInstance() );
 
-  // Keyboard events processing a separate detached thread.
-  Console->start( board, game );
+  // Keyboard events processing in a separate detached thread.
+  console->start( board, game );
 
   // Multiple game cycle.
   while( true ){
@@ -47,16 +47,14 @@ int main(){
       game->resetGame();
 
       // Destroy the current game and create a new one instead.
-      game.reset( factory.makeGame( board, Console, MutexDevice::getInstance() ).get() );
+      std::lock_guard<std::mutex> guard ( *game->getMutex() );
+      game.reset( factory.makeGame( board, console, MutexDevice::getInstance() ).get() );
     }
     catch(...){
       std::cerr << std::endl << "Unknown error occured." << std::endl;
       throw; // Abort the game.
     }
   }
-
-  // Remove the mutex instance since it's not being used anymore.
-  RandomDevice::deleteInstance();
 
   return 0;
 }

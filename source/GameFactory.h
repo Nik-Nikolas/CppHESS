@@ -8,7 +8,7 @@
 #include <mutex>
 #include <memory>
 
-//! \brief Abstract factory to construct specific objects
+//! \brief Constructs specific game objects
 class GameFactory
 {
   public:

@@ -235,8 +235,10 @@ public:
   }
 
   static void deleteInstance(){
-    delete rd_;
-    rd_ = nullptr;
+    if(rd_){
+      delete rd_;
+      rd_ = nullptr;
+    }
   }
 
 private:
