@@ -15,7 +15,6 @@ add_executable(CppHESS
     Pawn.cpp 
     Bishop.cpp 
 
-    Strategy.cpp 
     StrategyManual.cpp 
     StrategyOrdered.cpp 
     StrategyRandom.cpp 
