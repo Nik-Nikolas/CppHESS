@@ -1,4 +1,6 @@
 .idea
+.inner
 build/
 debug/
 cmake-build-*/
+.cache

@@ -130,6 +130,7 @@ void Game::makeTurn( Player* const player1,
   bool frameIsShown = !static_cast<bool>( currentTurn() % frameStep );
 
   if( !player1->playStrategy( i, j, i2, j2 ) ){
+    std::lock_guard<std::mutex> guard ( *mainMutex_ );
 
     console->showBoard( board );
     console->showPlayerData( *player2 );

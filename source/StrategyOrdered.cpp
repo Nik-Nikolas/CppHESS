@@ -13,8 +13,10 @@
 #include "King.h"
 
 // Ordered behavior
-bool StrategyOrdered::play( std::shared_ptr<Board> board_, const Player* player, int32_t& i,
-                     int32_t& j, int32_t& i2, int32_t& j2 ) const{
+bool StrategyOrdered::play( std::shared_ptr<Board> board_,                     
+                           std::shared_ptr<Game> game,
+                           const Player* player, int32_t& i,
+                           int32_t& j, int32_t& i2, int32_t& j2 ) const{
 
   const int32_t BSIZE = BoardGlobals::getSize();
   bool isKingUnderAttack = false;

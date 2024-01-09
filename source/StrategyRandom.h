@@ -13,6 +13,7 @@
 class StrategyRandom: public StrategyInterface{
 public:
   virtual bool play( std::shared_ptr<Board> board_,
+                       std::shared_ptr<Game> game,
                      const Player* player_,
                      int32_t& i,
                      int32_t& j,

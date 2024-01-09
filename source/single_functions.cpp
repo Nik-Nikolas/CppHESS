@@ -118,18 +118,18 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
   int32_t line       = 0;
   bool isWhiteSquare = false;
 
-  static ConsoleColor currentBackColor  = ConsoleColor::WHITE;
-  static ConsoleColor currentPieceColor = ConsoleColor::WHITE;
+  static ConsoleColor currentBackColor;
+  static ConsoleColor currentPieceColor;
 
   std::for_each( std::crbegin( board ), std::crend( board ), [&]( const auto& ivec ){
     std::for_each( std::crbegin( ivec ), std::crend( ivec ), [&]( const auto& piece ){
       if( isWhiteSquare ){
         SetColor( ConsoleColor::BLACK, ConsoleColor::LIGHTGRAY );
-        currentBackColor = ConsoleColor::DARKGRAY;
+        currentBackColor = ConsoleColor::LIGHTGRAY;
       }
       else{
         SetColor( ConsoleColor::BLACK, ConsoleColor::GREEN );
-        currentBackColor = ConsoleColor::WHITE;
+        currentBackColor = ConsoleColor::GREEN;
       }
 
       isWhiteSquare = isWhiteSquare == true ? false : true;
@@ -138,7 +138,7 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
         currentPieceColor = piece->getPieceColor() ==
         PieceColor::WHITE ? ConsoleColor::RED : ConsoleColor::BLUE;
 
-        if( ConsoleColor::DARKGRAY == currentBackColor ){
+        if( ConsoleColor::LIGHTGRAY == currentBackColor ){
           SetColor( currentPieceColor, ConsoleColor::LIGHTGRAY );
         }
         else{
@@ -188,11 +188,8 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
 void delay(){
 #ifdef __linux__ 
   std::this_thread::sleep_for(std::chrono::milliseconds(BoardGlobals::getDelay()));
-
 #elif _WIN32
-
   Sleep( BoardGlobals::getDelay() );
-
 #else
 #endif
 }
@@ -203,7 +200,6 @@ void delay(){
 void clearscr() {
 #ifdef __linux__ 
     std::system ("clear");
-
 #elif _WIN32
 
     COORD topLeft  = { 0, 0 };
@@ -265,7 +261,7 @@ void SetColor( ConsoleColor text, ConsoleColor background ){
       default:          fg = Color::Code::FG_GREEN;
     }
 
-      switch(background){
+    switch(background){
       case RED:         bg = Color::Code::BG_RED; break;
       case GREEN:       bg = Color::Code::BG_GREEN; break;
       case BLUE:        bg = Color::Code::BG_BLUE; break;
@@ -278,7 +274,6 @@ void SetColor( ConsoleColor text, ConsoleColor background ){
 
 #elif _WIN32
 	HANDLE hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
-
   SetConsoleTextAttribute( hStdOut, ( WORD )( ( background << 4 ) | text ) );
 #else
 #endif
@@ -325,63 +320,3 @@ std::ostream& operator << ( std::ostream& s, const PieceType& PT ){
   s << type;
   return s;
 }
-
-
-
-// #ifdef __linux__ 
-
-//   #include <unistd.h>
-//   #include <termios.h>
-//   #include <sys/ioctl.h>
-
-//   char _getch(bool echo)
-//   {
-//       char buf = 0;
-//       struct termios old = {0};
-//       fflush(stdout);
-//       if(tcgetattr(0, &old) < 0)
-//           perror("tcsetattr()");
-//       old.c_lflag &= ~ICANON;
-//       old.c_lflag &= ~ECHO;
-//       old.c_cc[VMIN] = 1;
-//       old.c_cc[VTIME] = 0;
-//       if(tcsetattr(0, TCSANOW, &old) < 0)
-//           perror("tcsetattr ICANON");
-//       if(read(0, &buf, 1) < 0)
-//           perror("read()");
-//       old.c_lflag |= ICANON;
-//       old.c_lflag |= ECHO;
-//       if(tcsetattr(0, TCSADRAIN, &old) < 0)
-//           perror("tcsetattr ~ICANON");
-
-//       if(echo)
-//         printf("%c\n", buf);
-        
-//       return buf;
-//   }
-
-//   char _getche()
-//   {
-//       return _getch(true);
-//   }
-
-//   bool _kbhit()
-//   {
-//       termios term;
-//       tcgetattr(0, &term);
-
-//       termios term2 = term;
-//       term2.c_lflag &= ~ICANON;
-//       tcsetattr(0, TCSANOW, &term2);
-
-//       int byteswaiting;
-//       ioctl(0, FIONREAD, &byteswaiting);
-
-//       tcsetattr(0, TCSANOW, &term);
-
-//       return byteswaiting > 0;
-//   }
-
-// #endif  
-
-

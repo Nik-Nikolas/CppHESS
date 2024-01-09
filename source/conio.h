@@ -300,22 +300,10 @@ class __CONIO_H{
     int cputs(const char*str){
       printf(str);
       return 0;
-      }
-        
-    // char* getpass(const char*prompt){
-    //   //implementada en unistd.h
-    //   }
-      
-    // int gettext(int l,int t,int r,int b,void*destination){
-      
-    //   }
-    
-    
+      }     
   };
 
-
-
-//! \brief std::random_device singleton.
+//! \brief conio singleton.
 class __CONIO_H_INST{
 public:
   __CONIO_H_INST()                                     = delete;

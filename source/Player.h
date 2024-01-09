@@ -30,7 +30,7 @@ public:
 
   virtual bool playStrategy( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 )
   final {
-    return currentStrategy_->play( board_, this, i, j, i2, j2 );
+    return currentStrategy_->play( board_, game_, this, i, j, i2, j2 );
   }
 
   virtual void setStrategy( const StrategyInterface* s ) noexcept final {

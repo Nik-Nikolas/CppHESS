@@ -183,17 +183,8 @@ void delay();
 
 
 
-//! \brief Windows CLS function.
+//! \brief CLS function.
 void clearscr();
-
-// //! \brief Reload Windows conio functions for Linux
-// #ifdef __linux__ 
-
-//   char _getch(bool echo = false);
-//   char _getche();
-//   bool _kbhit();
-
-// #endif  
 
 
 
