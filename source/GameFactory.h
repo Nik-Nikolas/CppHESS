@@ -15,8 +15,8 @@ class GameFactory
     GameFactory() = default;
     virtual ~GameFactory() = default;
 
-    std::shared_ptr<Game> makeGame( std::shared_ptr<Board>& board_,
-                                    std::shared_ptr<Console>& cons_,
+    std::shared_ptr<Game> makeGame( std::shared_ptr<Board> board_,
+                                    std::shared_ptr<Console> cons_,
                                     std::mutex* mutex_ );
 
     std::shared_ptr<Board> makeBoard();

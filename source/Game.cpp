@@ -97,26 +97,31 @@ void Game::start(){
   // Main game cycle
   while( true ){
 
-    if(!isRunning())
+    if(!isValid())
       break;
 
     // WHITES play
-    makeTurn( white, black, Console_, board_ );
+    auto res = makeTurn( white, black, Console_, board_ );
+    if(!res)
+      break;
 
     // BLACKS play
-    makeTurn( black, white, Console_, board_ );
+    res = makeTurn( black, white, Console_, board_ );
+    if(!res)
+      break;
 
     nextTurn();
   }
 }
 
 // Player makes turn in accordance with chosen strategy
-void Game::makeTurn( Player* const player1,
+bool Game::makeTurn( Player* const player1,
                      const Player* const player2,
                      const std::shared_ptr<Console> console,
                      std::shared_ptr<Board> board ){
 
-  checkValid(); // If others threads changed game validness - throw exception
+  if(!isValid())
+    return false; 
 
   int32_t i, j, i2, j2; // Coords before/after move.
   i = j = i2 = j2 = -1;
@@ -140,8 +145,6 @@ void Game::makeTurn( Player* const player1,
     _getch();
 
     setInvalid();
-
-    throw GameIsOver();
   }
   else if( frameIsShown ){ // Visualize board and data each 1 of m frames
 
@@ -156,6 +159,8 @@ void Game::makeTurn( Player* const player1,
       console->showPlayerData( *player1 );
     }
   }
+
+  return isValid(); 
 }
 
 void Game::setStrategy( Player* player ){
@@ -178,27 +183,20 @@ void Game::nextTurn(){
 
   if ( ::TURNS_MAX <= turns_ ){
     setInvalid();
-
-    throw GameIsOver();
   }
 }
 
-void Game::setInvalid() noexcept{
+void Game::setInvalid() {
     isValid_ = false;
 }
 
-void Game::checkValid(){
-  if( false == isValid_ )
-     throw GameIsOver();
+inline bool Game::isValid() const{
+  return isValid_;
 }
 
 void Game::resetGame(){
   turns_ = 0;
   isValid_ = true;
-}
-
-inline const bool Game::isRunning() const {
-  return isValid_;
 }
 
 const int32_t Game::currentTurn() const{

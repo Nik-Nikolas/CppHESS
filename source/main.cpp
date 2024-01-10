@@ -42,9 +42,6 @@ int main(){
     try{
       game->start();
     }
-    catch( const GameIsOver& g ){
-      std::cout << std::endl << "New game started." << std::endl;
-    }
     catch(...){
       std::cerr << std::endl << "Unknown error occured." << std::endl;
       throw; // Abort the game.

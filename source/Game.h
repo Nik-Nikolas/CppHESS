@@ -32,20 +32,18 @@ public:
 
   void nextTurn();
 
-  void setInvalid() noexcept;
+  void setInvalid();
 
-  void checkValid();
+  bool isValid() const;
 
   const int32_t currentTurn() const;
 
   void setTurn( const int32_t turns );
 
-  void makeTurn( Player* const player1,
+  bool makeTurn( Player* const player1,
                  const Player* const player2,
                  const std::shared_ptr<Console> console,
                  std::shared_ptr<Board> board );
-
-  const bool isRunning() const;
 
   //!< Heads or tails game - who plays white.
   const PieceColor headsOrTailsColor();
