@@ -97,9 +97,6 @@ void Game::start(){
   // Main game cycle
   while( true ){
 
-    // Establish RAII mutex to exclude access from main thread
-    // std::lock_guard<std::mutex> guard ( *mainMutex_ );
-
     if(!isRunning())
       break;
 
@@ -111,8 +108,6 @@ void Game::start(){
 
     nextTurn();
   }
-
-  //_getch();
 }
 
 // Player makes turn in accordance with chosen strategy
@@ -143,6 +138,8 @@ void Game::makeTurn( Player* const player1,
     << " have no pieces or no moves."
        " Press ANY KEY to START NEW GAME.";
     _getch();
+
+    setInvalid();
 
     throw GameIsOver();
   }
@@ -180,7 +177,7 @@ void Game::nextTurn(){
   ++turns_;
 
   if ( ::TURNS_MAX <= turns_ ){
-    isValid_ = false;
+    setInvalid();
 
     throw GameIsOver();
   }

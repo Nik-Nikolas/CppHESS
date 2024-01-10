@@ -43,17 +43,14 @@ int main(){
       game->start();
     }
     catch( const GameIsOver& g ){
-      // Reset the game
-      game->resetGame();
-
-      // Destroy the current game and create a new one instead.
-      std::lock_guard<std::mutex> guard ( *game->getMutex() );
-      game.reset( factory.makeGame( board, console, MutexDevice::getInstance() ).get() );
+      std::cout << std::endl << "New game started." << std::endl;
     }
     catch(...){
       std::cerr << std::endl << "Unknown error occured." << std::endl;
       throw; // Abort the game.
     }
+
+    game->resetGame();
   }
 
   return 0;

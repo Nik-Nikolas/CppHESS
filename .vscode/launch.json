@@ -36,7 +36,7 @@
     "name": "(gdb) Launch",
     "type": "cppdbg",
     "request": "launch",
-    "program": "/home/red/Documents/BUP_SRC/WORK/Projects/CppHESS/build/source/CppHESS",
+    "program": "${command:cmake.launchTargetPath}",
     "args": [],
     "stopAtEntry": false,
     "cwd": "${fileDirname}",
