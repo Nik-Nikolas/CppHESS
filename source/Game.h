@@ -41,9 +41,7 @@ public:
   void setTurn( const int32_t turns );
 
   bool makeTurn( Player* const player1,
-                 const Player* const player2,
-                 const std::shared_ptr<Console> console,
-                 std::shared_ptr<Board> board );
+                 const Player* const player2);
 
   //!< Heads or tails game - who plays white.
   const PieceColor headsOrTailsColor();
@@ -52,9 +50,16 @@ public:
     return mainMutex_;
   }
 
+  std::shared_ptr<Console> getConsole(){
+    return console_;
+  }
+
+ void waitCertainKeyAsync(int32_t keycode);
+
+
 private:
   std::shared_ptr<Board> board_;
-  const std::shared_ptr<Console> Console_;
+  const std::shared_ptr<Console> console_;
   std::mutex* mainMutex_;
 
   int32_t turns_   { 0 };

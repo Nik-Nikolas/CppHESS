@@ -3,17 +3,20 @@
 //
 // This is a cpp file
 
+#include "Console.h"
 #include "Player.h"
 #include "Game.h"
 
 #include "StrategyManual.h"
 #include "StrategyOrdered.h"
 #include "StrategyRandom.h"
+#include <cstdint>
+#include <stdexcept>
 
 Game::Game( std::shared_ptr<Board> board,
             std::shared_ptr<Console> Console,
             std::mutex* mainMutex ) : board_( board ),
-                                                       Console_( Console ),
+                                                       console_( Console ),
                                                        mainMutex_ ( mainMutex ){}
 
 void Game::start(){
@@ -24,75 +27,40 @@ void Game::start(){
   // Second player takes another color
   Player player2( "Wooster", board_, shared_from_this(), player1, mainMutex_ );
 
-  // Pointers to players
+  // Players mapping to colors
   Player* white = player1.getColor() == PieceColor::WHITE ? &player1 : &player2;
   Player* black = player2.getColor() == PieceColor::BLACK ? &player2 : &player1;
 
-  /* BLOCK WITH Pointers to class Player member functions. Obsolete
-  char ch;
-  std::cout <<  "\n1 Player1 - user game"
-                "\n2         - simulations (C-Life game RANDOM)"
-                "\n3         - simulations (C-Life game ORDERED): ";
-  ch = _getch();
-  // Pointer to class Player member function
-  bool ( Player::* whitePlayer )( int32_t&, int32_t&, int32_t&, int32_t& );
+  std::cout <<  "\nWHITES 1 user game"
+                "\n       2 simulations (C-Life game RANDOM)"
+                "\n       3 simulations (C-Life game ORDERED): ";
 
-  if( ch - 48 == 1 )
-    whitePlayer = &Player::makeManualMove;
-  else if( ch - 48 == 2 )
-    whitePlayer = &Player::makeRandomTestMove;
-  else
-    whitePlayer = &Player::makeMove;
+  setStrategy( white );
+
   std::cout << "\n";
-  std::cout <<  "\n1 Player2 - user game"
-                "\n2         - simulations (C-Life game RANDOM)"
-                "\n3         - simulations (C-Life game ORDERED): ";
-  ch = _getch();
-  // Pointer to class Player member function
-  bool ( Player::* blackPlayer )( int32_t&, int32_t&, int32_t&, int32_t& );
+  std::cout <<  "\nBLACKS 1 user game"
+                "\n       2 simulations (C-Life game RANDOM)"
+                "\n       3 simulations (C-Life game ORDERED): ";
 
-  if( ch - 48 == 1 )
-    blackPlayer = &Player::makeManualMove;
-  else if( ch - 48 == 2 )
-    blackPlayer = &Player::makeRandomTestMove;
-  else
-    blackPlayer = &Player::makeMove;
-    */
+  setStrategy( black );
 
-  {
-    std::lock_guard<std::mutex> guard ( *mainMutex_ );
-
-    std::cout <<  "\nWHITES 1 user game"
-                  "\n       2 simulations (C-Life game RANDOM)"
-                  "\n       3 simulations (C-Life game ORDERED): ";
-
-    setStrategy( white );
-
-    std::cout << "\n";
-    std::cout <<  "\nBLACKS 1 user game"
-                  "\n       2 simulations (C-Life game RANDOM)"
-                  "\n       3 simulations (C-Life game ORDERED): ";
-
-    setStrategy( black );
-
-    Console_->showBoard( board_ );
-    std::cout <<  "1 Classic game\n"
-                  "2 Knight VS Rook\n"
-                  "3 Queens Battle\n"
-                  "4 Pawns Battle\n"
-                  "5 Bishop VS Pawn\n"
-                  "6 Bishop VS Knight\n"
-                  "7 Bishop VS Rook\n"
-                  "8 Random Battle\n"
-                  "'c' 'v' to change speed;   'a' 's' to change frame\n"
-                  "'n'     to start a new game; 'z' 'x' to change board size\n"
-                  "'t'     to switch pieces representation to glyph / text";
+  console_->showBoard( board_ );
+  std::cout <<  "1 Classic game\n"
+                "2 Knight VS Rook\n"
+                "3 Queens Battle\n"
+                "4 Pawns Battle\n"
+                "5 Bishop VS Pawn\n"
+                "6 Bishop VS Knight\n"
+                "7 Bishop VS Rook\n"
+                "8 Random Battle\n"
+                "'c' 'v' to change speed;   'a' 's' to change frame\n"
+                "'n'     to start a new game; 'z' 'x' to change board size\n"
+                "'t'     to switch pieces representation to glyph / text";
 
 
-    player1.arrangePieces();
+  player1.arrangePieces();
 
-    Console_->showBoard( board_ );
-  }
+  console_->showBoard( board_ );
 
   // Main game cycle
   while( true ){
@@ -100,13 +68,15 @@ void Game::start(){
     if(!isValid())
       break;
 
+    waitCertainKeyAsync(32);
+
     // WHITES play
-    auto res = makeTurn( white, black, Console_, board_ );
+    auto res = makeTurn( white, black );
     if(!res)
       break;
 
     // BLACKS play
-    res = makeTurn( black, white, Console_, board_ );
+    res = makeTurn( black, white );
     if(!res)
       break;
 
@@ -116,9 +86,7 @@ void Game::start(){
 
 // Player makes turn in accordance with chosen strategy
 bool Game::makeTurn( Player* const player1,
-                     const Player* const player2,
-                     const std::shared_ptr<Console> console,
-                     std::shared_ptr<Board> board ){
+                     const Player* const player2 ){
 
   if(!isValid())
     return false; 
@@ -130,33 +98,30 @@ bool Game::makeTurn( Player* const player1,
   bool frameIsShown = !static_cast<bool>( currentTurn() % frameStep );
 
   if( !player1->playStrategy( i, j, i2, j2 ) ){
-    std::lock_guard<std::mutex> guard ( *mainMutex_ );
 
-    console->showBoard( board );
-    console->showPlayerData( *player2 );
+    console_->showBoard( board_ );
+    console_->showPlayerData( *player2 );
 
-    board->clear();
-    board->resetLastMovedPiece();
-    board->resize();
+    board_->clear();
+    board_->resetLastMovedPiece();
+    board_->resize();
 
     std::cout << "\n" << player1->getName()
-    << " have no pieces or no moves."
-       " Press ANY KEY to START NEW GAME.";
-    _getch();
+    << " have no pieces or no moves.";
 
     setInvalid();
   }
   else if( frameIsShown ){ // Visualize board and data each 1 of m frames
 
     if( frameStep == 1 ){
-      console->showBoard( board );
-      console->showPlayerData( *player1 );
+      console_->showBoard( board_ );
+      console_->showPlayerData( *player1 );
     }
     // If frameStep > 1 - show only data after WHITE piece move to prevent
     // display similar board views
     else if( player1->getColor() == PieceColor::WHITE ){
-      console->showBoard( board );
-      console->showPlayerData( *player1 );
+      console_->showBoard( board_ );
+      console_->showPlayerData( *player1 );
     }
   }
 
@@ -165,14 +130,22 @@ bool Game::makeTurn( Player* const player1,
 
 void Game::setStrategy( Player* player ){
 
-  const int32_t ch = _getch();
+  console_->setConsoleInputMode(ConsoleInputMode::SYNC);
+  int32_t ch{};
+  while(true){
+      ch = ChoiceDevice::getInstance() - 48;
+      if(ch >= 1 && ch <= 3)
+        break;
+  }
+  console_->setConsoleInputMode(ConsoleInputMode::ASYNC);
 
   const StrategyInterface* playerStrategy;
-  switch( ch - 48 ){
+  switch( ch ){
 
     case 1  : playerStrategy = new StrategyManual; break; // user game
     case 2  : playerStrategy = new StrategyRandom; break; // C-Life game RANDOM
-    default : playerStrategy = new StrategyOrdered; break; // C-Life game ORDERED
+    case 3  : playerStrategy = new StrategyOrdered; break; // C-Life game ORDERED
+    default : throw std::runtime_error("Unknown game mode");
   }
 
   player->setStrategy( playerStrategy );
@@ -218,3 +191,13 @@ const PieceColor Game::headsOrTailsColor(){
 
   return d( gen ) ? PieceColor::WHITE : PieceColor::BLACK;
 }
+
+
+ void Game::waitCertainKeyAsync(int32_t keycode){
+
+    if(ChoiceDevice::hasInstance()){
+      auto ch = ChoiceDevice::getInstance();
+      if( ch == keycode)
+        ChoiceDevice::getInstance(); // Block
+    }
+ }

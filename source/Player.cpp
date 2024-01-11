@@ -411,10 +411,16 @@ void Player::randomBattle(){
 
 void Player::arrangePieces(){
 
-  const int scenario = _getch() - 48;
+  game_->getConsole()->setConsoleInputMode(ConsoleInputMode::SYNC);
+  int32_t ch{};
+  while(true){
+      ch  = ChoiceDevice::getInstance() - 48;
+      if(ch >= 1 && ch <= 8)
+        break;
+  }
+  game_->getConsole()->setConsoleInputMode(ConsoleInputMode::ASYNC);
 
-  switch( scenario ){
-    default:
+  switch( ch ){
     case 1 : classicBattle();
       break;
     case 2 : knightVsRook();
@@ -431,5 +437,6 @@ void Player::arrangePieces(){
       break;
     case 8 : randomBattle();
       break;
+    default : throw std::runtime_error("Unknown game scenario");
   }
 }

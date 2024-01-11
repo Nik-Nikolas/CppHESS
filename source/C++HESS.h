@@ -35,8 +35,6 @@
 // - noexcept functions
 // - multithreading:
 //     - Detached threads with passed parameters
-//     - std::mutex,
-//     - std::lock_guard<std::mutex> RAII mutex guard
 // - std::unique_ptr<std::mutex>
 // - std::shared_ptr<T> semantics:
 //     - class Game: public std::enable_shared_from_this<Game>
@@ -65,6 +63,7 @@
 #ifndef CPPHESS
 #define CPPHESS
 
+#include <cstdint>
 #include <iostream>    // Basic IO
 #include <iomanip>     // Console / IO / setw
 #include <typeinfo>    // Types distinction check.
@@ -256,5 +255,37 @@ public:
 
 private:
   static std::mutex* m_;
+};
+
+class ChoiceDevice{
+public:
+  ChoiceDevice()                                   = delete;
+  ChoiceDevice( const ChoiceDevice& )              = delete;
+  ChoiceDevice& operator = ( const ChoiceDevice& ) = delete;
+
+  static void setInstance(int32_t c){
+    choice_ = c;
+    isChoiceMade_ = true;
+  }
+
+  static bool hasInstance(){
+    return  isChoiceMade_;
+  }
+
+  static int32_t getInstance(){
+
+    // Block - wait until choice is made
+    while(!isChoiceMade_){
+      std::this_thread::yield();
+    }
+
+    isChoiceMade_ = false;
+    
+    return choice_;
+  }
+
+private:
+  static int32_t choice_;
+  static bool    isChoiceMade_;
 };
 #endif

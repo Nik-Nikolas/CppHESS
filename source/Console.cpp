@@ -13,6 +13,7 @@
 #include "Bishop.h"
 #include "Knight.h"
 #include "King.h"
+#include <exception>
 
 void Console::setFont( const int32_t font ){
 
@@ -49,21 +50,32 @@ void Console::showPlayerData( const Player& player ) const{
 void Console::controlKeyboard( std::shared_ptr<Board> board,
                                   std::shared_ptr<Game> currentGame ){
   while( true ){
-    // Establish RAII mutex to exclude access from main thread
-    std::lock_guard<std::mutex> guard ( *mainMutex_ );
+    if(getConsoleInputMode() == ConsoleInputMode::ASYNC){
+      if( _kbhit() ){
 
-    if( _kbhit() ){
+        int32_t keyCode = _getch();
 
-      int32_t keyCode = _getch();
+        static const int32_t STEP = BoardGlobals::getSize();
 
-      static const int32_t STEP = BoardGlobals::getSize();
+        switch( keyCode ){
+          // 'z'
+          case 122 :
+            if( BoardGlobals::getSize() > STEP ){
 
-      switch( keyCode ){
-        // 'z'
-        case 122 :
-          if( BoardGlobals::getSize() > STEP ){
+              BoardGlobals::setSize( BoardGlobals::getSize() / 2 );
+              BoardGlobals::setLongMoveStep( BoardGlobals::getSize() / 2 );
+              board->resetLastMovedPiece();
 
-            BoardGlobals::setSize( BoardGlobals::getSize() / 2 );
+              board->modify().resize( BoardGlobals::getSize() );
+
+              for( auto i = 0; i < BoardGlobals::getSize(); ++i )
+                board->modify()[i].resize( BoardGlobals::getSize() );
+            }
+            break;
+          // 'x'
+          case 120 :
+
+            BoardGlobals::setSize( BoardGlobals::getSize() * 2 );
             BoardGlobals::setLongMoveStep( BoardGlobals::getSize() / 2 );
             board->resetLastMovedPiece();
 
@@ -71,81 +83,77 @@ void Console::controlKeyboard( std::shared_ptr<Board> board,
 
             for( auto i = 0; i < BoardGlobals::getSize(); ++i )
               board->modify()[i].resize( BoardGlobals::getSize() );
-          }
-          break;
-        // 'x'
-        case 120 :
 
-          BoardGlobals::setSize( BoardGlobals::getSize() * 2 );
-          BoardGlobals::setLongMoveStep( BoardGlobals::getSize() / 2 );
-          board->resetLastMovedPiece();
+            //for( auto i = BoardGlobals::getSize() - STEP; i < BoardGlobals::getSize(); ++i )
+            //  for( auto j = BoardGlobals::getSize() - STEP; j < BoardGlobals::getSize(); ++j )
+            //    board.modify()[i][j] = nullptr;
 
-          board->modify().resize( BoardGlobals::getSize() );
+            break;
+          // 'n'
+          case 110 :
 
-          for( auto i = 0; i < BoardGlobals::getSize(); ++i )
-            board->modify()[i].resize( BoardGlobals::getSize() );
+            // Clear all board data
+            board->clear();
+            board->resetLastMovedPiece();
+            board->resize();
 
-          //for( auto i = BoardGlobals::getSize() - STEP; i < BoardGlobals::getSize(); ++i )
-          //  for( auto j = BoardGlobals::getSize() - STEP; j < BoardGlobals::getSize(); ++j )
-          //    board.modify()[i][j] = nullptr;
+            // Clear King data
+            King::resetCounter();
 
-          break;
-        // 'n'
-        case 110 :
+            // Set invalid status. Then game will notice it in main thread -
+            // it will throw exception
+            currentGame->setInvalid();
 
-          // Clear all board data
-          board->clear();
-          board->resetLastMovedPiece();
-          board->resize();
+            break;
+          // 'v'
+          case 118 :
+            if ( 0 == BoardGlobals::getDelay() )
+              BoardGlobals::setDelay( 100 );
+            else
+              BoardGlobals::setDelay( BoardGlobals::getDelay() * 2 );
+            break;
+          // 'c'
+          case 99 :
+            BoardGlobals::setDelay( BoardGlobals::getDelay() / 2 );
+            break;
+          // space
+          case 32 :
+            ChoiceDevice::setInstance(keyCode);
+             break;
+          // 'a'
+          case 97 :
+            BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() / 2 );
+            break;
+          // 's'
+          case 115 :
+            BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() * 2 );
+            break;
+          // 't'
+          case 116 :
+            BoardGlobals::setGlyphMode( !BoardGlobals::getGlyphMode() );
+            break;
+          // ESC
+          case 27 :
+            exit( 0 );
+          default:
+            break;
+        }
 
-          // Clear King data
-          King::resetCounter();
+        if ( 0 > BoardGlobals::getDelay() )
+          BoardGlobals::setDelay( 0 );
 
-          // Set invalid status. Then game will notice it in main thread -
-          // it will throw exception
-          currentGame->setInvalid();
-
-          break;
-        // 'v'
-        case 118 :
-          if ( 0 == BoardGlobals::getDelay() )
-            BoardGlobals::setDelay( 100 );
-          else
-            BoardGlobals::setDelay( BoardGlobals::getDelay() * 2 );
-          break;
-        // 'c'
-        case 99 :
-          BoardGlobals::setDelay( BoardGlobals::getDelay() / 2 );
-          break;
-        // space
-        case 32 :
-          std::cout << " PAUSE MODE - PRINT ANY KEY TO PROCEED:";
-          _getch();
-          break;
-        // 'a'
-        case 97 :
-          BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() / 2 );
-          break;
-        // 's'
-        case 115 :
-          BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() * 2 );
-          break;
-        // 't'
-        case 116 :
-          BoardGlobals::setGlyphMode( !BoardGlobals::getGlyphMode() );
-          break;
-        // ESC
-        case 27 :
-          exit( 0 );
-        default:
-          break;
+        if ( 0 >= BoardGlobals::getFramesStep() )
+          BoardGlobals::setFramesStep( 1 );
       }
-
-      if ( 0 > BoardGlobals::getDelay() )
-        BoardGlobals::setDelay( 0 );
-
-      if ( 0 >= BoardGlobals::getFramesStep() )
-        BoardGlobals::setFramesStep( 1 );
+    }
+    else if(getConsoleInputMode() == ConsoleInputMode::SYNC){
+        ChoiceDevice::setInstance(_getch());
+    }
+    else if(getConsoleInputMode() == ConsoleInputMode::SYNC_ECHO){
+        ChoiceDevice::setInstance(_getche());
+    }
+    else{
+      throw std::runtime_error("Unknown console input mode");
     }
   }
 }
@@ -167,16 +175,13 @@ void Console::clear(){
 void Console::start( std::shared_ptr<Board> board,
                         std::shared_ptr<Game> game ){
 
-  // Multithreading part to split control and main processes.
-  //     1. Launch controlKeyboard(...) in separate thread.
-  std::thread control ( &Console::controlKeyboard, // pointer to member function
-                        this,                         // pointer to obj
+  // Control keyboard in separate thread
+  std::thread control ( &Console::controlKeyboard, 
+                        this,                         
                         std::ref( board ),            // references to args
-                        std::ref( game ) );           // because function changes board and game objects
+                        std::ref( game ) );           // since the function changes board and game objects
 
-  //     2. Detach the thread.
   control.detach();
 
   assert( std::thread::hardware_concurrency() >= 2);
-  // End of multithreading part.
 }

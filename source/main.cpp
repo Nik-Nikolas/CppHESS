@@ -21,10 +21,11 @@ bool    BoardGlobals::isGlyphMode_  = true;
 int32_t King::counter_              = 0;
 
 // Singletons class members
-std::random_device* RandomDevice::rd_ = nullptr;
-std::mutex* MutexDevice::m_           = nullptr; // Keyboard events semaphore
-__CONIO_H* __CONIO_H_INST::conio_     = nullptr; // Unix conio library impl
-
+std::random_device* RandomDevice::rd_ {};
+std::mutex* MutexDevice::m_           {}; // Keyboard events semaphore
+__CONIO_H* __CONIO_H_INST::conio_     {}; // Unix conio library impl
+int32_t ChoiceDevice::choice_         {}; // Choice device
+bool ChoiceDevice::isChoiceMade_      {};
 
 int main(){
 
@@ -32,6 +33,8 @@ int main(){
   GameFactory factory;
   auto board = factory.makeBoard();
   auto console = factory.makeConsole( MutexDevice::getInstance() );
+  console->setConsoleInputMode(ConsoleInputMode::SYNC);
+
   auto game = factory.makeGame( board, console, MutexDevice::getInstance() );
 
   // Keyboard events processing in a separate detached thread

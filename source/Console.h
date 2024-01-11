@@ -7,18 +7,15 @@
 #define CPPHESSCLASSESWINCON
 
 #include "BoardGlobals.h"
+#include "C++HESS.h"
+
+enum class ConsoleInputMode {NOT_DEFINED, SYNC, SYNC_ECHO, ASYNC};
 
 //! \brief Class Console.
 class Console{
 public:
 
   Console(  std::mutex* mainMutex ) : mainMutex_( mainMutex ){
-
-    // std::cin.clear();
-    // fflush(stdin);
-    // std::cin.ignore( 100, '\n' );
-
-
   }
 
   void setFont( const int32_t font );
@@ -30,6 +27,7 @@ public:
   void controlKeyboard( std::shared_ptr<Board> board,
                         std::shared_ptr<Game> game );
 
+
   void delay();
 
   void clear();
@@ -40,7 +38,16 @@ public:
     return mainMutex_;
   }
 
+  ConsoleInputMode getConsoleInputMode(){
+    return mode_;
+  }
+
+  void setConsoleInputMode(ConsoleInputMode mode){
+    mode_ = mode;
+  }
+
 private:
-   std::mutex* mainMutex_;
+   std::mutex*      mainMutex_;
+   ConsoleInputMode mode_ {ConsoleInputMode::NOT_DEFINED};
 };
 #endif
