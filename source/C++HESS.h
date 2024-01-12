@@ -178,8 +178,9 @@ void show( const std::vector<std::vector<Piece*> >& board );
 
 
 
-//! \brief Delay function.
+//! \brief Delay functions.
 void delay();
+void delay_for(std::uint32_t ms);
 
 
 
@@ -290,15 +291,10 @@ public:
   }
 
   static int32_t getInstanceAsync(){   
-
-    if (f_.valid()) { 
-      auto value = f_.get();
-      p_ = std::promise<int32_t>();
-      f_ = p_.get_future();
-      return value;
-    }
-
-    return -1;
+    auto value = f_.get();
+    p_ = std::promise<int32_t>();
+    f_ = p_.get_future();
+    return value;
   }
 
 private:

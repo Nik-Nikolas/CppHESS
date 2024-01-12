@@ -3,6 +3,7 @@
 //
 // This is a cpp file.
 
+#include "C++HESS.h"
 #include "Player.h"
 #include "Board.h"
 #include "Console.h"
@@ -13,7 +14,9 @@
 #include "Bishop.h"
 #include "Knight.h"
 #include "King.h"
+#include <cstdint>
 #include <exception>
+#include <mutex>
 
 void Console::setFont( const int32_t font ){
 
@@ -50,12 +53,11 @@ void Console::showPlayerData( const Player& player ) const{
 void Console::controlKeyboard( std::shared_ptr<Board> board,
                                   std::shared_ptr<Game> currentGame ){
   while( true ){
-    if(getConsoleInputMode() == ConsoleInputMode::ASYNC){
-      if( _kbhit() ){
 
+    switch(getInputMode()){
+      case ConsoleInputMode::ASYNC:{
         int32_t keyCode = _getch();
-
-        static const int32_t STEP = BoardGlobals::getSize();
+        static auto STEP = BoardGlobals::getSize();
 
         switch( keyCode ){
           // 'z'
@@ -118,7 +120,7 @@ void Console::controlKeyboard( std::shared_ptr<Board> board,
             break;
           // space
           case 32 :
-            ChoiceDevice::setInstanceAsync(keyCode);
+            // ChoiceDevice::setInstanceAsync(keyCode);
             break;
           // 'a'
           case 97 :
@@ -144,16 +146,19 @@ void Console::controlKeyboard( std::shared_ptr<Board> board,
 
         if ( 0 >= BoardGlobals::getFramesStep() )
           BoardGlobals::setFramesStep( 1 );
+
+        break;
       }
-    }
-    else if(getConsoleInputMode() == ConsoleInputMode::SYNC){
+      case ConsoleInputMode::SYNC:
         ChoiceDevice::setInstanceAsync(_getch());
-    }
-    else if(getConsoleInputMode() == ConsoleInputMode::SYNC_ECHO){
+        delay_for(100); //REFACTOR_ME: syncronize ConsoleInputMode setup and process. Now here is still SYNC for a while after ASYNC order in main
+        break;
+      case ConsoleInputMode::SYNC_ECHO:
         ChoiceDevice::setInstanceAsync(_getche());
-    }
-    else{
-      throw std::runtime_error("Unknown console input mode");
+        delay_for(100); //REFACTOR_ME
+        break;
+      default:
+        throw std::runtime_error("Unknown console input mode");
     }
   }
 }

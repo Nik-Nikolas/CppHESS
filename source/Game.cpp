@@ -130,14 +130,15 @@ bool Game::makeTurn( Player* const player1,
 
 void Game::setStrategy( Player* player ){
 
-  console_->setConsoleInputMode(ConsoleInputMode::SYNC);
+  console_->setInputMode(ConsoleInputMode::SYNC);
   int32_t ch{};
   while(true){
       ch = ChoiceDevice::getInstanceAsync() - 48;
       if(ch >= 1 && ch <= 3)
         break;
   }
-  console_->setConsoleInputMode(ConsoleInputMode::ASYNC);
+  console_->setInputMode(ConsoleInputMode::ASYNC);
+
 
   const StrategyInterface* playerStrategy;
   switch( ch ){

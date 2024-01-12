@@ -411,14 +411,14 @@ void Player::randomBattle(){
 
 void Player::arrangePieces(){
 
-  game_->getConsole()->setConsoleInputMode(ConsoleInputMode::SYNC);
+  game_->getConsole()->setInputMode(ConsoleInputMode::SYNC);
   int32_t ch{};
   while(true){
       ch  = ChoiceDevice::getInstanceAsync() - 48;
       if(ch >= 1 && ch <= 8)
         break;
   }
-  game_->getConsole()->setConsoleInputMode(ConsoleInputMode::ASYNC);
+  game_->getConsole()->setInputMode(ConsoleInputMode::ASYNC);
 
   switch( ch ){
     case 1 : classicBattle();

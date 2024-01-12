@@ -31,8 +31,9 @@ bool StrategyManual::play( std::shared_ptr<Board> board_,
     // To allow left game before each turn.
     std::cout << "\n  Press ANY KEY to proceed, ESC to exit to main menu: ";
     
-    game->getConsole()->setConsoleInputMode(ConsoleInputMode::SYNC);
+    game->getConsole()->setInputMode(ConsoleInputMode::SYNC);
     const auto ch = ChoiceDevice::getInstanceAsync();
+    game->getConsole()->setInputMode(ConsoleInputMode::ASYNC);
 
     if( 27 == ch )
       return false;
@@ -40,12 +41,12 @@ bool StrategyManual::play( std::shared_ptr<Board> board_,
     // Read next turn coordinates.
     std::cout << "\n  Enter current-next piece coordinates, e.g. e2e4: ";
 
-    game->getConsole()->setConsoleInputMode(ConsoleInputMode::SYNC_ECHO);
+    game->getConsole()->setInputMode(ConsoleInputMode::SYNC_ECHO);
     j_ = ChoiceDevice::getInstanceAsync();
     i_ = ChoiceDevice::getInstanceAsync();
     j2_ = ChoiceDevice::getInstanceAsync();
     i2_ = ChoiceDevice::getInstanceAsync();
-    game->getConsole()->setConsoleInputMode(ConsoleInputMode::ASYNC);
+    game->getConsole()->setInputMode(ConsoleInputMode::ASYNC);
 
     // Convert chars into 2D array coordinates.
     i  = i_  - 48          - 1;

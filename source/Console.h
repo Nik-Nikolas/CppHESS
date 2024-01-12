@@ -8,6 +8,7 @@
 
 #include "BoardGlobals.h"
 #include "C++HESS.h"
+#include <mutex>
 
 enum class ConsoleInputMode {NOT_DEFINED, SYNC, SYNC_ECHO, ASYNC};
 
@@ -38,16 +39,17 @@ public:
     return mainMutex_;
   }
 
-  ConsoleInputMode getConsoleInputMode(){
+  ConsoleInputMode getInputMode(){
     return mode_;
   }
 
-  void setConsoleInputMode(ConsoleInputMode mode){
+  void setInputMode(ConsoleInputMode mode){
+    std::lock_guard<std::mutex> l(*mainMutex_);
     mode_ = mode;
   }
 
 private:
-   std::mutex*      mainMutex_;
+   std::mutex* mainMutex_;
    ConsoleInputMode mode_ {ConsoleInputMode::NOT_DEFINED};
 };
 #endif

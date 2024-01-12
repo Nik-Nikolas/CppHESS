@@ -4,6 +4,7 @@
 // This is a cpp file.
 #include "Piece.h"
 #include "C++HESS.h"
+#include <cstdint>
 #include<iostream>
 #include <locale>
 #include <cstring>
@@ -181,15 +182,27 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
 
 
 
-//! \brief BoardGlobals::getDelay() function.
+//! \brief delay (sleep) due to game delay
 //!
-//! \param cycles Cycles amt
 //! \return void
 void delay(){
 #ifdef __linux__ 
   std::this_thread::sleep_for(std::chrono::milliseconds(BoardGlobals::getDelay()));
 #elif _WIN32
   Sleep( BoardGlobals::getDelay() );
+#else
+#endif
+}
+
+//! \brief delay for (sleep for) milliseconds
+//!
+//! \param milliseconds
+//! \return void
+void delay_for(std::uint32_t ms){
+#ifdef __linux__ 
+  std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+#elif _WIN32
+  Sleep( ms );
 #else
 #endif
 }
