@@ -32,7 +32,7 @@ bool StrategyManual::play( std::shared_ptr<Board> board_,
     std::cout << "\n  Press ANY KEY to proceed, ESC to exit to main menu: ";
     
     game->getConsole()->setConsoleInputMode(ConsoleInputMode::SYNC);
-    const auto ch = ChoiceDevice::getInstance();
+    const auto ch = ChoiceDevice::getInstanceAsync();
 
     if( 27 == ch )
       return false;
@@ -41,10 +41,10 @@ bool StrategyManual::play( std::shared_ptr<Board> board_,
     std::cout << "\n  Enter current-next piece coordinates, e.g. e2e4: ";
 
     game->getConsole()->setConsoleInputMode(ConsoleInputMode::SYNC_ECHO);
-    j_ = ChoiceDevice::getInstance();
-    i_ = ChoiceDevice::getInstance();
-    j2_ = ChoiceDevice::getInstance();
-    i2_ = ChoiceDevice::getInstance();
+    j_ = ChoiceDevice::getInstanceAsync();
+    i_ = ChoiceDevice::getInstanceAsync();
+    j2_ = ChoiceDevice::getInstanceAsync();
+    i2_ = ChoiceDevice::getInstanceAsync();
     game->getConsole()->setConsoleInputMode(ConsoleInputMode::ASYNC);
 
     // Convert chars into 2D array coordinates.

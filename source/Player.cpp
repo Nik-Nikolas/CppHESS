@@ -414,7 +414,7 @@ void Player::arrangePieces(){
   game_->getConsole()->setConsoleInputMode(ConsoleInputMode::SYNC);
   int32_t ch{};
   while(true){
-      ch  = ChoiceDevice::getInstance() - 48;
+      ch  = ChoiceDevice::getInstanceAsync() - 48;
       if(ch >= 1 && ch <= 8)
         break;
   }

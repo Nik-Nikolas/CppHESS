@@ -68,7 +68,7 @@ void Game::start(){
     if(!isValid())
       break;
 
-    waitCertainKeyAsync(32);
+    // waitCertainKeyAsync(32);
 
     // WHITES play
     auto res = makeTurn( white, black );
@@ -133,7 +133,7 @@ void Game::setStrategy( Player* player ){
   console_->setConsoleInputMode(ConsoleInputMode::SYNC);
   int32_t ch{};
   while(true){
-      ch = ChoiceDevice::getInstance() - 48;
+      ch = ChoiceDevice::getInstanceAsync() - 48;
       if(ch >= 1 && ch <= 3)
         break;
   }
@@ -195,9 +195,7 @@ const PieceColor Game::headsOrTailsColor(){
 
  void Game::waitCertainKeyAsync(int32_t keycode){
 
-    if(ChoiceDevice::hasInstance()){
-      auto ch = ChoiceDevice::getInstance();
+      auto ch = ChoiceDevice::getInstanceAsync();
       if( ch == keycode)
-        ChoiceDevice::getInstance(); // Block
-    }
+        ChoiceDevice::getInstanceAsync(); // Block
  }

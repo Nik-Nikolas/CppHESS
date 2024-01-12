@@ -118,8 +118,8 @@ void Console::controlKeyboard( std::shared_ptr<Board> board,
             break;
           // space
           case 32 :
-            ChoiceDevice::setInstance(keyCode);
-             break;
+            ChoiceDevice::setInstanceAsync(keyCode);
+            break;
           // 'a'
           case 97 :
             BoardGlobals::setFramesStep( BoardGlobals::getFramesStep() / 2 );
@@ -147,10 +147,10 @@ void Console::controlKeyboard( std::shared_ptr<Board> board,
       }
     }
     else if(getConsoleInputMode() == ConsoleInputMode::SYNC){
-        ChoiceDevice::setInstance(_getch());
+        ChoiceDevice::setInstanceAsync(_getch());
     }
     else if(getConsoleInputMode() == ConsoleInputMode::SYNC_ECHO){
-        ChoiceDevice::setInstance(_getche());
+        ChoiceDevice::setInstanceAsync(_getche());
     }
     else{
       throw std::runtime_error("Unknown console input mode");

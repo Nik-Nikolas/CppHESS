@@ -11,6 +11,7 @@
 #include "C++HESS.h"
 
 #include "GameFactory.h"
+#include <future>
 
 // Encapsulated in class (as the private static) variables
 int32_t BoardGlobals::size_         = 0;
@@ -21,11 +22,14 @@ bool    BoardGlobals::isGlyphMode_  = true;
 int32_t King::counter_              = 0;
 
 // Singletons class members
-std::random_device* RandomDevice::rd_ {};
-std::mutex* MutexDevice::m_           {}; // Keyboard events semaphore
-__CONIO_H* __CONIO_H_INST::conio_     {}; // Unix conio library impl
-int32_t ChoiceDevice::choice_         {}; // Choice device
-bool ChoiceDevice::isChoiceMade_      {};
+std::random_device* RandomDevice::rd_  {};
+std::mutex* MutexDevice::m_            {}; // Keyboard events semaphore
+__CONIO_H* __CONIO_H_INST::conio_      {}; // Unix conio library impl
+int32_t ChoiceDevice::choice_          {}; // Choice device
+bool ChoiceDevice::isChoiceMade_       {};
+std::promise<int32_t> ChoiceDevice::p_ {};
+std::future<int32_t> ChoiceDevice::f_  {p_.get_future()};
+
 
 int main(){
 

@@ -79,6 +79,7 @@
 #include <mutex>
 #include <thread>
 #include <memory>
+#include <future>
 
 
 #ifdef __linux__ 
@@ -284,8 +285,26 @@ public:
     return choice_;
   }
 
+  static void setInstanceAsync(int32_t c){
+    p_.set_value(c);
+  }
+
+  static int32_t getInstanceAsync(){   
+
+    if (f_.valid()) { 
+      auto value = f_.get();
+      p_ = std::promise<int32_t>();
+      f_ = p_.get_future();
+      return value;
+    }
+
+    return -1;
+  }
+
 private:
   static int32_t choice_;
   static bool    isChoiceMade_;
+  static std::promise<int32_t> p_;
+  static std::future<int32_t> f_;
 };
 #endif
