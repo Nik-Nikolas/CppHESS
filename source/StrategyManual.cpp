@@ -28,6 +28,11 @@ bool StrategyManual::play( std::shared_ptr<Board> board_,
 
   while ( true ){
 
+    if( BoardGlobals::getSize() >  MANUAL_PLAY_BOARD_SIDE_MAX ){
+      std::cout << "\n  Manual mode for board with size > " << MANUAL_PLAY_BOARD_SIDE_MAX << " not (yet) supported.";
+      return false;
+    }    
+
     // To allow left game before each turn.
     std::cout << "\n  Press ANY KEY to proceed, ESC to exit to main menu: ";
     

@@ -37,7 +37,6 @@ int main(){
   GameFactory factory;
   auto board = factory.makeBoard();
   auto console = factory.makeConsole( MutexDevice::getInstance() );
-  console->setInputMode(ConsoleInputMode::SYNC);
 
   auto game = factory.makeGame( board, console, MutexDevice::getInstance() );
 

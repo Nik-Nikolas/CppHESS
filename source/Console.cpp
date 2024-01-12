@@ -158,7 +158,7 @@ void Console::controlKeyboard( std::shared_ptr<Board> board,
         delay_for(100); //REFACTOR_ME
         break;
       default:
-        throw std::runtime_error("Unknown console input mode");
+        break;
     }
   }
 }

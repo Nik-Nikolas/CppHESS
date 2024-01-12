@@ -104,8 +104,9 @@ static const int32_t START_FRAME         = 1;   // Distance between shown turns.
                                                 // E.g. 100 means that first shown
                                                 // turn is 1, next shown one is 101.
 
-static const int32_t START_DELAY         = 100; // Delay between frames.
-static const int32_t START_BOARD_SIDE    = 8;
+static const int32_t START_DELAY                = 100; // Delay between frames.
+static const int32_t START_BOARD_SIDE           = 8;
+static const int32_t MANUAL_PLAY_BOARD_SIDE_MAX = 8;
 
 // Common constants.
 static const int32_t TURNS_MAX           = 1'000'000'000; // Typically it takes 50 turns
