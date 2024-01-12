@@ -76,7 +76,23 @@ void printPiece( const PieceType& PT,  const PieceColor& PC ){
 #endif
 }
 
-
+// Name            FG  BG
+// Black           30  40
+// Red             31  41
+// Green           32  42
+// Yellow          33  43
+// Blue            34  44
+// Magenta         35  45
+// Cyan            36  46
+// White           37  47
+// Bright Black    90  100
+// Bright Red      91  101
+// Bright Green    92  102
+// Bright Yellow   93  103
+// Bright Blue     94  104
+// Bright Magenta  95  105
+// Bright Cyan     96  106
+// Bright White    97  107
 namespace Color {
 
     // "\033[{FORMAT_ATTRIBUTE};{FORGROUND_COLOR};{BACKGROUND_COLOR}m{TEXT}\033[{RESET_FORMATE_ATTRIBUTE}m"
@@ -87,13 +103,16 @@ namespace Color {
         FG_GRAY     = 37,
         FG_DEFAULT  = 39,
         FG_WHITE    = 97,
+        FG_BLACK    = 30,
 
         BG_BLACK    = 40,
         BG_RED      = 41,
         BG_GREEN    = 42,
         BG_BLUE     = 44,
         BG_GRAY     = 47,
-        BG_DEFAULT  = 49
+        BG_DEFAULT  = 49,
+        BG_BR_BLACK = 100,
+
     };
 
     class Modifier {
@@ -121,29 +140,32 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
 
   static ConsoleColor currentBackColor;
   static ConsoleColor currentPieceColor;
+  static ConsoleColor whiteSquareColor = ConsoleColor::BR_BLACK;
+  static ConsoleColor blackSquareColor = ConsoleColor::BR_BLACK;
 
   std::for_each( std::crbegin( board ), std::crend( board ), [&]( const auto& ivec ){
-    std::for_each( std::crbegin( ivec ), std::crend( ivec ), [&]( const auto& piece ){
+    std::for_each( std::crbegin( ivec ), std::crend( ivec ), [&]( const auto& piece ){       
+      
       if( isWhiteSquare ){
-        SetColor( ConsoleColor::BLACK, ConsoleColor::LIGHTGRAY );
-        currentBackColor = ConsoleColor::LIGHTGRAY;
+        currentBackColor = whiteSquareColor;
+        SetColor( ConsoleColor::BLACK, currentBackColor );
       }
       else{
-        SetColor( ConsoleColor::BLACK, ConsoleColor::GREEN );
-        currentBackColor = ConsoleColor::GREEN;
+        currentBackColor = blackSquareColor;
+        SetColor( ConsoleColor::BLACK, currentBackColor );
       }
 
       isWhiteSquare = isWhiteSquare == true ? false : true;
       if( piece ){
 
         currentPieceColor = piece->getPieceColor() ==
-        PieceColor::WHITE ? ConsoleColor::RED : ConsoleColor::BLUE;
+        PieceColor::WHITE ? ConsoleColor::WHITE : ConsoleColor::BLACK;
 
-        if( ConsoleColor::LIGHTGRAY == currentBackColor ){
-          SetColor( currentPieceColor, ConsoleColor::LIGHTGRAY );
+        if( whiteSquareColor == currentBackColor ){
+          SetColor( currentPieceColor, whiteSquareColor );
         }
         else{
-          SetColor( currentPieceColor, ConsoleColor::GREEN );
+          SetColor( currentPieceColor, blackSquareColor );
         }
 
         if ( BoardGlobals::getGlyphMode() == true )
@@ -271,6 +293,7 @@ void SetColor( ConsoleColor text, ConsoleColor background ){
       case BLUE:        fg = Color::Code::FG_BLUE; break;
       case LIGHTGRAY:   fg = Color::Code::FG_GRAY; break;
       case WHITE:       fg = Color::Code::FG_WHITE; break;
+      case BLACK:       fg = Color::Code::FG_BLACK; break;
       default:          fg = Color::Code::FG_GREEN;
     }
 
@@ -280,6 +303,8 @@ void SetColor( ConsoleColor text, ConsoleColor background ){
       case BLUE:        bg = Color::Code::BG_BLUE; break;
       case LIGHTGRAY:   bg = Color::Code::BG_GRAY; break;
       case BLACK    :   bg = Color::Code::BG_BLACK; break;
+      case BR_BLACK :   bg = Color::Code::BG_BR_BLACK; break;
+
       default:          bg = Color::Code::BG_GREEN;
     }
 
