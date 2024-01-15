@@ -140,7 +140,7 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
 
   static ConsoleColor currentBackColor;
   static ConsoleColor currentPieceColor;
-  static ConsoleColor whiteSquareColor = ConsoleColor::BR_BLACK;
+  static ConsoleColor whiteSquareColor = ConsoleColor::BLACK;
   static ConsoleColor blackSquareColor = ConsoleColor::BR_BLACK;
 
   std::for_each( std::crbegin( board ), std::crend( board ), [&]( const auto& ivec ){
@@ -159,7 +159,7 @@ void show( const std::vector<std::vector<Piece*> >& board ) {
       if( piece ){
 
         currentPieceColor = piece->getPieceColor() ==
-        PieceColor::WHITE ? ConsoleColor::WHITE : ConsoleColor::BLACK;
+        PieceColor::WHITE ? ConsoleColor::RED : ConsoleColor::BLUE;
 
         if( whiteSquareColor == currentBackColor ){
           SetColor( currentPieceColor, whiteSquareColor );
@@ -304,7 +304,6 @@ void SetColor( ConsoleColor text, ConsoleColor background ){
       case LIGHTGRAY:   bg = Color::Code::BG_GRAY; break;
       case BLACK    :   bg = Color::Code::BG_BLACK; break;
       case BR_BLACK :   bg = Color::Code::BG_BR_BLACK; break;
-
       default:          bg = Color::Code::BG_GREEN;
     }
 

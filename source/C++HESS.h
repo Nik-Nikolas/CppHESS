@@ -7,6 +7,8 @@
 
 //!< Comments style purpose: Doxygen.
 
+// Some C++ features:
+//
 // STL:
 // - vector of vectors of pointers std::vector<std::vector<Piece*> >
 // - for_each() with lambda functions for vector of vectors
@@ -22,7 +24,7 @@
 // - nullPtr
 // - apostrophe  1'000'000x
 // - enum class uint8_t
-// - fixed inreger int32_t
+// - fixed integers like int32_t
 // - '= delete' for CTORs and ASOPs where necessary
 // - '= default' for DTORs where necessary
 // - '= override', '= final' for virtual f of derived classes
@@ -35,7 +37,7 @@
 // - noexcept functions
 // - multithreading:
 //     - Detached threads with passed parameters
-// - std::unique_ptr<std::mutex>
+//     - std::lock_guard<std::mutex>
 // - std::shared_ptr<T> semantics:
 //     - class Game: public std::enable_shared_from_this<Game>
 //     - shared_from_this() as a shared_ptr which mutually owns the same object
@@ -44,15 +46,11 @@
 
 // Multithreading:
 // - all keyboard events are being processed independently in separate thread
+// - avoid race congition without semaphores while delegating the input to the separate thread 
 
 // Object Oriented Design:
 // - all pieces derived from abstract base class Piece
 // - all significant entities are objects: board, pieces, players, console, game
-
-// Tricks:
-// - Pointers to member functions (040119 replaced with STRATEGY pattern)
-//   ( Player::* whitePlayer )( int32_t&, int32_t&, int32_t&, int32_t& ) =
-//   ( ch - 48 == 1 ? &Player::makeManualMove : &Player::makeRandomTestMove );
 
 // TODO:
 // KING: is immortal now. Make him mortal.

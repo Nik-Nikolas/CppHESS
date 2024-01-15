@@ -6,7 +6,7 @@
 #include "LastMovedPiece.h"
 #include "Board.h"
 
-Board::Board() : lastMovedPiece_() {
+Board::Board() {
 
     // Set global settings
     BoardGlobals::setSize( ::START_BOARD_SIDE );
