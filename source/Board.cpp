@@ -21,9 +21,6 @@ Board::Board() {
 
 void Board::clear(){
 
-  // struct CTOR . Clears all struct data.
-  LastMovedPiece();
-
   const int32_t B_SIZE = board_.size();
   for( auto i = 0; i < B_SIZE; ++i ){
 
