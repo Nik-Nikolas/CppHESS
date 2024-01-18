@@ -15,4 +15,4 @@ size of the board and pieces configuration.
 ![](https://github.com/Nik-Nikolas/CppHESS/blob/master/images/prtSc4%20200x200%20squares%2020000%20pieces%20after%20635000%20turns_%20PAWNS%20BATTLE.PNG)
 
 OOD, C++ 11, Multithreading, Advanced console graphics
-(c) 2017 Igor Lobanov
+2017 Igor Lobanov
