@@ -17,8 +17,7 @@
 class Game: public std::enable_shared_from_this<Game> {
 public:
   Game( std::shared_ptr<Board> board,
-        std::shared_ptr<Console> Console,
-        std::mutex* mainMutex );
+        std::shared_ptr<Console> Console );
 
   ~Game(){
     RandomDevice::deleteInstance();
@@ -46,9 +45,6 @@ public:
   //!< Heads or tails game - who plays white.
   const PieceColor headsOrTailsColor();
 
-   std::mutex* getMutex(){
-    return mainMutex_;
-  }
 
   std::shared_ptr<Console> getConsole(){
     return console_;
@@ -59,8 +55,7 @@ public:
 
 private:
   std::shared_ptr<Board> board_;
-  const std::shared_ptr<Console> console_;
-  std::mutex* mainMutex_;
+  std::shared_ptr<Console> console_;
 
   int32_t turns_   { 0 };
   bool    isValid_ { true };

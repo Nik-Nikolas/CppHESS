@@ -14,15 +14,13 @@ public:
   Player( const std::string& name,
           std::shared_ptr<Board> board,
           std::shared_ptr<Game> game,
-          const PieceColor& color,
-          std::mutex* mainMutex);
+          const PieceColor& color);
 
   // C-tor to create player based on previous player color
   Player( const std::string& name,
           std::shared_ptr<Board> board,
           std::shared_ptr<Game> game,
-          const Player& player,
-          std::mutex* mainMutex );
+          const Player& player );
 
   bool makeMove          ( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
   bool makeRandomTestMove( int32_t& i, int32_t& j, int32_t& i2, int32_t& j2 );
@@ -75,6 +73,5 @@ private:
   std::shared_ptr<Game>        game_;
   PieceColor                   color_;
   bool                         isMyTurn_ { false };
-  std::mutex*                  mainMutex_;
 };
 #endif

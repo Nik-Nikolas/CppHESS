@@ -14,13 +14,11 @@
 Player::Player( const std::string& name,
                 std::shared_ptr<Board> board,
                 std::shared_ptr<Game> game,
-                const PieceColor& color,
-                std::mutex* mainMutex ) :
+                const PieceColor& color) :
                                            name_ ( name ),
                                            board_( board ),
                                            game_ ( game ),
-                                           color_( color ),
-                                           mainMutex_( mainMutex ){
+                                           color_( color ){
   setMyTurnPriority ();
 }
 
@@ -29,15 +27,13 @@ Player::Player( const std::string& name,
 Player::Player( const std::string& name,
                 std::shared_ptr<Board> board,
                 std::shared_ptr<Game> game,
-                const Player& player,
-                std::mutex* mainMutex ) :
+                const Player& player) :
                                         name_ ( name ),
                                         board_( board ),
                                         game_ ( game ),
                                         color_( player.getColor() ==
                                         PieceColor::WHITE ? PieceColor::BLACK :
-                                                            PieceColor::WHITE ),
-                                        mainMutex_( mainMutex ){
+                                                            PieceColor::WHITE ){
   setMyTurnPriority ();
 }
 

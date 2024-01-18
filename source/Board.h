@@ -31,13 +31,13 @@ public:
 
   void resetLastMovedPiece();
 
-  const std::vector<std::vector<Piece*> >& read() const;
+  const PieceMatrix& read() const;
 
-  std::vector<std::vector<Piece*> >& modify();
+  PieceMatrix& modify();
 
 private:
   LastMovedPiece lastMovedPiece_;
 
-  std::vector<std::vector<Piece*> > board_;
+  PieceMatrix board_;
 };
 #endif

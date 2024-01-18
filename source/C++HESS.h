@@ -18,9 +18,9 @@
 // - STRATEGY for players behavior (instead of pointers to member functions)
 
 // C++ 11,14:
-// - lambdas >>> show( const std::vector<std::vector<Piece*> >& board )
+// -using for T aliases
+// - lambdas
 // - std::crbegin/crend ( T )
-//   >>> show( const std::vector<std::vector<Piece*> >& board )
 // - nullPtr
 // - apostrophe  1'000'000x
 // - enum class uint8_t
@@ -78,6 +78,7 @@
 #include <thread>
 #include <memory>
 #include <future>
+#include <vector>
 
 
 #ifdef __linux__ 
@@ -89,13 +90,13 @@
 #else
 #endif
 
-
-// #include <curses.h>
-
 class Piece;
 class Player;
 class Board;
 class Game;
+
+using PieceMatrix = std::vector<std::vector<Piece*>>;
+using Coords = std::pair<int32_t, int32_t>;
 
 // Start conditions.
 static const int32_t START_FRAME         = 1;   // Distance between shown turns.
@@ -174,7 +175,7 @@ void printPiece( const PieceType& PT,
 
 
 //! \brief Show current pieces on board set.
-void show( const std::vector<std::vector<Piece*> >& board );
+void show( const PieceMatrix& board );
 
 
 

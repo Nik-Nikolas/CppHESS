@@ -74,10 +74,10 @@ void Board::resetLastMovedPiece(){
   lastMovedPiece_.reset();
 }
 
-const std::vector<std::vector<Piece*> >& Board::read() const{
+const PieceMatrix& Board::read() const{
   return board_;
 }
 
-std::vector<std::vector<Piece*> >& Board::modify() {
+PieceMatrix& Board::modify() {
   return board_;
 }

@@ -35,10 +35,6 @@ public:
 
   void start( std::shared_ptr<Board> board, std::shared_ptr<Game> game );
 
-  std::mutex* getMutex(){
-    return mainMutex_;
-  }
-
   ConsoleInputMode getInputMode(){
     return mode_;
   }

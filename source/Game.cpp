@@ -14,18 +14,16 @@
 #include <stdexcept>
 
 Game::Game( std::shared_ptr<Board> board,
-            std::shared_ptr<Console> Console,
-            std::mutex* mainMutex ) : board_( board ),
-                                                       console_( Console ),
-                                                       mainMutex_ ( mainMutex ){}
+            std::shared_ptr<Console> Console ) : board_( board ),
+                                                       console_( Console ){}
 
 void Game::start(){
 
   // First player plays headsOrTails game to choose pieces color
-  Player player1( "Jeeves",  board_, shared_from_this(), headsOrTailsColor(), mainMutex_ );
+  Player player1( "Jeeves",  board_, shared_from_this(), headsOrTailsColor());
 
   // Second player takes another color
-  Player player2( "Wooster", board_, shared_from_this(), player1, mainMutex_ );
+  Player player2( "Wooster", board_, shared_from_this(), player1);
 
   // Players mapping to colors
   Player* white = player1.getColor() == PieceColor::WHITE ? &player1 : &player2;

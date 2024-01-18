@@ -21,7 +21,7 @@ bool StrategyRandom::play( std::shared_ptr<Board> board_,
   bool isKingUnderAttack = false;
   const int32_t BSIZE = BoardGlobals::getSize();
 
-  std::vector<std::pair<int32_t, int32_t> > vp;
+  std::vector<Coords > vp;
   vp.reserve( BSIZE * BSIZE / 4 );
 
   PieceColor currentPlayerColor = player->getColor();
@@ -35,7 +35,7 @@ bool StrategyRandom::play( std::shared_ptr<Board> board_,
       if( currentSquarePiece &&
           currentSquarePiece->getPieceColor() == currentPlayerColor ){
 
-        vp.push_back( std::pair<int32_t, int32_t>( i0, j0 ) );
+        vp.push_back( Coords( i0, j0 ) );
       }
     }
 

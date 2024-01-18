@@ -5,7 +5,7 @@
 #include "Piece.h"
 #include "C++HESS.h"
 #include <cstdint>
-#include<iostream>
+#include <iostream>
 #include <locale>
 #include <cstring>
 
@@ -95,7 +95,6 @@ void printPiece( const PieceType& PT,  const PieceColor& PC ){
 // Bright White    97  107
 namespace Color {
 
-    // "\033[{FORMAT_ATTRIBUTE};{FORGROUND_COLOR};{BACKGROUND_COLOR}m{TEXT}\033[{RESET_FORMATE_ATTRIBUTE}m"
     enum Code {
         FG_RED      = 31,
         FG_GREEN    = 32,
@@ -122,6 +121,8 @@ namespace Color {
         Modifier(Code fg, Code bg) : fg(fg), bg(bg) {}
         friend std::ostream&
         operator<<(std::ostream& os, const Modifier& mod) {
+
+            // "\033[{FORMAT_ATTRIBUTE};{FORGROUND_COLOR};{BACKGROUND_COLOR}m{TEXT}\033[{RESET_FORMATE_ATTRIBUTE}m"
             return os << "\033[" << mod.fg << ';' << mod.bg << "m";
         }
     };
@@ -132,7 +133,7 @@ namespace Color {
 //!
 //! \param
 //! \return
-void show( const std::vector<std::vector<Piece*> >& board ) {
+void show( const PieceMatrix& board ) {
   std::cout << "\n";
 
   int32_t line       = 0;

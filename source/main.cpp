@@ -38,7 +38,7 @@ int main(){
   auto board = factory.makeBoard();
   auto console = factory.makeConsole( MutexDevice::getInstance() );
 
-  auto game = factory.makeGame( board, console, MutexDevice::getInstance() );
+  auto game = factory.makeGame( board, console );
 
   // Keyboard events processing in a separate detached thread
   console->start( board, game );
